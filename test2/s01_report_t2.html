@@ -1,0 +1,148 @@
+<html>
+<head>
+<style type="text/css">
+table { margin: 1em; border-collapse: collapse; }
+td, th { padding: .3em; border: 2px #ccc solid; }
+</style>
+</head>
+<body><table>
+<h2> COMP-10018 Host Info Report - Test 2 </h2>
+<tr>
+<td valign="top"> Hostname </td>
+<td><pre>
+ 
+s01
+Wed Nov 24 16:54:11 EST 2021
+ 
+</pre>
+</td>
+</tr>
+<tr><td colspan="2"> Part B: Backup (2 points) </td></tr>
+<tr>
+<td valign="top"> tar ball exists (1 point)<br>should have around 700 files </td>
+<td><pre>
+ 
+672
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> tar ball containts /etc (1 point)<br>look at first 4 files </td>
+<td><pre>
+ 
+etc/
+etc/mtab
+etc/fstab
+etc/crypttab
+ 
+</pre>
+</td>
+</tr>
+<tr><td colspan="2"> Part C: NFS (5 points) </td></tr>
+<tr>
+<td valign="top"> NFS Startup (1 point) </td>
+<td><pre>
+ 
+enabled
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> NFS Connecton from w01 (1 point) </td>
+<td><pre>
+ 
+tcp        0      0 s01:nfs                 w01:839                 ESTABLISHED
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> /nfs/w01 in exports (2 points) </td>
+<td><pre>
+ 
+/nfs/w01  w01(rw,all_squash,anonuid=1000,anongid=10000)
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Test files in /nfs/w01 (1 point) </td>
+<td><pre>
+ 
+total 4
+-rw-r--r--. 1 alice w01users 3 Nov 24 16:12 from_root_w01
+ 
+</pre>
+</td>
+</tr>
+<tr><td colspan="2"> Part D: Logging (5 points) </td></tr>
+<tr>
+<td valign="top"> remote logging enabled (2 points) </td>
+<td><pre>
+ 
+module(load="imtcp") # needs to be done just once
+input(type="imtcp" port="514")
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> anything in /var/log/httpd.err (1 point) </td>
+<td><pre>
+ 
+1 /var/log/httpd.err
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> http errors from w01 in <br>/var/log/httpd.err (2 points) </td>
+<td><pre>
+ 
+Nov 24 16:25:38 w01 httpd[17182]: [autoindex:error] [pid 17182:tid 140070770083584] [client ::1:33758] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html) found, and server-generated directory index forbidden by Options directive
+ 
+</pre>
+</td>
+</tr>
+<tr><td colspan="2"> Part E: Incremental Backup (2 points) </td></tr>
+<tr>
+<td valign="top"> Incremental tar ball exists (1 point) </td>
+<td><pre>
+ 
+59
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Incremental tar ball contents (1 point) </td>
+<td><pre>
+ 
+etc/ld.so.cache
+etc/gshadow-
+etc/gss/mech.d/
+etc/gss/mech.d/gssproxy.conf
+etc/modprobe.d/
+etc/modprobe.d/lockd.conf
+etc/nsswitch.conf
+etc/subuid-
+etc/subgid-
+etc/gssproxy/
+etc/gssproxy/99-nfs-client.conf
+etc/gssproxy/gssproxy.conf
+etc/gssproxy/24-nfs-server.conf
+etc/request-key.conf
+etc/request-key.d/
+etc/request-key.d/id_resolver.conf
+etc/exports.d/
+etc/nfs.conf
+etc/nfsmount.conf
+etc/rsyslog.conf
+ 
+</pre>
+</td>
+</tr>
+<!-- report_id=7e8389be-b61b-4abe-b9fc-7717b4be5f10 -->
+</table></body></html>

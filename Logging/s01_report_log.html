@@ -1,0 +1,83 @@
+<html>
+<head>
+<style type="text/css">
+table { margin: 1em; border-collapse: collapse; }
+td, th { padding: .3em; border: 2px #ccc solid; }
+</style>
+</head>
+<body><table>
+<h2> COMP-10018 Host Info Report - Logging </h2>
+<tr>
+<td valign="top"> Hostname </td>
+<td><pre>
+ 
+s01
+Fri Nov 19 14:31:27 EST 2021
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part B.1,  (2 point) <br> FM_T1 in maillog, mail_warn, and msg_err </td>
+<td><pre>
+ 
+/var/log/maillog
+/var/log/mail_warn.log
+/var/log/msg_err.log
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part B.1,  (1 point) <br> FM_T2 in maillog </td>
+<td><pre>
+ 
+/var/log/maillog
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part B.1,  (1 point) <br> FM_T3 in cron, msg_err </td>
+<td><pre>
+ 
+/var/log/cron
+/var/log/msg_err.log
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part C: (3 points) <br> authpriv messages from w01 in /var/log/secure </td>
+<td><pre>
+ 
+Nov 19 14:00:36 w01 sshd[5726]: Connection closed by authenticating user alice 10.1.1.1 port 40298 [preauth]
+Nov 19 14:01:30 w01 groupadd[5758]: group added to /etc/group: name=apache, GID=48
+Nov 19 14:01:30 w01 groupadd[5758]: group added to /etc/gshadow: name=apache
+Nov 19 14:01:30 w01 groupadd[5758]: new group: name=apache, GID=48
+Nov 19 14:01:31 w01 useradd[5765]: new user: name=apache, UID=48, GID=48, home=/usr/share/httpd, shell=/sbin/nologin
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part D: (2 points) <br> http errors in /var/log/httpd_err </td>
+<td><pre>
+ 
+Nov 19 14:12:50 w01 httpd[19921]: [autoindex:error] [pid 19921:tid 140445615052544] [client ::1:44840] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html) found, and server-generated directory index forbidden by Options directive
+Nov 19 14:18:55 w01 httpd[19921]: [autoindex:error] [pid 19921:tid 140445846648576] [client ::1:44850] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html) found, and server-generated directory index forbidden by Options directive
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part E: (1 point) <br> local2.none for msg_err and messages </td>
+<td><pre>
+ 
+*.error;local2.none					/var/log/msg_err.log
+*.info;mail.none;authpriv.none;cron.none;local2.none       /var/log/messages
+ 
+</pre>
+</td>
+</tr>
+</table></body></html>

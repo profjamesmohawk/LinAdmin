@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Graded Lab: Backup And Recovery
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Graded Lab: Backup And Recovery </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Today you will use the tools from the "Backup And Recovery" lab to archive data and to migrate data.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will run a host info script on s01 and submit the output to eLearn.
+</p>
+
+<hr>
+<h3><em>Note: All tasks will be performed on s01 unless otherwise noted.</em></h3>
+
+<hr>
+<h2>Part A: Simple tar Archives </h2>
+<ol>
+<li>Create a tar archive named <strong>/tmp/books.tar</strong> containing the contents of <strong>/opt/Mohawk/books</strong> </li>
+<li>Create a gzip compressed tar archive named <strong>/tmp/books.tgz</strong> containing the contents of <strong>/opt/Mohawk/books</strong> </li>
+</ol>
+
+<hr>
+<h2>Part B: Simple cpio Archives</h2>
+<ol>
+<li>Create a cpio archive named <strong>/tmp/books.cpio</strong> containing the contents of <strong>/opt/Mohawk/books</strong> (make sure the archive uses relative paths) </li>
+<li>Create a gzip compressed cpio archive named <strong>/tmp/books.cpio.gz</strong> containing the contents of <strong>/opt/Mohawk/books</strong> (make sure the archive uses relative paths) </li>
+</ol>
+
+<hr>
+<h2>Part C: Incremental Archives with tar</h2>
+<p class="description">
+For this section you will create an initial, "level 0", archive and one incremental, "level 1", archive.  Use <span class=cmd>tar</span>'s built in support for incremental archives.
+</p>
+<ol>
+<li>Store your archive set in <strong>/tmp/opt_set</strong>
+<li>Name the initial backup <strong>/tmp/opt_set/level_0.tar</strong> and have it contain the contents of <strong>/opt</strong></li>
+<li>Create a new "book" in <strong>/opt/Mohawk/books</strong> </li>
+<li>Create an incremental backup named <strong>/tmp/opt_set/level_1.tar</strong> </li>
+</ol>
+
+<hr>
+<h2>Part D: Migrating Data</h2>
+<p class="description">
+Our backup and recovery tools can also be used to migrate data.  For this exercise we will create a copy of <strong>/home/alice</strong> from <strong>w01</strong> to <strong>s01</strong>
+</p>
+<ol>
+<li>Copy the contents of <strong>/home/alice</strong> from <strong>w01</strong> to a <strong>/home/alice</strong> on <strong>s01</strong> preserving all meta-data.  You may use any commands you like including: cpio, scp, tar, rsync, ssh</li>
+<li>Write a <strong>short</strong> description of how you accomplished this task in a text file on <strong>s01</strong> named <strong>/tmp/migrate.txt</strong> </li>
+</ol>
+
+<hr>
+<h2>Part E: Migrating Data - Puzzle</h2>
+<p class="description">
+Using only <span class=cmd>tar</span> and <span class=cmd>ssh</span> to complete "Part D" above using a single command pipe-line run as root from <strong>w01</strong>.  Write this command pipe-line to a text file on <strong>s01</strong> named <strong>/tmp/puzzle.txt</strong>
+</p>
+
+
+<hr>
+<h2>Part F: Evaluation</h2>
+<p class="description">
+Run the host info script,<a href="./host_info_bu.zip"> host_info_bu.sh</a>, and submit the output to the eLearn drop-box for this lab. (<a href="./host_info_bu.zip"></a>)
+</p>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Graded Lab: File Systems And Disks
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Graded Lab: File Systems And Disks </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Today you will practice the skills you learned last lab and learn some new ones.  This lab requires some careful thought and a little research so take your time and don't panic.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+<h2>Grading:</h2>
+<p class="description">
+You will run a host info script on s01 and submit the output to eLearn.
+</p>
+
+
+<hr>
+<h2>Part A: Import The Appliance</h2>
+
+<ol>
+<li>Import clean copies of <strong>w01</strong> and <strong>s01</strong>
+from </li>
+</li>
+<li>Do NOT boot <strong>s01</strong> just yet.
+</li>
+</ol>
+
+
+<hr>
+<h3>Part B: Partitioning</h3>
+<p class="description">
+We will need 3 new disks for this lab.  Let's add them now.
+</p>
+
+<ol>
+<li>Add three 2GB virtual disks to the SATA controller on the <strong>s01</strong> VM.  </li>
+<li>Boot <strong>s01</strong> and check that the disks now appear as:  sdb, sdc, sdd
+</li>
+<li>Partition the disks with <span class=cmd>fdisk</span>
+<table>
+	<tr>
+		<td><strong>disk</strong></td>
+		<td><strong>partition</strong></td>
+		<td><strong>size</strong></td>
+		<td><strong>type</strong></td>
+	</tr>
+	<tr>
+		<td>sdb</td>
+		<td>1</td>
+		<td>500 MB (approx)</td>
+		<td>83 (Linux)</td>
+	</tr>
+	<tr>
+		<td>sdb</td>
+		<td>2</td>
+		<td>1,500 MB (approx)</td>
+		<td>83 (Linux)</td>
+	</tr>
+	<tr>
+		<td>sdc</td>
+		<td>1</td>
+		<td>2GB (all space available)</td>
+		<td>8e (Linux LVM)</td>
+	</tr>
+	<tr>
+		<td>sdd</td>
+		<td>1</td>
+		<td>2GB (all space available)</td>
+		<td>8e (Linux LVM)</td>
+	</tr>
+</table>
+</li>
+<li>Check your work with <span class=cmd>fdisk -l</span>
+<a href="javascript:unhide('A1')">
+<ul>
+Expected results (should look something like...)</a>
+<span id="A1" class="hidden">
+
+<br>
+<span class=cmd>fdisk -l /dev/sdb</span>
+<pre class="code">
+...
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1         65      1044193+  83  Linux
+/dev/sdb2              66         261     1052257+  83  Linux
+</pre>
+
+<br>
+<span class=cmd>fdisk -l /dev/sdc</span>
+<pre class="code">
+...
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdc1               1         261     2096451   8e  Linux LVM
+</span>
+</pre>
+</li>
+</ul>
+
+</ol>
+
+<hr>
+<h2>Part C: Classic Partitioning</h2>
+<p class="description">
+Build file systems on the two partitions you just made on <strong>sdb</strong> and add them to the file system tree.  The file systems must be mounted automatically every time the system boots.
+</p>
+
+<table>
+	<tr>
+		<td><strong>partition</strong></td>
+		<td><strong>fs type</strong></td>
+		<td><strong>mount point</strong></td>
+	</tr>
+	<tr>
+		<td>sdb1</td>
+		<td>ext3</td>
+		<td>/departments/sales</td>
+	</tr>
+	<tr>
+		<td>sdb2</td>
+		<td>ext4</td>
+		<td>/departments/marketing</td>
+	</tr>
+</table>
+
+<hr>
+<h2>Part D: LVM</h2>
+<p class="description">
+The remaining two disks will be managed by LVM.  We'll give you a few hints for this one.
+</p>
+<ol>
+<li>Initialize <strong>sdc1</strong> and <strong>sdd1</strong> for use with LVM using <span class=cmd>pvcreate</span> </li>
+<li>Create a volume group named <strong>vg01</strong> containing just <strong>/dev/sdc1</strong> using <span class=cmd>vgcreate</span> </li>
+<li>Add <strong>/dev/sdd1</strong> to <strong>vg01</strong> with <strong>vgextend</strong> <br><em>(yes we could have passed both devices to vgcreate, but we wanted to introduce you to vgextend)</em>
+</li>
+<li>Check your work with <span class=cmd>vgdisplay -v vg01</span>
+
+<a href="javascript:unhide('A2')">
+<ul>
+Expected results (ID's will differ)</a>
+
+<span id="A2" class="hidden">
+<pre class="code">
+  --- Volume group ---
+  VG Name               vg01
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               3.99 GiB
+  PE Size               4.00 MiB
+  Total PE              1022
+  Alloc PE / Size       0 / 0   
+  Free  PE / Size       1022 / 3.99 GiB
+  VG UUID               4nZ3nG-hj9K-Xyu8-T6QU-qvDN-oR3N-o2LVC2
+   
+  --- Physical volumes ---
+  PV Name               /dev/sdc1     
+  PV UUID               L6FPAx-uNFB-q6SI-pg2q-L7Dj-G05q-rGKOot
+  PV Status             allocatable
+  Total PE / Free PE    511 / 511
+   
+  PV Name               /dev/sdd1     
+  PV UUID               XyhBhS-p8Ct-E0Aj-BjH1-QA3e-XjLZ-V1Spwr
+  PV Status             allocatable
+  Total PE / Free PE    511 / 511
+</pre>
+</span>
+</ul>
+</li>
+<li>Create 3 logical volumes in <strong>vg01</strong> ,build file systems on them, and make sure they mount at boot time.
+<table>
+	<tr>
+		<td><strong>name</strong></td>
+		<td><strong>size</strong></td>
+		<td><strong>fs type</strong></td>
+		<td><strong>mount point</strong></td>
+	</tr>
+	<tr>
+		<td>lvol0</td>
+		<td>200 MB </td>
+		<td>ext4</td>
+		<td>/departments/catering</td>
+	</tr>
+	<tr>
+		<td>lvol1</td>
+		<td>200 MB </td>
+		<td>ext4</td>
+		<td>/departments/accounting</td>
+	</tr>
+	<tr>
+		<td>lvol2</td>
+		<td>all remaining space </td>
+		<td>ext4</td>
+		<td>/departments/it</td>
+	</tr>
+</table>
+</li>
+</ol>
+<hr>
+<h2>Part E: Making Mounts Safer </h2>
+<p class="description">
+You man have noticed that we used the device file name for our partition based mounts (/dev/sdb1, /dev/sdb2) in /etc/fstab.  But, the /boot partition which resides on /dev/sda1 is referenced by UUID in /etc/fstab not device file.  It is much safer to specify partition based file systems by UIID.  If we move the disk to a different controller or if we remove a disk the device file name can change, but the UUID is designed to be globally unique.
+</p>
+<p class="description">
+Let's change <strong>/dev/sdb1</strong> to a UUID specification in <strong>/etc/fstab</strong> 
+</p>
+
+<ol>
+<li>Unmount <strong>/dev/sdb1</strong> 
+<pre class="code">
+umount /dev/sdb1
+</pre>
+</li>
+<li>Find the UUID for <strong>sdb1</strong>
+<pre class="code">
+blkid /dev/sdb1
+</pre>
+</li>
+<li>Modify <strong>/etc/fstab</strong> changing the /dev/sdb1 line to look something like this...
+<br><strong>Note:</strong> Your UUID will be different.
+<pre class="code">
+UUID=c389c05b-9fc3-4d66-8ca6-952f179f4bf6		/departments/sales	ext3	defaults	0 2
+</pre>
+</li>
+<li>Check you work by remounting <strong>/departments/sales</strong>
+</li>
+</ol>
+
+<hr>
+<h2>Part F: Grading</h2>
+<p class="description">
+Run the <a href="./host_info_fs.zip">grading script</a> and submit the output to eLearn.
+</p>
+
+
+
+</body>
+</html>

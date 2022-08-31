@@ -1,0 +1,95 @@
+<html>
+<head>
+<style type="text/css">
+table { margin: 1em; border-collapse: collapse; }
+td, th { padding: .3em; border: 2px #ccc solid; }
+</style>
+</head>
+<body><table>
+<h2> COMP-10018 Host Info Report - Backup and Recovery </h2>
+<tr>
+<td valign="top"> Hostname </td>
+<td><pre>
+ 
+s01
+Fri Nov 19 13:34:16 EST 2021
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part A: tar (2 points) </td>
+<td><pre>
+ 
+opt/Mohawk/books/WarAndPeace.txt
+opt/Mohawk/books/WarAndPeace.txt
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part B: cpio (1 point) </td>
+<td><pre>
+ 
+Mohawk/books/WarAndPeace.txt
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part B: compressed cpio (2 points) </td>
+<td><pre>
+ 
+Mohawk/books/WarAndPeace.txt
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part C: Incremental Archives (2 points) </td>
+<td><pre>
+ 
+opt/Mohawk/
+opt/Mohawk/books/
+opt/Mohawk/data/
+opt/Mohawk/books/bar.txt
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part D: Contents of /home/alice (1 point) </td>
+<td><pre>
+ 
+total 0
+drwxr-xr-x. 3 alice alice 30 Nov 19 12:41 Desktop
+drwxr-xr-x. 2 alice alice  6 Jun 16 00:48 Documents
+drwxr-xr-x. 2 alice alice  6 Jun 16 00:48 Downloads
+drwxr-xr-x. 2 alice alice  6 Jun 16 00:48 Music
+drwxr-xr-x. 2 alice alice  6 Jun 16 00:48 Pictures
+drwxr-xr-x. 2 alice alice  6 Jun 16 00:48 Public
+drwxr-xr-x. 2 alice alice  6 Jun 16 00:48 Templates
+drwxr-xr-x. 2 alice alice  6 Jun 16 00:48 Videos
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part D: Migration Strategy (2 points) </td>
+<td><pre>
+ 
+ssh root@w01 'tar c /home/alice' | tar x --directory=/
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part E: Puzzle (1 point) </td>
+<td><pre>
+ 
+ssh root@w01 'tar c /home/alice' | tar x --directory=/
+ 
+</pre>
+</td>
+</tr>
+</table></body></html>

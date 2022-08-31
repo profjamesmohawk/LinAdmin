@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Graded Lab: Installing And Updating Software
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Graded Lab: Installing And Updating Software </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Time to solo with software installation.  Well, you will get a few hints.
+</p>
+<p class="description">
+This lab will require a little reading and research to complete.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will demonstrate your understanding of this lab by running the host_info script <span class=cmd>(host_info_sw.zip)</span> and submitting the output to Canvas.
+</p>
+
+
+
+<hr>
+<h2>Part A: Install the Apache web server s01</h2>
+<p class="description">
+The web server from the Apache Software Foundation is one of the most popular.  Let's install it.
+</p>
+<ol>
+<li>Install the Apached web server on <strong>s01</strong> <em>(hint: It's name is httpd)</em>
+</li>
+</ol>
+
+<hr>
+<h2>Part B: Building Software From Source</h2>
+<p class="description">
+Most software comes packaged and compiled, but not all.  They come with single script that builds and installs them, but most software you have have to build from source will use standard tools to configure, build, and install.
+</p>
+<p class="description">
+Today you will have a chance to use these standard tool, configure and make, to build and install the network benchmarking tool Netperf.
+</p>
+<ol>
+<li>Get the Netperf software from <a href="https://hewlettpackard.github.io/netperf/">NetPerf on GitHub</a> or from Canvas <a href="./netperf-2.6.0.zip">netperf-2.6.0.zip</a> </li>
+<li>Transfer the Netperf zip file to <strong>s01</strong> </li>
+<li>Unzip netperf-2.6.0.zip (or the version you downloaded from netperf.org) <em>note: you may need to install unzip on s01</em> </li>
+<li>Read the <strong>INSTALL</strong> file and follow the directions carefully
+</li>
+<li>Test your work
+<ul>
+<pre class="code">
+netperf -V
+</pre>
+<pre class="code">
+netperf -?
+</pre>
+</ul>
+</li>
+<li>Repeat these steps on <strong>w01</strong> (we need Netperf on both s01 and w01 for the next part of the lab)
+</li>
+</ol>
+
+<hr>
+<h2>Part C: Test Network Performance</h2>
+<p class="description">
+You will use Netperf and scp to test the performance.
+</p>
+
+<h3>Test the network by coping a file</h3>
+<p class=description>
+A simple way to test network performance is to copy a large file.  The scp command even reports speed for us.
+</p>
+<ol>
+<li>Create a large file on s01 to use in our test.
+<pre class=code>
+dd if=/dev/zero of=/tmp/f1 bs=1024 count=1000000
+</pre>
+</li>
+<li>Check our work (f1 should be 977M)
+<pre class=code>
+ll -h /tmp/f1
+</pre>
+</li>
+<li>Use scp to test the network speed
+<pre class=code>
+scp /tmp/f1 root@10.1.1.10:/tmp
+</pre>
+</li>
+<li>Record the throughput </li>
+<li>Clean up by removing /tmp/f1 from s01 <strong>and</strong> w01
+</li>
+</ol>
+
+
+<h3>Test the network with netperf</h3>
+<p class="description">
+Netperf has two components <span class=cmd>netserver</span> and <span class=cmd>netperf</span>. Netserver is a daemon, that handles requests from netperf.  We will run netserver on <strong>w01</strong> and netperf on <strong>s01</strong>
+</p>
+
+<ol>
+<li>On <strong>s01</strong>, stop the fire wall.
+<pre class="code">
+systemctl stop firewalld.service 
+</pre>
+</li>
+<li>On <strong>s01</strong>, start <span class=cmd>netserver</span> listening on port 9317.
+<pre class="code">
+netserver -p 9317
+</pre>
+</li>
+<li>Verify that netserver is running as a daemon
+<pre class="code">
+ps -efl |grep netserver
+</pre>
+</li>
+<li>On <strong>w01</strong> run a TCP Stream test to w01, and send the output to <strong>/tmp/test_a</strong>
+<pre class="code">
+netperf -H s01 -p 9317 -f G &gt; /tmp/test_a
+</pre>
+</li>
+<li>Record the throughput </li>
+<li>On <strong>s01</strong>, re-start the fire wall.
+<pre class="code">
+systemctl start firewalld.service 
+</pre>
+</li>
+</ol>
+
+<h3>Compare your results</h3>
+<p class=description>
+Compare the results from scp and netperf.  If they reported different values, try to think why. Create a <strong>short</strong> report listing your results and explaining any differences.  Save your report as a text file named <strong>/tmp/report</strong> on <strong>s01</strong>
+</p>
+
+<hr>
+<h2>Part D: Grading</h2>
+<ol>
+<li>Get the grading script from Canvas (<a href="./host_info_sw.zip">host_info_sw.zip</a>)
+</li>
+<li>Run the script on <strong>s01</strong>
+</li>
+<li>Submit the output to the Canvas drop box for this lab
+</li>
+</ol>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Lab: Users And Groups
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Lab: Users And Groups </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Managing users and groups is a core task for all administrators, today we get to practice this key skill.  Using users from this list <a href="./user_list.html" target="blank">user list</a>
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will demonstrate your understanding of this lab by completing an Canvas quiz.
+</p>
+
+<hr>
+<h2>Part A: Setup The Lab</h2>
+<ol>
+	<li>Import the appliance which contains w01 and s01.  </li>
+	<li>Boot w01 and s01 </li>
+	<li>Log on to w01 as alice </li>
+	<li>From alice log on to s01 as <strong>root</strong> using ssh (root's password is <em>adminpass</em> )
+	<pre class="code">
+ssh root@10.1.1.20 </pre>
+	</li>
+</ol>
+
+
+<hr>
+<h2>Part B: Simple User Create</h2>
+<p class="description">
+We'll start with just creating a user.
+</p>
+<ol>
+<li>Log on to s01 as root </li>
+<li>Create an account for Kapil Dev</em>
+<pre class="code">
+useradd kapil -c "Kalip Dev" -m
+</pre>
+</li>
+<li>Set his password to <em>cricket</em> 
+<pre class="code">
+passwd kapil
+</pre> <strong>Note:</strong> you will be warned that the password is too simple, but you are root, so you can ignore this warning for now.
+</li>
+<h3>Check our work</h3>
+<li>Open a new terminal window on w01 </li>
+<li>Log on to s01 as kapil
+<pre class="code">
+ssh kapil@10.1.1.20
+</pre>
+</li>
+<li>What is Kalip's home directory?
+				<a href="javascript:unhide('A1')">Answer</a>
+				<span id="A1" class="hidden">
+				<em>/home/kapil</em>
+				</span>
+</li>
+<li>Use the <span class=cmd>id</span> command to see what Kalip's user ID number is
+<pre class="code">
+id kapil
+</pre>
+</li>
+<li>Use <span class=cmd>grep</span> to see Kalip's entry in <strong>/etc/passwd</strong>
+<pre class="code">
+grep kapil /etc/passwd
+</pre>
+				<ol type="a">
+				
+				<li>What is Kalip's hashed password?
+				<a href="javascript:unhide('A2')">Answer</a>
+				<span id="A2" class="hidden">
+				<em>x</em>
+				</span>
+				</li>
+				<li>Is this a valid hashed password?
+				<a href="javascript:unhide('A3')">Answer</a>
+				<span id="A3" class="hidden">
+				<em>no</em>
+				</span>
+				</li>
+				<li>Where can we find the 'valid' hashed password?
+				<a href="javascript:unhide('A4')">Answer</a>
+				<span id="A4" class="hidden">
+				<em>/etc/shadow</em>
+				</span></li>
+				</ol>
+
+</li>
+<li>Still logged as <strong>kapil</strong>, let's look for our hashed password?
+<pre class="code">
+grep kapil /etc/shadow
+</pre>
+				<ol type="a">
+				
+				<li>What happened?
+				<a href="javascript:unhide('A5')">Answer</a>
+				<span id="A5" class="hidden">
+				<em>Permission Denied</em>
+				</span>
+				</li>
+				<li>Why?
+				<a href="javascript:unhide('A6')">Answer</a>
+				<span id="A6" class="hidden">
+				<em>Only root has access to /etc/shadow to guard against password guessing applications like <a href="http://www.openwall.com/john" target="blank">John the Ripper</a> </em>
+				</span>
+				</li>
+				</ol>
+
+</li>
+<li>Still logged as <strong>kapil</strong>, let's look change our password to <em>batsman</em>
+<pre class="code">
+passwd
+</pre>
+				<ol type="a">
+				
+				<li>How'd that go?
+				<a href="javascript:unhide('A7')">Answer</a>
+				<span id="A7" class="hidden">
+				<em>Not well.</em>
+				</span>
+				</li>
+				<li>Why is <em>cricket</em> OK, and <em>batsman</em> not?
+				<a href="javascript:unhide('A8')">Answer</a>
+				<span id="A8" class="hidden">
+				<em>Actually, cricket is a poor password too, but it was set by root and root is allowed to do many silly things.  So always be careful when you are root.</em>
+				</span>
+				</li>
+				</ol>
+
+
+</ol>
+
+<hr>
+<h2>Part C: Password Aging</h2>
+<p class="description">
+Password aging is used to force users to change their passwords at regular intervals.
+</p>
+<ol>
+<li>Log on to <strong>s01</strong> as root.
+</li>
+<li>Have a look at Kalip's current settings.
+<pre class="code">
+chage -l kapil
+</pre>
+				What's the significance of "Maximum number of days between password change   : 99999" ?
+				<br>
+				<a href="javascript:unhide('A9')">Answer</a>
+				<span id="A9" class="hidden">
+				<em>Sorry, you have to research this.  It will be on the quiz.</em>
+				</span>
+</li>
+<li>Require Kalip to change his password at least every 90 days.
+<pre class="code">
+chage -M 90 kapil
+</pre>
+</li>
+<li>Inspect our work.
+<pre class="code">
+chage -l kapil
+</pre>
+</li>
+<li>Force Kalip to change his password the next time he logs on.  This is useful when creating new users with temporary passwords.
+<pre class="code">
+chage -d 0 kapil
+</pre>
+</li>
+<li>Inspect our work.  <em><strong>From a new terminal window on w01</strong></em>
+<pre class="code">
+ssh kapil@10.1.1.20
+</pre>
+				What happened?
+				<br>
+				<a href="javascript:unhide('Aa')">Answer</a>
+				<span id="Aa" class="hidden">
+				<em>The passwd command should have run automatically.  If you logged on with ssh you must log on again.</em>
+				</span>
+</li>
+</ol>
+
+<hr>
+<h2>Part D: Locking Users</h2>
+<p class="description">
+Sometimes we want to prevent an account from logging on at all.  Consider the case where an employee just quit in a rage.
+</p>
+<ol>
+
+<li>Lock kapil's account.
+<pre class="code">
+usermod -L kapil
+</pre>
+</li>
+<li>Try to log on as Kalip </li>
+<li>Is Kalip's home directory still there? 
+<pre class="code">
+ls -d /home/kapil
+</pre>
+or
+<pre class="code">
+ls -d ~kapil
+</pre>
+</li>
+<li>
+Unlock Kalip's account.
+<pre class="code">
+usermod -U kapil
+</pre>
+</li>
+
+<li>Detective time...
+<ol type="a">
+	<li>Look at the entry for kapil in /etc/shadow
+<pre class="code">
+grep kapil /etc/shadow
+</pre>
+	</li>
+	<li>Lock Kalip's account
+<pre class="code">
+usermod -L kapil
+</pre>
+	</li>
+	<li>Look again.
+<pre class="code">
+grep kapil /etc/shadow
+</pre>
+	</li>
+				What's the difference? (You will need to know for the quiz.)
+
+</ol>
+</li>
+</ol>
+
+
+
+
+<hr>
+<h2>Part E: Customizing New Users with /etc/skel</h2>
+<p class="description">
+When a new user is created with <span class=cmd>useradd</span> the contents of <strong>/etc/skel</strong> are copied to the user's new home directory.
+</p>
+<ol>
+<li>Put a welcome message in <strong>/etc/skel</strong>
+<pre class="code">
+echo "Hello, and welcome to COMP-10018" &gt; /etc/skel/welcome.txt
+</pre>
+</li>
+<li>Add a new user account for Eddy Merckx. His user name should be <strong>eddy</strong> and you may use a password of your choosing.
+</li>
+<li>Log on as <strong>eddy</strong> and check your home directory for a welcome message.
+</li>
+</ol>
+
+<hr>
+<h2>Part F: Groups</h2>
+<p class="description">
+We will create a group called <strong>athletes</strong> so that our Kalip and Eddy can share files.
+<br>
+<em>To best understand what we are doing in this section you should review the lecture notes on groups.</em>
+</p>
+
+<ol>
+
+<li>Create the <strong>athletes</strong> group
+<pre class="code">
+groupadd athletes
+</pre>
+</li>
+<li>Add Eddy and Kalip to the group. <em>  There are two ways to do this, gpasswd and usermod, we will use each for demonstration purposes. </em>
+<pre class="code">
+gpasswd -a kapil athletes
+</pre>
+<pre class="code">
+usermod -aG athletes eddy
+</pre>
+</li>
+
+<li>Create a directory in which they can place the files they want to share.
+<pre class="code">
+mkdir -p /share/athletes
+chown root:athletes /share/athletes
+chmod 2770 /share/athletes
+</pre>
+</li>
+
+<li>On w01: Open a new terminal window, Log on to s10 as kapil and create a file in /share/athletes </li>
+<pre class="code">
+ssh kapil@10.1.1.20
+
+echo "Hi Eddy, what's for dinner?" &gt; /share/athletes/for_eddy.txt
+</pre>
+
+<h3>Check our work</h3>
+<li>On w01: Open a new terminal window, log on to s10 as eddy and see if you can read Kalip's message
+<pre class="code">
+ssh eddy@10.1.1.20
+cat /share/athletes/for_eddy.txt
+</pre>
+</li>
+
+<li>As eddy, leave a response for Kalip
+<pre class="code">
+echo "Bugs" &gt; /share/athletes/for_kapil.txt
+</pre>
+</li>
+
+<li>As kapil, read Eddy's message
+<pre class="code">
+cat /share/athletes/for_kapil.txt
+</pre>
+</li>
+
+</ol>
+
+<hr>
+<h2>Part G: Deleting Users</h2>
+<ol>
+<li>Make sure Eddy is not logged on. (Hint try the <span class=cmd>who</span> command. </li>
+<li>Remove Eddy's account, but leave his files behind.
+<pre class="code">
+userdel eddy
+</pre>
+</li>
+<li>Have a look at Eddy's old home directory.
+<pre class="code">
+ls -ld /home/eddy
+</pre>
+				Who owns <strong>/home/eddy</strong>
+				<a href="javascript:unhide('Ac')">Answer</a>
+				<span id="Ac" class="hidden">
+				<em>An unnamed user identified by UID number. (Most probably <strong>1001</strong>)</em>
+				</span>
+</li>
+
+<li>Add a new 'random' user, we'll call Sue
+<pre class="code">
+useradd sue
+</pre>
+				Who owns <strong>/home/eddy</strong> now?
+				<br>
+				<a href="javascript:unhide('Ad')">Answer</a>
+				<span id="Ad" class="hidden">
+				<em><strong>sue</strong>, if you followed the lab and did not add any users after you added eddy</em>
+				</span>
+</li>
+<li>Remove Sue and her home directory.
+<pre class="code">
+userdel -r sue
+</pre>
+</li>
+</ol>
+<hr>
+<h2>Part H: New User Scenario</h2>
+<p class="description">
+When adding new users administrators usually follow a standard procedure that goes something like this...
+<ol>
+<li>Create the user account and home directory </li>
+<li>Give the user a temporary password </li>
+<li>Set password aging on the account (forcing a new password every 90 days is common) </li>
+<li>Force the user to change their password at next logon </li>
+<li>Inform the user of their account name and temporary password </li>
+</ol>
+<h3>Let's walk through these steps for Margaret Atwood</h3>
+<ol>
+<li>Create the user account and home directory </li>
+<pre class="code">
+useradd -m -c "Margaret Atwood" margaret
+</pre>
+<li>Give the user a temporary password (set to her employee number: 100103)</li>
+<pre class="code">
+passwd margaret
+</pre>
+<li>Set password aging on the account (forcing a new password every 90 days is common) </li>
+<pre class="code">
+chage -M 90 margaret
+</pre>
+<li>Force the user to change their password at next logon </li>
+<pre class="code">
+chage -d 0 margaret
+</pre>
+<li>Inform the user of their account name and temporary password </li>
+</ol>
+</p>
+
+<hr>
+<h2>Part I: Evaluation</h2>
+<p class="description">
+Complete the Canvas quiz for this lab.
+</p>
+</body>
+</html>

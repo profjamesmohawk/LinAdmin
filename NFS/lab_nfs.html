@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Lab: NFS	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Lab: NFS </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Today we will investigate the Network File System (NFS).  NFS allows servers to share file systems across the network.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will demonstrate your understanding of this lab by completing an Canvas quiz.
+</p>
+
+<hr>
+<h2>Part A: Setup The Lab</h2>
+<ol>
+	<li>Import and start the appliance which contains w01, s01, and u01.  </li>
+	</li>
+	<li>Install the NFS utilities on <strong>w01, s01</strong> system
+	<pre class="code">
+yum install nfs-utils </pre>
+	</li>
+	<li>Open the firewall on <strong>s01</strong>
+<pre class="code">
+firewall-cmd --permanent --add-service=nfs3
+firewall-cmd --reload
+</pre>
+	</li>
+
+</ol>
+
+<hr>
+<h2>Part B: Create Our First NFS Share</h2>
+<p class="description">
+Users on <strong>w01</strong> want a safe place to backup files, <strong>s01</strong> has some <em>extra</em> disk space so let's allow <strong>w01</strong> to access a directory on <strong>s01</strong> as if it were local.
+</p>
+
+<ol>
+<h3>Perform these tasks on s01</h3>
+
+<li>Create a directory where we will place all our shares for this lab.
+<pre class="code">
+mkdir /shares
+</pre>
+</li>
+<li>Create a directory to share with w01 called <strong>backups</strong>
+<pre class="code">
+mkdir /shares/backups
+</pre>
+</li>
+<li>We tell NFS that we want to export <strong>/shares/backup</strong> to <strong>w01</strong> by placing an entry in <strong>/etc/exports</strong>
+<pre class="code">
+/shares/backups	w01
+</pre>
+</li>
+<li>NFS is off by default, let's start it and make sure it starts every time we reboot, we will use the <span class=cmd>--now</span> option to tell systemd to enable and start the nfs-server in a single call.
+<pre class="code">
+systemctl enable --now nfs-server
+</pre>
+</li>
+<li>Check to see that NFS has exported our share
+<pre class="code">
+exportfs -v
+</pre>
+<ul>
+<em>The output should look like this...</em>
+<pre class="code">
+/shares/backups
+		w01(ro,wdelay,root_squash,no_subtree_check)
+</pre>
+</ul>
+</li>
+<li>Create a ReadMe file, <span class=cmd>/shares/backups/ReadMe</span> that looks like this
+<pre class="code">
+Welcome to the backups share on s01.  Place any files here you like.
+</pre>
+</li>
+
+<h3>Perform these tasks on w01</h3>
+<li>Become root
+<pre class="code">
+su -
+</pre>
+</li>
+<li>Make a directory where we can mount the share
+<pre class="code">
+mkdir -p /s01/backups
+</pre>
+</li>
+<li>Add the share to <strong>/etc/fstab</strong>
+<pre class="code">
+s01:/shares/backups	/s01/backups		nfs	defaults	0 0
+</pre>
+</li>
+<li>Mount the share
+<pre class="code">
+mount /s01/backups
+</pre>
+</li>
+<li>Check our work
+<pre class="code">
+df
+</pre>
+<ul>
+<em>The output should contain a line like this...</em>
+<pre class="code">
+s01:/shares/backups    6795264  862464   5580800  14% /s01/backups
+</pre>
+</ul>
+</li>
+<li>Read the ReadMe file
+<pre class="code">
+cat /s01/backups/ReadMe
+</pre>
+</li>
+<li>Create as simple file on the share
+<pre class="code">
+echo "hi from root on w01" &gt; /s01/backups/msg_from_root_w01
+</pre>
+</li>
+<li>How did that go?
+				<a href="javascript:unhide('A1')">Answer</a>
+				<span id="A1" class="hidden">
+				<em>Not too well, I'd guess.  By default NFS exports shares read-only</em>
+				</span>
+</li>
+<h3>Perform these tasks on s01</h3>
+<li>Verify that the share is exported read-only <em>Look for <strong>ro</strong> in the output</em>
+<pre class="code">
+exportfs -v
+</pre>
+</li>
+<li>Modify <strong>/etc/exports</strong> to allow read-write access from w01
+<pre class="code">
+/shares/backups w01(rw)
+</pre>
+</li>
+<li>Check our work
+<pre class="code">
+exportfs -v
+</pre>
+</li>
+<li>Better?
+				<a href="javascript:unhide('A2')">Answer</a>
+				<span id="A2" class="hidden">
+				<em>No, I didn't think so.  NFS only re-reads /etc/exports when told to.</em>
+				</span>
+</li>
+<li>Tell NFS to re-read <strong>/etc/exports</strong>
+<pre class="code">
+exportfs -r
+</pre>
+</li>
+
+<h3>From w01</h3>
+<li>Try to create our ReadMe file once more
+<pre class="code">
+echo "hi from root on w01" > /s01/backups/msg_from_root_w01
+</pre>
+</li>
+<li>Better?
+				<a href="javascript:unhide('A3')">Answer</a>
+				<span id="A3" class="hidden">
+				<em>Well a little better.  The error message should have gone from "read-only file system" to "Permission Denied"</em>
+				</span>
+</li>
+
+<h3>From s01</h3>
+<li>Loosen the permissions on the share
+<pre class="code">
+chmod 777 /shares/backups
+</pre>
+</li>
+
+<h3>From w01</h3>
+<li>Try once more to create our message
+<pre class="code">
+echo "hi from root on w01" &gt; /s01/backups/msg_from_root_w01
+</pre>
+</li>
+<li>Better?
+				<a href="javascript:unhide('A4')">Answer</a>
+				<span id="A4" class="hidden">
+				<em>Much! </em>
+				</span>
+</li>
+<li>Perfect?
+<pre class="code">
+ls -l  /s01/backups/msg_from_root_w01
+</pre>
+				<a href="javascript:unhide('A5')">What happened?</a>
+				<span id="A5" class="hidden">
+				<em>By default NFS exports shares with "root squashing", and root is squashed to the nobody account.</em>
+				</span>
+</li>
+<br>
+<li>Let's try as a regular user.  Log on as <em>alice</em> and try this...
+<pre class="code">
+echo "hi from alice on w01" &gt; /s01/backups/msg_from_alice_w01
+</pre>
+</li>
+
+<h3>From s01</h3>
+
+<li>Check the ownership
+<pre class="code">
+ll /shares/backups
+</pre>
+
+<li>
+				<a href="javascript:unhide('A6')">Who does s01 think owns the file?</a>
+				<span id="A6" class="hidden">
+				<em>An unnamed user with UID=1000 (if you have added no users to s01) </em>
+				</span>
+</li>
+<li>To "fix" this NFS v4 "feature", we must add a user to s01 named alice with a UID of 1000 (alice does not need to be able to log on to s01)
+<pre class="code">
+useradd -m  -u 1000 alice 
+</pre>
+</li>
+<li>Check our work by running <span class=cmd>ls -l</span> on the share from both <strong>s01</strong> and <strong>w01</strong>.  </li>
+
+<li>To allow root access from w01 make this change to <strong>/etc/exports</strong> and tell nfs to re-read.
+<pre class="code">
+/shares/backups	w01(rw,no_root_squash)
+</pre>
+</li>
+<li>Check our work: <span class=cmd>exportfs -v</span> should output...
+<pre class="code">
+/shares/backups
+		w01(rw,wdelay,no_root_squash,no_subtree_check)
+</pre>
+
+</li>
+
+<h3>From w01</h3>
+<li>Check if root can create, and delete files on the share.  </li>
+<li>
+				<a href="javascript:unhide('A7')">Could this be a security problem?
+				</a>
+				<span id="A7" class="hidden">
+				<em>Yes.  By turning root_squash off, we have allowed the root user of a remote system full access to all the files on the share.  Imagine the case were two different workstations were connecting to the share, each would have full access to the other's files.
+				</em>
+				</span>
+</li>
+
+</ol>
+
+<hr>
+<h2>Part C: Create A Public Read-Only Share</h2>
+<p class="description">
+We trust the users on w01, but not completely.  We want to give them read only access to a part of s01's file system tree.
+</p>
+<ol>
+<li>Create the directory to share.
+<pre class="code">
+mkdir /shares/reading_room
+</pre>
+</li>
+<li>Make this addition to <strong>/etc/exports</strong>
+<pre class="code">
+/shares/reading_room w01(ro)
+</pre>
+</li>
+<li>Tell NFS check the exports file
+<pre class="code">
+exportfs -r
+</pre>
+</li>
+<li>Temporarily mount the share on <strong>w01</strong> (will not survive reboot)
+<pre class="code">
+mkdir /s01/reading_room
+mount -t nfs s01:/shares/reading_room /s01/reading_room
+</pre>
+</li>
+</ol>
+
+<hr>
+<h2>Part D: Evaluation</h2>
+<p class="description">
+Complete the Canvas quiz for this lab.
+</p>
+</body>
+</html>

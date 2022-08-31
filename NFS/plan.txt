@@ -1,0 +1,31 @@
+In VBox Console
+1) clone s01 to make s02 and r01
+2) configure s02 to be on yellow
+3) configure r01:
+        - add NIC
+        - new NIC is on yellow
+
+s02
+- set hostname
+- set ip address
+- update hosts file
+- install traceroute
+- configure routing
+        -set default GATEWAY to 10.2.1.1
+                - /etc/sysconfig/network
+r01
+- set hostname
+- set ip adresses
+- update hosts file
+
+s01
+- configure routing
+        -set default GATEWAY to 10.1.1.1
+                - /etc/sysconfig/network
+- update hosts
+
+w01
+- update hosts
+- add route to yellow via r01
+        - /etc/sysconfig/network-scripts/route-eth1
+                10.2.1.0/24 via 10.1.1.1

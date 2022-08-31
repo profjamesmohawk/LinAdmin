@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+	SELINUX
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>  
+</head>
+
+<body>
+<h1>SELINUX, The Bare Essentials (with a side of firewall)</h1>
+<h2>Introduction</h2>
+<p class="description">
+SELINUX is a complex beast that the average administrator will never fully understand or tame.  That said, it is a very important security tool that we need to learn to live with.  The good news is that all the heavy lifting of configuring the <strong>policy</strong> used to protect our system is done for us by the Red Hat team.  All we need to do is learn how to live in harmony with this powerful guard dog.
+</p>
+<p class=description>
+In this lab we will learn how to recognize and remedy some of the most common headaches SELINUX gives admins.  This lab will not make you and SELINUX expert.  It should give you the skills to turn SELINUX on without breaking into a cold sweat.
+</p>
+<p class=description>
+It is recommended that you review the <em>Security-Enhanced Linux Users Guide</em> found on the Red Hat documentation site. 
+</p>
+<p class="description">
+We will also get to make a change to the firewall on s01.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The course lab VirtualBox appliance</li>
+	</ul>
+<hr>
+
+<h2>Overview:</h2>
+<p class="description"> Today we will turn s01 into a web server to illustrate how SELINUX and firewalld are managed.
+</p>
+<hr>
+<h2>Part A: Configure s01 as a web server</h2>
+<ol>
+<li>Install the httpd web server </li>
+<li>Enable and start the httpd service </li>
+<li>Create a simple HTML page named <strong>/var/www/html/1.html</strong> containing the text "hi from s01". </li>
+<li>Check our work using curl <em>(should output your page)</em>
+<pre class="code">
+curl http://localhost/1.html
+</pre>
+</li>
+</ol>
+
+<hr>
+<h2>Part B: Let's See SELINUX do it's thing protecting the file system</h2>
+<p class=description>
+The main purpose of the SELINUX <strong>targeted</strong> policy is to ensure that certain key system processes, like httpd, are only allowed to access resources, like files and ports, that are safe.  If an attacker takes control of the httpd daemon process, we do not want them to be able to look around the file system.  SELINUX limits the access of httpd to files with specific SELINUX <strong>types</strong>.  Let's see how that works..
+</p>
+
+<ol>
+
+<h3>SELINUX protects the file system</h3>
+<p class="description">
+Let's see how SELINUX prevents httpd from reading files outside of /var/www/html
+</p>
+<li>Create a new HTML page in <strong>/web</strong> 
+<pre class="code">
+mkdir /web
+cp /var/www/html/1.html /web </pre>
+</li>
+<li>Tell httpd where to find the new file using a symbolic link
+<pre class="code">
+ln -s /web /var/www/html/web
+</pre>
+</li>
+<li>Will SELINUX let httpd read from /web?
+<pre class=code>
+curl http://localhost/web/1.html
+</pre>
+<a href="javascript:unhide('hdtg')">How did that go?</a>
+<span id="hdtg" class="hidden">
+Not too well, I suspect.  You should have seen a error (403).
+</span>
+
+</li>
+<li>Seeing the 403 error, our first instinct to to check the file permissions.
+<pre class=code>
+ll -l /web
+ll -ld /web
+</pre>
+<em>That can't be the problem both are world readable.</em>
+</li>
+<li>Next we'd likely check the httpd error log.
+<pre class=code>
+tail /var/log/httpd/error_log
+</pre>
+it will show something like..
+<pre class=code>
+[Sun Jul 11 15:04:49.441854 2021] [core:error] [pid 2464:tid 140709956933376] [client 127.0.0.1:33948] AH00037: Symbolic link not allowed or link target not accessible: /var/www/html/web
+</pre>
+<em>This message is helpful, if a little ambiguous.  We know that symbolic links are allowed, so it must be 'not accessible'
+</em>
+</li>
+<li>We know a <strong>little</strong> about SELIUNX, so we look in <strong>/var/log/audit/audit.log</strong> for messages with a type of AVC
+<pre class=code>
+ grep AVC /var/log/audit/audit.log
+</pre>
+should show something like...
+<pre class=code>
+type=AVC msg=audit(1626026617.085:82): avc:  denied  { getattr } for  pid=809 comm="httpd" path="/web_extra/index.html" dev="dm-0" ino=8537922 scontext=system_u:system_r:httpd_t:s0 tcontext=unconfined_u:object_r:default_t:s0 tclass=file permissive=0
+</pre>
+This tells us that SELINUX has intervened.  This <a target="blank" href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Where_to_find_SELinux_permission_denial_details">tutorial</a> will give a little more detail. <em>(<a href="./AuditLogDoc.pdf" target=blank>Archived version</a>)</em>
+<br>In short...
+<table>
+<tr><td><strong>Field</strong></td><td><strong>Tells us</strong></td></tr>
+<tr>
+  <td>
+      comm="httpd"
+  </td>
+  <td>
+      Offending executable.
+  </td>
+</tr>
+<tr>
+  <td>
+      path="/web"
+  </td>
+  <td>
+      Resource that was denied
+  </td>
+</tr>
+<tr>
+  <td>
+      scontext=system_u:system_r:httpd_t:s0
+  </td>
+  <td>
+     The source context, or "who SELINUX thinks is asking"
+  </td>
+</tr>
+<tr>
+  <td>
+      tcontext=system_u:object_r:default_t:s0
+  </td>
+  <td>
+      The target context, or "what SELINUX thinks is being asked for"
+  </td>
+</tr>
+</table>
+</li>
+<li>The power of <strong>Z</strong>
+<br>The command line switch <strong>Z</strong> adds SELINUX information to many commands.  Try these...
+<pre class=code>
+ls -lZ /var/www/html/1.html
+ps -eflZ |grep httpd
+id -Z
+</pre>
+</li>
+</ol>
+<hr>
+<h2>Part C: Make /web/ accessible to httpd using chcon</h2>
+<p class=description>
+A comparison of /web/1.html and /var/www/html/1.html will show us what needs to change.
+</p>
+
+Consider the results of these commands...
+<pre class=code>
+[root@s01 ~]# ll -Z /var/www/html/1.html 
+-rw-r--r--. 1 root root unconfined_u:object_r:httpd_sys_content_t:s0 45 Jul 11 14:33 /var/www/html/1.html
+[root@s01 ~]# ll -Z /web/1.html 
+-rw-r--r--. 1 root root unconfined_u:object_r:usr_t:s0 45 Jul 11 15:03 /web/1.html
+</pre>
+We can see that the only difference between these two files, from an SELINUX viewpoint, is that they have different <strong>types</strong>.  If we could get /web/1.html to have the same type, <strong>httpd_sys_content_t</strong>, as /var/www/html/1.html, all would be good.
+We have two ways of changing this type.  One will survive a re-labeling, and one will not.  Either will survive a reboot.
+<ol>
+<li>For a quick fix that will not survive a re-labeling we can use the <strong>chcon</strong> command like this...
+<pre class=code>
+chcon -Rv -t httpd_sys_content_t /web
+</pre>
+</li>
+<li>Verify that this worked using curl </li>
+<pre class="code"> curl http://localhost/web/1.html </pre>
+<li>Reboot s01 </li>
+<li>Verify that we can still access /web/1.html wget 
+<pre class="code"> curl http://localhost/web/1.html </pre>
+</li>
+</ol>
+
+<hr>
+<h2>Part D: Make our type change more permanent</h2>
+<p class=description>
+You may recall that when we switched SELINUX to enforcing mode it took a while for the system to boot.  This was because the mode change triggered a full file system relabeling.  The context of a file is stored in the file system as an extended attribute.  But it is the SELINUX policy, targeted in our case, that defines what the context of any given file should be.  The targeted policy says that /web and everything below it shoud have a type of default_t.  If a full file system relabeling is triggered /web and all it's contents will revert to a type of default_t and no longer be accessible to httpd.  
+</p>
+<p class=description>
+If we want to make /web available to httpd on a truly permanent basis, we should modify the targeted policy telling it "/web should have a type of httpd_sys_content_t.
+</p>
+
+<ol>
+<li>Tell SELINUX to restore the context of /web and it's contents to it's default value.
+<pre class=code>
+restorecon -Rv /web
+</pre>
+</li>
+<li>Use curl to verify that /web/1.html is no longer readable by httpd 
+<pre class=code>
+curl http://localhost/web/1.html
+</pre>
+</li>
+<li>We will use the <strong>semanage</strong> command to modify the targeted policy, but first we need to install <strong>semanage</strong>
+<pre class=code>
+yum install policycoreutils-python-utils
+</pre>
+</li>
+<li>Modify the targeted policy <em>(this can take a few minutes to run)</em>
+<pre class=code>
+semanage fcontext -a -t httpd_sys_content_t "/web(/.*)?"
+</pre>
+</li>
+<li>Tell SELINUX to restore the context of /web and it's contents to it's new default value.
+<pre class=code>
+restorecon -Rv /web
+</pre>
+</li>
+<li>Check our work 
+<pre class=code>
+curl http://localhost/web/1.html
+</pre>
+</li>
+</ol>
+
+<hr>
+<h2>Part E: Allow httpd to listen on a non-standard port</h2>
+<p class=description>
+SELINUX can restrict access to ports just like it restricts access to files. In this section we will make w93 listen on port 9317.
+</p>
+<ol>
+<li>Start by checking which ports httpd is allowed to listen on by default.
+<pre class=code>
+semanage port -l|grep http
+</pre>
+</li>
+<li>Since port 9317 is not listed, we expect that httpd will no be allowed access it. Let's verify that.
+<ul>
+<li>Edit <strong>/etc/httpd/conf/httpd.conf</strong> and change the Listen port from 80 to 9317
+<pre class=code>
+Listen 9317
+</pre>
+</li>
+<li>Restart the httpd service - you should see an error </li>
+<li>Check for a corresponding SELINUX error in <strong>/var/log/audit/audit.log</strong> </li>
+</ul>
+<li>Use <strong>semanage</strong> to allow httpd to access TCP port 9317
+<pre class=code>
+semanage port -a -t http_port_t -p tcp 9317
+</pre>
+</li>
+</li>
+<li>Start httpd </li>
+<li>Check our work
+<pre class=code>
+curl http://localhost:9317/1.html
+</pre>
+</li>
+</ol>
+
+<hr>
+<h2>Part F: Firewall </h2>
+<p class=description>
+We just changed the port on which http is listening.  The new port, 9317, is not open on s01's local firewall.  We will use firewall-cmd to tell the firewall manager daemon, firewalld, to allow traffic in on port 9317.
+</p>
+<ol>
+<li>From <strong>w01</strong> verify that we can not access s01:9317
+<pre class="code">
+curl http://s01:9317/1.html
+</pre>
+</li>
+<li>List all the ports that are open on s01
+<pre class="code">
+firewall-cmd --list-all
+</pre>
+</li>
+<li>Allow traffic destined for port 9317/tcp
+<pre class="code">
+firewall-cmd --permanent --add-port=9317/tcp
+firewall-cmd --reload
+</pre>
+</li>
+<li>Check our work from <strong>w01</strong>
+<pre class="code">
+curl http://s01:9317/1.html
+</pre>
+</li>
+<li>This was a very short introduction for firewalld, more information can be found in the Red Hat docs: <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/using-and-configuring-firewalld_configuring-and-managing-networking"> Using and configuring firewalld</a>
+</li>
+</ol>
+
+<hr>
+<h2>Part G: Grading</h2>
+<ul>
+<li>Run the <a href="./host_info_sec.zip">host info script</a> on <strong>w01</strong> and submit the report to myCanvas.
+</li>
+</ul>
+</body>
+</html>

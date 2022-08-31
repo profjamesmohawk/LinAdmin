@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Lab: Performance
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Lab: Performance </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+An important part of an administrator's job is managing system performance.  Today will investigate some of the tools available to determine what programs are using system resources.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will demonstrate your understanding of this lab by completing an eLearn quiz.
+</p>
+
+<hr>
+<h2>Part A: Setup The Lab</h2>
+<ol>
+	<li>Import the appliance which contains w01 and s01.  </li>
+	<li>Boot w01 </li>
+	<li>Log on to w01 as alice </li>
+	<li>Instal the load generating programs from this zipped tar archive <a href="./pigs.zip">pigs.zip</a>
+</ol>
+
+
+<hr>
+<h2>Part B: CPU</h2>
+<p class="description">
+We'll start with a program that uses a lot of CPU resource, our old friend <span class=cmd>pi.sh</span> from Unix Fundamentals.
+</p>
+<ol>
+<li>Run <span class=cmd>pi.sh 1000</span> </li>
+<ol type="a">
+<li>note the rate at which <span class=cmd>pi.sh</span> is completing throws </li>
+<li>open an other window and run <span class=cmd>top</span> noting how much CPU is being used by <span class=cmd>pi.sh</span> </li>
+<li>open an other window and run a second copy of <span class=cmd>pi.sh</span>.  Note the throw rates for each copy and the cpu used by each copy.</li>
+<em>Congratulations!  You have created a busy, CPU bound system.</em>
+<br>
+<br>
+</ol>
+<li>Using <span class=cmd>nice</span> to make <span class=cmd>pi.sh</span> "play nice".</li>
+<ol type="a">
+	<li>use <strong>&lt;ctl&gt;-c</strong> to interrupt one of your <strong>pi.sh</strong> scripts.  </li>
+	<li>restart that <span class=cmd>pi.sh</span> with the <span class=cmd>nice</span> command
+<pre class="code">
+nice ./pi.sh 1000
+</pre>
+	</li>
+	<li>note the throw rate of the "normal" and the "nice" scripts.  </li>
+	<li>note the cpu consumption of the "normal" and the "nice" scripts.  </li>
+	<li>use <strong>&lt;ctl&gt;-c</strong> to interrupt the <strong>normal</strong> <strong>pi.sh</strong> script.  </li>
+	<ul>
+	What did you see?
+				<a href="javascript:unhide('A1')">Answer</a>
+				<span id="A1" class="hidden">
+				<em>When no other program needs CPU a "nice" program gets all it wants.</em>
+				</span>
+	</ul>
+	<br><br>
+</ol>
+
+<li>Addressing our CPU bottle neck by adding a CPU.</li>
+<ol type="a">
+<li>Shutdown <strong>w01</strong> </li>
+<li>From the VirtualBox managment GUI add a virtual CPU to <strong>w01</strong> (System -&gt;Processor) </li>
+<li>Rebot and perform steps 1 and 2 again.  </li>
+<ul>
+	Did  you see the same slow down?
+				<a href="javascript:unhide('A2')">Answer</a>
+				<span id="A2" class="hidden">
+				<em>No.  Two instances of pi.sh are not enough to saturate a two cpu system.</em>
+				</span>
+	<br>
+	How could you see similar behaviour?
+				<a href="javascript:unhide('A3')">Answer</a>
+				<span id="A3" class="hidden">
+				<em>Run three or more instances.</em>
+				</span>
+	<br>
+	What should we do now?
+				<a href="javascript:unhide('A4')">Answer</a>
+				<span id="A4" class="hidden">
+				<em>Run three or more instances at least one of which is "nice".</em>
+				</span>
+</ul>
+</ol>
+</ol>
+
+<hr>
+<h2>Part C: Memory</h2>
+<p class="description">
+Memory pressure can be a little more problematic than CPU pressure, let's investigate.
+</p>
+<ol>
+<li>Close all programs other than terminal windows, (i.e. don't run FireFox)
+</li>
+<li>We will use <span class=cmd>vmstat</span> monitor "swap out" activity.</li>
+<ol type="a">
+<li>Open a window and run <span class=cmd>vmstat 1 1000</span> </li>
+<li>Note the "so" column, it should be 0 </li>
+</ol>
+</li>
+<li>We will use <span class=cmd>top</span> to see who is using lots of memory</li>
+<ol type="a">
+<li>Open a window and run <span class=cmd>top</span> </li>
+<li>Press <strong>&lt;shit&gt;-f</strong> to enter sort field selection mode </li>
+<li>Use the arrow keys to navigate to %MEM and press <strong>s</strong> to sort on "Percent Memory" </li>
+<li>Press <strong>&lt;esc&gt;</strong> to return to the main display </li>
+</ol>
+<li>Use the <span class=cmd>memHog</span> program to hog memory. </li>
+
+	<ol type"a">
+	<li>Start with a small value of 100 for <ArraySize> and increase the value by 100 until you notice "so" activity in the <span class=cmd>vmstat</span> window.
+	</li>
+	<li>Make a note of what value of &lt;ArraySize&gt; triggered swap out activity.  </li>
+	</ol>
+
+<em>Congratulations!  You now have a system under considerable memory pressure.</em>
+<br><br>
+
+<li>Try opening a new terminal window or FireFox and see how that goes.  </li>
+<li>Solving the problem the easy way: terminate <span class=cmd>memHog</span> with <strong>&lt;ctl&gt;-c</strong> </li>
+<li>Solving the problem the expensive way:</li>
+<ol type="a">
+<li>Shutdown the VM </li>
+<li>Add 1GB of memory to the VM from the VirtualBox management GUI </li>
+<li>Reboot </li>
+<li>Run <span class=cmd>memHog</span> with the &lt;ArraySize&gt; value that previously caused problems </li>
+</ol>
+
+</ol>
+
+<hr>
+<h2>Part D: Disk I/O</h2>
+<p class="description">
+What does the system look like when a process is doing a lot of I/O.  To demonstrate we will use ioHog.  ioHog initializes a file and then performs random reads and writes to that file.
+</p>
+
+<ol>
+<li>Run <span class=cmd>iotop</span> in one window.  </li>
+
+<li>Consider the case where all the I/O is to a small file that fits in the buffer cache, we can have lots of logical I/O with very little physical I/O
+<pre class="code">
+./ioHog -n 1
+</pre>
+<ul>
+<em>We should see some physical writes, as the O/S flushes the changes to disk, but no physical reads because the entire file fits in the buffer cache.</em>
+</ul>
+</li>
+
+<li>Now try with a much larger files
+<pre class="code">
+export PIG_SIZE=1000
+./ioHog -n 2
+</pre>
+<ul>
+<em>We should see some physical writes and physical reads.</em>
+</ul>
+</li>
+</ol>
+
+<hr>
+<h2>Part E: Detective Work</h2>
+<p class="description">
+Now it's time to spot which programs are doing what.
+</p>
+
+<ol>
+<h3>All tasks performed on s01</h3>
+<li>Install <span class=cmd>lsof</span> and <span class=cmd>iotop</span>
+<ul>
+<li>For <span class=cmd>iotop</span> use yum </li>
+<li>For <span class=cmd>lsof</span> we will need to run <span class=cmd>rpm -i</span> on <a href="./lsof-4.93.2-1.el8.x86_64.rpm">lsof-4.93.2-1.el8.x86_64.rpm</a>
+</li>
+</ul>
+</li>
+<li>Install the load generating programs from the pigs.tar archive </li>
+<li>Run 4 pigs at once. (ham, bacon, lard, chorizo)
+<pre class="code">
+cd pigs
+./run_pigs.sh
+</pre>
+</li>
+<li>Use: top, iotop, vmstat, lsof, ls, ps and any other tools you like to determine:
+<ol type="a">
+<br>
+<li>Who's the CPU hog </li>
+<li>Who's the memory hog </li>
+<li>Who's the IO hog </li>
+<li>Who's the disk hog (consumes a lot of disk space, but not a lot if I/O) </li>
+<em>Hint: Each program only hogs one resource.</em>
+</ol>
+</li>
+<strong>Note:</strong> All the processes must be left running during the exercise.  We can't go around killing things without a good reason.
+</ol>
+<hr>
+<h2>Part F: Evaluation</h2>
+<p class="description">
+Complete the eLearn quiz for this lab.
+</p>
+</body>
+</html>

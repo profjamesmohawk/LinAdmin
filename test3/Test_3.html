@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		COMP-10018: Test 3
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>COMP-10018: Test 3</h1>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this test you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will run a host info script on <strong>s01</strong> and submit the report to Canvas. 
+</p>
+<ul>
+<li><a href="./host_info_t3.zip">host_info_t3.zip</a>
+</li>
+</ul>
+<hr>
+
+<div style="page-break-before: always">
+<h2>Part A: Build this configuration (10 points)</h2>
+<p> <IMG src="./test3.png" height="600" width="593" alt=""> </p>
+<ol>
+<li>Create s03 and r01 by cloning s01 </li>
+<li>Update /etc/hosts files on s01  </li>
+<li>s01 and s03 must be able to communicate via IP </li>
+<li>Remember to stop and disable the firewalld service on r01.  </li>
+<li><strong><em>Make no changes to w01</em></strong> (w01 does not need to ping s03)</li>
+</ol>
+
+<hr>
+<h2>Part B: Backups (3 points)</h2>
+<ol>
+<li> On <strong>s01</strong> create a cpio archive named <strong>/tmp/conf.cpio</strong> containing every file 
+residing in the <strong>/etc</strong> directory tree
+who's name ends in <strong>.conf</strong> 
+</li>
+<li>On <strong>s01</strong> create a tar archive named <strong>/tmp/root_home.tar</strong> containing every file residing in <strong>root's</strong> home directory.
+</li>
+</ol>
+
+<hr>
+<h2>Part C: ssh (2 points)</h2>
+<ol>
+<li>Write a single command line that will create a file named <strong>/tmp/1.txt</strong> on <strong>w01</strong> containing the text "hello". 
+</li>
+<li>
+Your command line must start with: <span class=cmd>echo hello | ssh alice@w01</span>
+</li>
+<li>Test your command by running it on <strong>s01</strong> </li>
+<li>Create a text file named <strong>/tmp/ssh_cmd.txt</strong> on <strong>s01</strong> containing your command line.
+</li>
+</ol>
+
+</body>
+</html>

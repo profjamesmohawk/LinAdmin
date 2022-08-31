@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Technical Note: Course VM on Mohawk Residence Network
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Technical Note: Course VM on Mohawk Residence Network</h1>
+
+<h2>Introduction</h2>
+<p class="description">
+The course VM will not work correctly when run from a host on the Mohawk Residence WIFI network.  The symptom is that w01 will connect to s01 and the open Internet, but will not be able to resolve domain names.  w01 will be able to ping servers like 8.8.8.8 but will not be able to resolve domain names like www.mohawkcollege.ca.
+</p>
+<p>It appears that the residence DNS server will not answer queries from the VM, so we need have the VM use alternate DNS servers.</p>
+<p class="description">
+The VirtualBox NAT interface passes the DNS server used by the host to the client via DHCP.  The work around is to set the DNS server used by your host to point to DNS servers available on the open Internet.
+</p>
+
+<hr>
+<h2>Work Around:</h2>
+<p class="description">
+<strong>Note:</strong> These steps apply to a Microsoft Windows host system.  If you are using a Mac or Linux system, please contact your instructor.
+</p>
+<h3>From your VirtualBox host (the system running VirtualBox)</h3>
+
+<ol>
+<li>From the Control Panel select 'Network and Internet' </li>
+<li>Select 'Network and Sharing Center' </li>
+<li>Select 'Change adapter settings' </li>
+<li>Right click on your adapter and select 'Properties', you should see something like... 
+<br>
+<br>
+<IMG src="./win_dns_1.png" alt="Windows screen shot">
+</li>
+<li>Double click on 'Internet Protocol Version 4 (TCP/IPv4)', and set the DNS server as indicated below...
+<br><br>
+<IMG src="./win_dns_2.png" alt="Windows screen shot">
+
+</li>
+</ol>
+
+<hr>
+<p class="description">
+<em>Special thanks to Jad Darazi who helped to develop this work around.</em>
+</p>
+</body>
+</html>

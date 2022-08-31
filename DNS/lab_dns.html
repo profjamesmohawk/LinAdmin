@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Lab: DNS	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Lab: DNS </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Today we will add a DNS server to our virtual lab.  We will use the domain <strong>example.com</em></strong> which is reserved for testing.  By building our own DNS server we will no longer need to maintain hosts files on every node.
+</p>
+<h3>Here is what we will build today</h3>
+<p> <IMG src="./lab_dns.png" alt=""> </p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+<hr>
+<h2>Warning</h2>
+<p class="description">
+This lab should be considered an "Advanced Cookbook".  
+<ul>
+<li>Every change you need to make is listed.  </li>
+<li>Every command you need to type is not listed.  </li>
+<li>You will need to read the steps and think about what you are changing.  </li>
+
+</ul>
+</p>
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will demonstrate your understanding of this lab by completing an eLearn quiz.
+</p>
+
+<hr>
+<h2>Part A: Setup The Lab</h2>
+<p class="description">
+Because we are adding a server and a network today's lab will have a relatively complex setup process.  Don't panic, we'll guide you through it step by step.
+</p>
+<ol>
+	<li>Import the appliance which contains w01, y01 and s01.  </li>
+	<li>Clone s01 to create ns1 <strong><em>(Remember to "Reinitialize MAC addresses of all network cards")</em></strong> </li>
+	<li>Add a second Network Interface Card (NIC) to <strong>ns1</strong> this NIC <strong>MUST</strong> be of type <strong>NAT</strong>
+	<li>Configure <strong>ns1</strong>
+	<ol type="a">
+	<li>Set the IP address on enp0s3 to 10.1.1.40 
+<pre class="code">
+nmcli connection modify enp0s3 ipv4.addresses 10.1.1.40/24
+nmcli connection up enp0s3
+</pre>
+	</li>
+	<li>Network manager should have automatically configured enp0s8 to be a dhcp client.  We'll check to be sure.
+	<ol type="a">
+	<li>Ping google's name server
+	<pre class="code">
+ping 8.8.8.8
+</pre>
+	</li>
+	<li>If this <span class=cmd>ping</span> fails. <strong>Stop the lab and contact your instructor.</strong>
+	</li>
+	</ol>
+	<li>Set the hostname </li>
+	</ol>
+	</li>
+</ol>
+
+<hr>
+<h2>Part B: Configure ns1 as a Resolver (Caching Name Server)</h2>
+<p class="description">
+<strong>ns1</strong> will be our DNS server, but won't "know" about servers beyond our control, so it needs to be able to support "recursive quires" - that just means, it needs to know about other DNS servers who can answer questions about hosts for which it is not authoritative.
+</p>
+<p class="description">
+The good news is, this is the default configuration that ships with our name server software (bind).
+</p>
+<ol>
+<li>Open the ports needed for a DNS server
+<pre class="code">
+firewall-cmd --permanent --add-port=53/udp --add-port=53/tcp
+firewall-cmd --reload
+</pre>
+</li>
+<li>Install the Berkley Internet Name Domain software (bind)
+<pre class="code">
+yum install bind
+</pre>
+<pre class="code">
+yum install bind-utils
+</pre>
+</li>
+<li>Modify the default named configuration file <strong>/etc/named.conf</strong>
+<ol type="a">
+<li>Tell named to listen for packets addressed to 10.1.1.40 
+<pre class="code">
+listen-on port 53 { 127.0.0.1; 10.1.1.40; };
+</pre>
+</li>
+<li>Tell named to allow queries from anyone on the 10.1.1.0/24 network
+<pre class="code">
+allow-query     { 10.1.1.0/24; localhost; };
+</pre>
+</li>
+</ol>
+</li>
+<li>Start the name server, and set it to start at boot
+<pre class="code">
+systemctl start named
+systemctl enable named
+</pre>
+</li>
+<li>Check our work from <strong>s01</strong>
+<ol type="a">
+<li>Install the named utilities
+<pre class="code">
+yum install bind-utils
+</pre>
+</li>
+<li>Tell the system where to look when resolving DNS queries.  Classically name servers are listed in /etc/resolv.conf.  They still are, but NetworkManager populates /etc/resolv.cnf based on which connections are up.
+<pre class="code">
+nmcli connection modify enp0s3 ipv4.dns 10.1.1.40
+nmcli connection up enp0s3 
+</pre>
+</li>
+<li>Perform a lookup with nslookup
+<pre class="code">
+nslookup www.google.ca
+</pre>
+</li>
+<li>Perform a lookup with dig
+<pre class="code">
+dig www.google.ca
+</pre>
+</li>
+</li>
+<li>Lookup the name server <strong>ns1</strong> 
+<pre class="code">
+nslookup ns1.example.com
+</pre>
+How'd the lookup of ns1.example.com go?
+				<a href="javascript:unhide('A1')">Answer</a>
+				<span id="A1" class="hidden">
+				<em>Not too well, we have not configured our name server to handle example.com, yet.</em>
+				</span>
+</li>
+</ol>
+</li>
+</ol>
+
+<hr>
+<h2>Part C: Configure ns1 To Be An Authoritative Server for example.com.</h2>
+<ol>
+
+<li>Modify <strong>/etc/named.conf</strong> to tell named that we will be Authoritative for example.com. by adding...
+<pre class="code">
+zone "example.com" in{
+  type master;
+  file "master/master.example.com";
+};
+</pre>
+<li>Create the zone file we just promised named (<strong>/var/named/master/master.example.com</strong>, <em>hint: you need to create the directory first.</em>)
+<pre class="code">
+$TTL    86400 ; 24 hours could have been written as 24h or 1d
+; $TTL used for all RRs without explicit TTL value
+$ORIGIN example.com.
+@  1D  IN  SOA ns1.example.com. hostmaster.example.com. (
+                              2002022401 ; serial
+                              3H ; refresh
+                              15 ; retry
+                              1w ; expire
+                              3h ; minimum
+                             )
+       IN  NS     ns1
+       IN  MX  10 s01
+
+; server host definitions
+ns1    IN  A      10.1.1.40  ;name server definition
+www    IN  A      10.1.1.20  ;web server definition
+ftp    IN  CNAME  s01.example.com.  ;ftp server definition
+
+; non server domain hosts
+w01   IN  A      10.1.1.10
+s01   IN  A      10.1.1.20
+</pre>
+</li>
+</li>
+<li>Tell the named service to re-read it's config file
+<pre class="code">
+systemctl reload named
+</pre>
+</li>
+<li>Check that the config file was reloaded without error
+<pre class="code">
+systemctl status named
+</pre>
+</li>
+<li>Check our work from <strong>s01</strong>
+<ol type="a">
+<li>Look up <strong>ns1</strong>
+<pre class="code">
+nslookup ns1.example.com
+</pre>
+</li>
+<li>Look up ns1 without the ".example.com"
+<pre class="code">
+nslookup ns1
+</pre>
+<ul>
+What happened?
+				<a href="javascript:unhide('A2')">Answer</a>
+				<span id="A2" class="hidden">
+				<em>The name server does not know how to resolve <strong>ns1</strong> only <strong>ns1.example.com</strong></em>
+				</span>
+<br>
+How can we "fix" this?
+				<a href="javascript:unhide('A3')">Answer</a>
+				<span id="A3" class="hidden">
+				<em>Add a default domain to /etc/resolv.conf</em>
+				<pre class="code">
+domain example.com</pre>
+				</span>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+
+<hr>
+<h2>Part D: Reverse Lookup</h2>
+<p class="description">
+It's nice to be able to go from name to IP, but sometimes we also need to be able to go from IP to name (often for security checks), to do this we need a reverse look-up zone.
+</p>
+<ol>
+<li>Tell named that we will provide reverse lookups for 10.1.1.0/24
+<pre class="code">
+zone "1.1.10.in-addr.arpa" in{
+  type master;
+  file "master/10.1.1.0.rev";
+};
+</pre>
+</li>
+<li>Create the zone file we just promised named
+<pre class="code">
+$TTL	86400 ; 24 hours, could have been written as 24h or 1d
+@    IN	 SOA  ns1.example.com.	hostmaster.example.com. (
+			      2002022401 ; serial
+			      3H ; refresh
+			      15 ; retry
+			      1w ; expire
+			      3h ; minimum
+			     )
+; Name servers for the zone - both out-of-zone - no A RRs required
+       IN  NS ns1.example.com.
+; server host definitions
+40      IN  PTR    ns1.example.com.
+; non server domain hosts
+10	IN PTR		w01.example.com.
+20	IN PTR		s01.example.com.
+</pre>
+</li>
+<li>Test our work from s01
+<pre class="code">
+nslookup 10.1.1.40
+</pre>
+<pre class="code">
+dig -x 10.1.1.10
+</pre>
+</li>
+</ol>
+
+<hr>
+<h2>Part E: Finish The Job</h2>
+<p class="description">
+Configure <strong>ns1</strong> and <strong>w01</strong> to use <strong>ns1</strong> as their name server.
+</p>
+<ol>
+
+<li>Configure <strong>/etc/resolv.conf</strong> on <strong>ns1</strong> and <strong>w01</strong> to match <strong>resolv.conf</strong> on <strong>s01</strong> </li>
+<li><strong>ns1</strong> and <strong>w01</strong> ara a little tricky, the DHCP client populated resolve.conf automatically, we we can't just change resolv.conf because the dhcp client will overwrite it every time we restart. Your challenge is to find an attribute you can set with <span class=cmd>nmcli</span> to prevent the dhcp-client from overwriting resolv.conf. <strong>Note:</strong> This <a href="https://developer-old.gnome.org/NetworkManager/stable/settings-ipv4.html">List of ipv4.XXX settings will help.</a>
+
+</li>
+<li>Remove the entries for s01, w01 from all the hosts files, we won't need them any more ;) </li>
+
+
+</ol>
+
+
+
+</li>
+</body>
+</html>

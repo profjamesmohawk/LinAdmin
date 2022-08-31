@@ -1,0 +1,116 @@
+<html>
+<head>
+<style type="text/css">
+table { margin: 1em; border-collapse: collapse; }
+td, th { padding: .3em; border: 2px #ccc solid; }
+</style>
+</head>
+<body><table>
+<h2> COMP-10018 Host Info Report - Services </h2>
+<tr>
+<td valign="top"> Hostname </td>
+<td><pre>
+ 
+s01
+Sun Jun 13 17:25:40 EDT 2021
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Apache Installed (2 points) </td>
+<td><pre>
+ 
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+
+Last metadata expiration check: 1:30:09 ago on Sun 13 Jun 2021 03:55:32 PM EDT.
+Installed Packages
+httpd.x86_64       2.4.37-30.module+el8.3.0+7001+0766b9e7        @LocalAppStream
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Apache Running (1 point) </td>
+<td><pre>
+ 
+● httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
+   Active: active (running) (thawing) since Sun 2021-06-13 15:33:18 EDT; 1h 52min ago
+     Docs: man:httpd.service(8)
+  Process: 7918 ExecReload=/usr/sbin/httpd $OPTIONS -k graceful (code=exited, status=0/SUCCESS)
+ Main PID: 2367 (httpd)
+   Status: "Total requests: 22; Idle/Busy workers 100/0;Requests/sec: 0.00326; Bytes served/sec:   2 B/sec"
+    Tasks: 213 (limit: 4926)
+   Memory: 24.8M
+   CGroup: /system.slice/httpd.service
+           ├─2367 /usr/sbin/httpd -DFOREGROUND
+           ├─7919 /usr/sbin/httpd -DFOREGROUND
+           ├─7920 /usr/sbin/httpd -DFOREGROUND
+           ├─7921 /usr/sbin/httpd -DFOREGROUND
+           └─7922 /usr/sbin/httpd -DFOREGROUND
+
+Jun 13 15:33:18 s01 systemd[1]: Started The Apache HTTP Server.
+Jun 13 15:33:18 s01 httpd[2367]: Server configured, listening on: port 8080
+Jun 13 15:33:22 s01 systemd[1]: Reloading The Apache HTTP Server.
+Jun 13 15:33:22 s01 httpd[2586]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.1.1.20. Set the 'ServerName' directive globally to suppress this message
+Jun 13 15:33:22 s01 systemd[1]: Reloaded The Apache HTTP Server.
+Jun 13 15:33:22 s01 httpd[2367]: Server configured, listening on: port 8080
+Jun 13 17:20:50 s01 systemd[1]: Reloading The Apache HTTP Server.
+Jun 13 17:20:50 s01 httpd[7918]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.1.1.20. Set the 'ServerName' directive globally to suppress this message
+Jun 13 17:20:50 s01 systemd[1]: Reloaded The Apache HTTP Server.
+Jun 13 17:20:50 s01 httpd[2367]: Server configured, listening on: port 80
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Apache set to start at boot (1 point) </td>
+<td><pre>
+ 
+UNIT FILE     STATE  
+httpd.service enabled
+
+1 unit files listed.
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Contents of /var/www/html (2 points)<br> looking for date and index </td>
+<td><pre>
+ 
+total 8
+-rw-r--r--. 1 root root 291 Jun 13 17:25 date.html
+-rw-r--r--. 1 root root 425 Jun 13 15:53 index.html
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> cron (2 points) </td>
+<td><pre>
+ 
+# Run the hourly jobs
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+* * * * * root /root/foo/mk-date-page.sh > /var/www/html/date.html
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Does cgi work (2 points) </td>
+<td><pre>
+ 
+<h2> Sun Jun 13 17:25:43 EDT 2021 </h2
+ 
+</pre>
+</td>
+</tr>
+<!-- report_id=18625ece-27af-489d-abb1-2a0eb1e5fe36 -->
+</table></body></html>

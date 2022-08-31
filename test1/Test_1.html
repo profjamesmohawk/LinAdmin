@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		COMP-10018: Test 1
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>COMP-10018: Test 1 </h1>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+<h2>Grading:</h2>
+<p class="description">
+You will run a host info script on s01 and submit the output to eLearn.
+</p>
+
+<hr>
+<h2>Part A: Import The Appliance</h2>
+
+<ol>
+<li>Import <strong>clean, fresh</strong> copies of <strong>w01</strong> and <strong>s01</strong>
+from <em>(D:/Courses/comp-10018/comp-10018-vlab.ova)</em> </li>
+</li>
+</ol>
+
+
+<hr>
+<h2>Part B: Users and Groups (3 points)</h2>
+<p class="description">
+In this section you will add two new users to <strong>s01</strong>, andy and amita.  Andy and Amita are both web site admins.
+</p>
+<ol>
+<li>Create two new users on <strong>s01</strong> with user names of: <strong>andy</strong> and <strong>amita</strong> </li>
+<li>Give both new users the initial passwd of <strong>mohawk1</strong> </li>
+<li>Force each user to change their passwd the next time they log on.  </li>
+<li>Create a group named <strong>web</strong> containing andy and amita </li>
+</ol>
+
+<hr>
+<h2>Part C: Add 2 disks (3 points) </h2>
+<ol>
+<li>Add two 2GB disks to <strong>s01</strong> </li>
+<li>Use the disks you just added to create a new LVM volume group named <strong>vgWeb</strong> </li>
+<li>Create a single logical volume named <strong>/dev/vgWeb/lvol0</strong> using all the space available in <strong>vgWeb</strong></li>
+<li>Build an ext4 file system on <strong>/dev/vgWeb/lvol0</strong> </li>
+<li>Mount the new file system at <strong>/mnt/web</strong>, this mount must occur autamitically when s01 is rebooted </li>
+</ol>
+
+<hr>
+<h2>Part D: Share /mnt/web (2 points)</h2>
+<ol>
+<li>Configure <strong>/mnt/web</strong> to be used by the <strong>web</strong> group to share files.
+</li>
+</ol>
+<hr>
+
+<h2>Part E: Install The Apache Web Server (3 points)</h2>
+<p class="description">
+Andy and Amita need the Apache web server to be running.
+</p>
+<ol>
+<li>Install the web server </li>
+<li>Configure the web server to start automatically at boot  </li>
+<li>Make sure that the web server is running (start it manually or reboot) </li>
+</ol>
+
+
+<hr>
+<h2>Part F: Welcome Page (2 points)</h2>
+<p class="description">
+Configure <strong>s01</strong> such that the default web page contains the message, <strong>Amita and Andy</strong>.  Formatting is not important.
+</p>
+<p class="description">
+Note: The grading script will use <span class=cmd>wget</span> to check this.  Make sure wget is installed an working. <a href="../wget/wget-1.19.5-10.el8.x86_64.rpm">wget-1.19.5-10.el8.x86_64.rpm</a>
+</p>
+
+<hr>
+<h2>Part G: Apache Gets Nights Off (2 points)</h2>
+<p class="description">
+To encourage users to get a good night's sleep, it has been decided that the web server will be unavailable from 23:30 each night until 07:00 the next morning.
+</p>
+<p class="description">
+Create a cron file named <strong>/etc/cron.d/web</strong> that stops httpd each evening at 23:30 and restarts it the next morning at 07:00.
+</p>
+
+
+<hr>
+<h2>Part H: Grading</h2>
+<p class="description">
+Run the grading script <a href="./host_info_t1.zip">host_info_t1.sh</a> and submit the output to eLearn.
+</p>
+
+
+
+</body>
+</html>

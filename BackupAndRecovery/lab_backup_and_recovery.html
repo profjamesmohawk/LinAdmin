@@ -1,0 +1,355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Lab: Backup And Recovery
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Lab: Backup And Recovery </h1>
+
+<h2>Introduction:</h2>
+<p class="description">
+Making sure that precious data is kept safe is one an administrator's most important jobs.  Today we will investigate the basic tools available to manage backups.  These same tools are also used for moving data from disk to disk on one system or between systems.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will demonstrate your understanding of this lab by completing an eLearn quiz.
+</p>
+
+
+<hr>
+<h2>Part A: File Meta-data </h2>
+<p class="description">
+Every file has data, it's contents, and meta-data.  Meta-data means "data about data",  let's look at all meta-data we store for every file.  
+</p>
+<ol>
+<li>The <span class=cmd>ls</span> command can show us a lot the meta-data, but the <span class=cmd>stat</span> command can show us much more.
+<pre class="code">
+stat /opt/Mohawk/books/WarAndPeace.txt
+</pre>
+</li>
+<li>Compare the output from <span class=cmd>stat</span> to the output from <span class=cmd>ls -l</span>
+<pre class="code">
+ls -l /opt/Mohawk/books/WarAndPeace.txt
+</pre>
+</li>
+<li>Perhaps the most noticeable difference is <span class=cmd>ls</span> shows one time and <span class=cmd>stat</span> shows three.  Experiment with <span class=cmd>ls</span>, <span class=cmd>cat</span>, <span class=cmd>cp</span>, and other commands that modify files to determine exactly what each of these times indicates.
+<br><em> (You will need to know this for the quiz!)</em>
+</li>
+</ol>
+<hr>
+<h2>Part B: The cp command</h2>
+<p class="description">
+So far we have use the copy command in it's simplest form, now it's time to see how options can make cp a useful, if inefficient, backup tool.
+</p>
+<ol>
+<li>As <strong>alice</strong> on <strong>w01</strong> copy WarAndPeace.txt and see what attributes change.
+<pre class="code">
+stat /opt/Mohawk/books/WarAndPeace.txt
+cp /opt/Mohawk/books/WarAndPeace.txt /tmp
+stat /tmp/WarAndPeace.txt
+stat /opt/Mohawk/books/WarAndPeace.txt
+</pre>
+</li>
+<ol type="a">
+<li>Did /opt/Mohawk/books/WarAndPeace.txt change at all?
+				<a href="javascript:unhide('A1')">Answer</a>
+				<span id="A1" class="hidden">
+				<em>Yes, the Access Time. </em>
+				</span>
+</li>
+<li>Does the copy have the same owner as the original?
+	<a href="javascript:unhide('A2')">Answer</a>
+				<span id="A2" class="hidden">
+				<em>No, by default the copy belongs to the user who ran the cp command.</em>
+				</span>
+
+</li>
+<li>Did the permissions change?
+	<a href="javascript:unhide('A3')">Answer</a>
+				<span id="A3" class="hidden">
+				<em>No, but that's just a coincidence. The new file has alice's default permissions. Let
+				s prove it!</em>
+<pre class="code">
+umask 077
+cp /opt/Mohawk/books/WarAndPeace.txt  /tmp/WarAndPeace.txt.2
+stat  /tmp/WarAndPeace.txt.2
+</pre>
+				</span>
+
+</li>
+</ol>
+<li>Look and the man page for <span class=cmd>cp</span> and find a way to preserve as many attributes as possible. <em>(You will need to know this for the quiz!)</em>
+</li>
+</ol>
+
+<hr>
+<h2>Part C: The tar command</h2>
+<p class="description">
+It may be that <span class=cmd>tar</span> is short for Tape Archive, but tar is very useful even without a tape drive.  Remember the old saying "with Unix everything is a file", well that includes tape drives, this means that tar can write to and read from files as easily as tape drives.
+</p>
+<ol>
+<li>Create a backup of the books directory
+<pre class="code">
+tar cf /tmp/books.tar /opt/Mohawk/books
+</pre>
+</li>
+<li>List the files in the archive we just created
+<pre class="code">
+tar tvf /tmp/books.tar
+</pre>
+</li>
+<li>Create a compress archive
+<pre class="code">
+tar czf /tmp/books.tar.gz /opt/Mohawk/books
+</pre>
+</li>
+</li>
+<li>Roughly how much compression took place?
+	<a href="javascript:unhide('A4')">Answer</a>
+				<span id="A4" class="hidden">
+				<em>The compressed archive is roughly 40% the size of the non-compress.  </em>
+</li>
+<li>Create compressed and uncompress archives of <strong>/boot</strong> </li>
+<li>Roughly how much compression took place?
+	<a href="javascript:unhide('A5')">Answer</a>
+				<span id="A5" class="hidden">
+				<em>The compressed archive of boot is roughly 90% the size of the non-compress. Text files compress much more than do kernels.  </em>
+</li>
+
+</ol>
+
+<hr>
+<h2>Part D: The cpio command</h2>
+<p class="description">
+The <span class=cmd>cpio</span> command is useful for creating archives and for copying large numbers of files within a system. 
+</p>
+
+<ol>
+
+<li>On <strong>s01</strong> create a cpio archive of /opt/Mohawk/books.  (note cpio reads the list of files to archive from standard in)
+<pre class="code">
+cd /opt/Mohawk
+find ./books | cpio -ov &gt; /tmp/books.cpio
+</pre>
+</li>
+
+<li>Copy the contents of <strong>/boot</strong> to <strong>/tmp/boot</strong> with changing ownership or modification times.
+<pre class="code">
+cd /
+find ./boot | cpio -pmud /tmp
+</pre>
+</li>
+
+<li><span class=cmd>cpio</span> is very sensitive to path names, let's investigate...
+<ol type="a">
+<li>Create an archive of <strong>books</strong> with relative paths
+<pre class="code">
+cd /opt
+find ./Mohawk/books | cpio -o &gt; /tmp/books_rel.cpio
+</pre>
+</li>
+<li>Create an archive with absolute paths
+<pre class="code">
+find /opt/Mohawk/books | cpio -o &gt; /tmp/books_abs.cpio
+</pre>
+</li>
+<li>Restore the archive made with relative paths to our home directory
+<pre class="code">
+cd
+mkdir books_rel
+cd books_rel
+cpio -imud &lt; /tmp/books_rel.cpio
+</pre>
+<pre class="code">
+find .
+</pre>
+</li>
+
+<li>Restore the archive made with absolute paths to our home directory
+<pre class="code">
+cd
+mkdir books_abs
+cd books_abs
+cpio -imud &lt; /tmp/books_abs.cpio
+</pre>
+<pre class="code">
+find .
+</pre>
+Where are the files, why is ~/books_abs empty? 
+	<a href="javascript:unhide('A6')">Answer</a>
+				<span id="A6" class="hidden">
+				<em>The files were restored to <strong>/opt/Mohawk/books</strong> because the archive was created with absolute paths</em>
+</li>
+
+</ol>
+</li>
+</ol>
+
+<hr>
+<h2>Part E: The dd command</h2>
+<p class="description">
+The <span class=cmd>dd</span> copies and converts a single file at a time.  This doesn't sound too valuable at first, but <span class=cmd>dd</span> has some very useful applications.
+</p>
+<ol>
+<li>On <strong>s01,</strong>create a sample file containing all zeros (binary zeros, not '0')
+<pre class="code">
+dd if=/dev/zero of=/tmp/zeros bs=1024 count=10
+</pre>
+<pre class="code">
+wc  /tmp/zeros
+od -a /tmp/zeros
+</pre>
+</li>
+<li>Create an ISO image file from a "physical" CD.  (We will use the VirtualBox Guest Extensions CD for this exercise)
+<ol type="a">
+<li>"Insert" the Guest Extensions CD by selecting "Insert Guest Extensions CD" from the VirtualBox Devices menu.  
+<pre class="code">
+dd if=/dev/cdrom of=/tmp/GuestExtions.iso
+</pre>
+</li>
+<li>Mount the ISO image file, to test our work
+<pre class="code">
+mkdir /GuestExt
+mount -o loop -t iso9660  /tmp/GuestExtions.iso /GuestExt
+</pre>
+</li>
+<li>Check our work
+<pre class="code">
+find /GuestExt
+</pre>
+</li>
+</ol>
+</li>
+</ol>
+<hr>
+<h2>Part D: The find command</h2>
+<p class="description">
+The <span class=cmd>find</span> command is one of the most valuable tools in an administrators kit.  Here we will use the <span class=cmd>-cnewer</span> option to perform incremental backups of the /opt/Mohawk directory.  We will use both <span class=cmd>tar</span> and <span class=cmd>cpio</span> to create our archives.
+</p>
+<ol>
+<li>Create a directory to hold our backup set
+<pre class="code">
+mkdir /tmp/BackupSet
+</pre>
+</li>
+<li>Create a time stamp file.  The only purpose of this file is to help us "remember" when we started our first backup.
+<pre class="code">
+touch /tmp/BackupSet/level_0.ts
+</pre>
+</li>
+<li>Create our initial full backup
+<pre class="code">
+cd /opt
+find ./Mohawk | cpio -o &gt;/tmp/BackupSet/level_0.cpio
+</pre>
+<em><strong>or with tar</strong></em>
+<pre class="code">
+tar cf /tmp/BackupSet/level_0.tar /opt/Mohawk/
+</pre>
+</li>
+<li>Check if anything has changed in /opt/Mohawk since we touched the level_0 time stamp file. (Should be nothing)
+<pre class="code">
+cd /opt
+find . -cnewer /tmp/BackupSet/level_0.ts
+</pre>
+</li>
+<li>Modify the contents of /opt/Mohawk and try again
+<pre class="code">
+echo "A Novel by Al Armist" &gt; /opt/Mohawk/books/CryWolf
+</pre>
+<pre class="code">
+cd /opt
+find . -cnewer /tmp/BackupSet/level_0.ts
+</pre>
+</li>
+<li>Create our incremental backup containing only the files that have changed
+<pre class="code">
+cd /opt
+find . -cnewer /tmp/BackupSet/level_0.ts |  cpio -ov &gt;/tmp/BackupSet/level_1.cpio
+</pre>
+<em><strong>or with tar</strong></em>
+<pre class="code">
+find . -cnewer /tmp/BackupSet/level_0.ts &gt; /tmp/BackupSet/level_1.file_set
+tar -cv --no-recursion -f /tmp/BackupSet/level_1.tar -T /tmp/BackupSet/level_1.file_set
+rm /tmp/BackupSet/level_1.file_set
+</pre>
+				<ul>
+				<a href="javascript:unhide('A7')">Do you think "old school" admins, who hate to type would prefer tar or cpio?</a>
+				<span id="A7" class="hidden">
+				<em>cpio </em>
+				</span>
+				</ul>
+				<br>
+</li>
+<li>Confirm that the incremental archives only have the changes
+<pre class="code">
+cpio -t &lt; /tmp/BackupSet/level_1.cpio
+</pre>
+<em><strong>or with tar</strong></em>
+<pre class="code">
+tar tf /tmp/BackupSet/level_1.tar
+</pre>
+</li>
+</ol>
+<hr>
+<h2> Part E: Incremental Backup With "modern" tar </h2>
+<p class="description">
+Classically we use time stamps and find to perform incremental backup, but the "modern" GNU version of tar has support for incremental backups built in - let's have a look.  We will repeat the backup scenario we just completed.
+</p>
+<ol>
+<li>Create the initial full backup and the "snapshot" file
+<pre class="code">
+tar -c -f /tmp/BackupSet/level_0i.tar --listed-incremental=/tmp/BackupSet/opt_Mohawk.snar /opt/Mohawk
+</pre>
+</li>
+<li>Modify the contents of /opt/Mohawk 
+<pre class="code">
+echo "A Guide to Relaxation by Saul Goodman" &gt; /opt/Mohawk/books/TakeItEasy
+</pre>
+<li>Create the incremental backup using the "snapshot" file
+<pre class="code">
+tar -cv -f /tmp/BackupSet/level_1i.tar --listed-incremental=/tmp/BackupSet/opt_Mohawk.snar /opt/Mohawk
+</pre>
+</ol>
+<hr>
+<h2>Part F: Evaluation</h2>
+<p class="description">
+Complete the eLearn quiz for this lab.
+</p>
+<hr>
+<h2>Part G: Bonus - rsync</h2>
+<p class="description">
+The daring explorers among you might want to learn rsync.  It is useful.  It will not be on any test.
+</p>
+<ul>
+<li> <a href="https://www.digitalocean.com/community/tutorials/how-to-use-rsync-to-sync-local-and-remote-directories">rsync tutorial from Digital Ocean</a> </li>
+<li><a href="./rsync-3.1.3-9.el8.x86_64.rpm">rsync-3.1.3-9.el8.x86_64.rpm</a>
+</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Lab: Starup And Services	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Lab: Startup And Services </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Today we will investigate the Linux boot and startup process.  The launching of services, daemons in Unix speak, is a key part of the startup process, so we will also work with daemons today.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will demonstrate your understanding of this lab by completing an Canvas quiz.
+</p>
+
+<hr>
+<h2>Part A: Setup The Lab</h2>
+<ol>
+	<li>Import the appliance.  </li>
+</ol>
+
+
+<hr>
+<h2>Part B: Modify the boot parameters</h2>
+<p class="description">
+The default CentOS installation boots with a pretty splash screen, but we want to see more detailed messages during the startup process.
+</p>
+
+<ol>
+<li>Log onto s01 as root </li>
+<li>Create a backup copy of <strong>/boot/grub2/grub.cfg</strong>
+<pre class="code">
+cd /boot/grub2
+cp grub.cfg grub.cfg.back
+</pre>
+</li>
+
+<li>To see more detailed start up messages modify <strong>/etc/default/grub</strong> and remove 
+ <strong>rhgb quiet</strong> from the <strong>GRUB_CMDLINE_LINUX</strong> line</em> so the file looks like this...
+<pre class="code">
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="crashkernel=auto resume=/dev/mapper/rhel-swap rd.lvm.lv=rhel/root rd.lvm.lv=rhel/swap "
+GRUB_DISABLE_RECOVERY="true"
+GRUB_ENABLE_BLSCFG=true
+</pre>
+<li>Generate a new grub boot configuration
+<pre class="code">
+grub2-mkconfig &gt; /boot/grub2/grub.cfg
+</pre>
+</li>
+</li>
+<li>Reboot, you should now see much more detailed messages.
+<pre class="code">
+systemctl reboot
+</pre>
+</li>
+</ol>
+
+
+
+<hr>
+<h2>Part C: Managing Services</h2>
+<p class="description">
+Almost all system services are managed with systemd on modern Linux systems.  Let's see how that works.
+</p>
+
+<ol>
+<li>Inspect our current <strong>target</strong> <em>(note: old admins might call this the <strong>run level</strong></em>)
+<pre class="code">
+systemctl get-default
+</pre>
+</li>
+<li>See what units (services) are tied to a target.
+<pre class="code">
+systemctl list-dependencies multi-user.target
+</pre>
+<em>or use our bash skills to see all units tied to the default target</em>
+<pre class="code">
+systemctl list-dependencies $(systemctl get-default)
+</pre>
+
+</li>
+
+<li>List the units installed 
+<pre class="code">
+systemctl list-unit-files --type=service
+</pre>
+</li>
+<li>Check if <strong>sshd</strong> running now?
+<pre class="code">
+systemctl status sshd
+</pre>
+</li>
+<li>Is sshd running now?
+				<a href="javascript:unhide('A3')">Answer</a>
+				<span id="A3" class="hidden">
+				<em>yes</em>
+				</span>
+</li>
+<li>Assume we don't want to allow remote login, so let's stop <strong>sshd</strong> (we might do this for security reasons) 
+<pre class="code">
+systemctl stop sshd
+</pre>
+</li>
+<li>Check our work
+<pre class="code">
+systemctl status sshd
+</pre>
+</li>
+<li>Is sshd running now?
+				<a href="javascript:unhide('A4')">Answer</a>
+				<span id="A4" class="hidden">
+				<em>No.  We <strong>stopped</strong> it.</em></span>
+</li>
+
+<li>Try to open a new ssh connection to s01 (this should fail)
+<pre class="code">
+ssh s01
+</pre>
+</li>
+<li>The <span class=cmd>systemctl stop</span> command we just ran stops the sshd daemon but does not change the system startup settings.  The sshd service is still set to start at boot.
+We can verify that with...
+<pre class="code">
+systemctl list-unit-files  sshd.service
+</pre>
+</li>
+<li>Now we will tell systemd not to start the sshd service when we boot.
+<pre class="code">
+systemctl disable sshd.service
+</pre>
+</li>
+<li>Reboot and verify that sshd does not start.  </li>
+<li>Remote access via ssh is very useful, so let's tell sshd to start it at boot time.
+<pre class="code">
+systemctl enable sshd.service
+</pre>
+</li>
+<li>Reboot and verify that sshd started.  </li>
+</ol>
+
+
+
+<hr>
+<h2>Part C: Apache web server</h2>
+<p class="description">
+One of the most commonly found daemons on Linux systems today is the Apache Web Server, a.k.a. <strong>httpd</strong>.  Today will will install the Apache web server and perform some very basic configuration.
+</p>
+
+<ol>
+
+<li>Install the web server, <strong>httpd</strong>. <em>(You may want to refer back to the software installation lab.) </em> </li>
+<li>Check our work from <strong>w01</strong>
+<ol type="a">
+<li>Open the Firefox web browser and navigate to <span class=cmd>http://s01</span>  </li>
+or
+<pre class="code">
+curl http://s01 &gt; /dev/null
+</pre>
+</li>
+<li> What happened?
+				<a href="javascript:unhide('A5')">Answer</a>
+				<span id="A5" class="hidden">
+				<em>We could not connect.  Because we only installed Apache we did not start it.</em>
+				</span>
+</ol>
+</li>
+<li>Start Apache manually
+<pre class="code">
+systemctl start httpd
+</pre>
+</li>
+<li>Check our work from <strong>w01</strong> again, this time we should see a test page. (warning: Firefox might have changed the url to https)
+</li>
+
+<li>By default <strong>httpd</strong> listens for connects on TCP Port 80, since this is a test configuration, we want to listen on port 8080. The listening port is controlled by <strong>httpd</strong>'s configuration file <strong>httpd.conf</strong> - Let's modify it.
+<ol type="a">
+	<li>Change our working directory
+<pre class="code">
+cd /etc/httpd/conf
+</pre>
+	</li>
+<li>How many lines are in <strong>httpd.conf</strong>
+				<a href="javascript:unhide('A6')">Answer</a>
+				<span id="A6" class="hidden">
+				<em>Over 350! </em>
+				</span>
+</li>
+<li>We'd better make a backup before we touch it.
+<pre class="code">
+cp httpd.conf httpd.conf.back
+</pre>
+</li>
+<li>Edit <strong>httpd.conf</strong> and change
+<pre class="code">
+Listen 80
+</pre>
+<strong>to</strong>
+<pre class="code">
+Listen 8080
+</pre>
+</li>
+<li><strong>Pro Tip:</strong> We just changed a critical configuration file.  Let's make sure we only made the changes we wanted to.  We can use the <span class=cmd>diff</span> command to do so.
+<pre class="code">
+diff httpd.conf httpd.conf.back
+</pre>
+</li>
+<li>Check our work from <strong>w01</strong> with curl
+<pre class="code">
+curl http://s01 &gt; /dev/null
+</pre>
+</li>
+<li>Did it work?
+				<a href="javascript:unhide('A7')">Answer</a>
+				<span id="A7" class="hidden">
+				<em>No! Apache is still listening on port 80.  Apache does not reread it's configuration file until we tell it to.</em>
+				</span>
+</li>
+<li>Tell Apache to reread it's configuration file... (we have three choices, pick one, or try them all)
+<ul>
+<li>Option A (stop and restart):
+<pre class="code">
+systemctl stop httpd
+systemctl start httpd
+</pre>
+</li>
+<li>Option B (stop and restart, with one command):
+<pre class="code">
+systemctl restart httpd
+</pre>
+</li>
+<li>Option C (just reread the config file):
+<pre class="code">
+systemctl reload httpd
+</pre>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>Check from w01 using curl
+<pre class="code">
+curl http://s01
+</pre>
+</li>
+<li>Reboot <strong>s01</strong> </li>
+<li>Did it Apache come up?
+				<a href="javascript:unhide('A8')">Answer</a>
+				<span id="A8" class="hidden">
+				<em>No! We only started it manually.  We have not set it for automatic start.</em>
+				</span>
+</li>
+<li>Tell systemd to start httpd at boot.
+<pre class="code">
+systemctl enable httpd
+</pre>
+</li>
+</ol>
+
+<hr>
+<h2>Part E: Scheduling Jobs With cron</h2>
+<p class="description">
+The cron scheduler, implemented by the <strong>crond</strong> daemon, is a simple way to execute commands on a regular schedule.  Today we will take a very brief look at cron.
+</p>
+
+<p class="description">
+We will create a cron job that will run the <span class=cmd>date</span> command every minute and append the output to /tmp/date.out.  <em>Yes, this is a silly example, but it will show us how cron works.</em>
+</p>
+
+<ol>
+
+<li>Change our working directory
+<pre class="code">
+cd /etc/cron.d
+</pre>
+</li>
+<li>Copy an existing cron file so we don't have to start from stratch
+<pre class="code">
+cp 0hourly every_min
+</pre>
+</li>
+<li>Edit <strong>every_min</strong> changing the last line to look like this...
+<pre class="code">
+* * * * * root date&gt;&gt;/tmp/date.out
+</pre>
+</li>
+<li>Inspect <strong>/tmp/date.out</strong> every few minutes, we should see a new line added every minute
+<pre class="code">
+cat /tmp/date.out
+</pre>
+</li>
+<li>Make this change to <strong>every_min</strong> and see what effect it has (you man need to wait a few minutes)
+<pre class="code">
+*/2 * * * * root date&gt;&gt;/tmp/date.out
+</pre>
+Note: This will be on the quiz!
+<br>
+Note: We threw <span class=cmd>cron</span> at you without much instruction - try to figure it out on your own.  We will review in class.
+
+</li>
+</ol>
+
+<hr>
+<h2>Part F: Evaluation</h2>
+<p class="description">
+Complete the Canvas quiz for this lab.
+</p>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Graded Lab: Starup And Services	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Graded Lab: Startup And Services </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Now it's time to apply what you learned in the last lab to build a simple web server system.  Today we will install and configure the Apache Web Server on s01.  We will setup the server to display a basic welcome page and to display the current date and time in two ways.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+		<li>The web pages and scripts supplied by James found <a href="./web-lab.zip">here</a>
+		</li>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will demonstrate your understanding of this lab by running a grading script and submitting the output to Canvas.
+</p>
+
+<hr>
+<h2>Part A: Setup The Lab</h2>
+<ol>
+	<li>Import the appliance which contains w01, s01, and y01.  </li>
+</ol>
+
+
+<hr>
+<h2>Part B: Install The Apache Web Server </h2>
+<ol>
+<li>Install the Apache Web Server. </li>
+<li>Configure the web server to start automatically when the system is booted. </li>
+<li>Check your work by navigating to <strong>http:/s01</strong> </li>
+</ol>
+
+<hr>
+<h2>Part C: Get The Scripts</h2>
+<p class="description">
+Your developer friend, James, has supplied you with some HTML pages and some scripts for this project.  It is time to start installing them on <strong>s01</strong>
+</p>
+<ol>
+<li>Get the scripts from Canvas and expand them in root's home directory. <a href="./web-lab.zip">(web-lab.zip)</a>  </li>
+<li>Check your work, <span class=cmd>ls /root/web-lab</span>  should look like this
+<pre class="code">
+date.cgi  date.html  index.html  mk-date-page.sh
+</pre>
+</li>
+</ol>
+
+
+<hr>
+<h2>Part D: Simple Home Page</h2>
+<p class="description">
+Time to get rid of that Apache test page.
+</p>
+<ol>
+<li>Copy <strong>index.html</strong> to the <strong>/var/www/html</strong> directory.  </li>
+<li>You should no longer see the test page when you browse to <strong>s01</strong> </li>
+<li>Try the links labeled <strong><em>now</em></strong> and <strong><em>more now</em></strong> (they should be broken)
+</li>
+</ol>
+
+<hr>
+<h2>Part E: Fix The "Now" Link</h2>
+<p class="description">
+The "now" link points to a static HTML page containing a recent date.  To fix the broken link, all you need to do is make sure there is an HTML file in <strong>/var/www/html</strong> named <strong>date.html</strong>
+</p>
+
+<hr>
+<h2>Part F: Use cron To Improve the "Now" Link</h2>
+<p class="description">
+The page <strong>date.html</strong> is just a static HTML page, but we can use cron to make sure it is updated on a regular basis.  James supplied us with a shell script, <span class=cmd>mk-date-page.sh</span>, to generate an new <strong>date.html</strong> file anytime we want.
+<br>
+Let's see what we can do with that script.
+</p>
+<ol>
+<li>Have look at the script
+<pre class="code">
+more mk-date-page.sh
+</pre>
+</li>
+<li>Run the script
+<pre class="code">
+./mk-date-page.sh
+</pre>
+</li>
+<li>
+				<a href="javascript:unhide('A1')">How did that go?</a>
+				<span id="A1" class="hidden" >
+				You should have seen an HTML page displayed on your terminal.  If you did not, check path and permissions.
+				</span>
+</li>
+<li>Use <span class=cmd>mk-date-page.html</span> to publish an updated date page.
+<pre class="code">
+./mk-date-page.sh &gt; /var/www/html/date.html
+</pre>
+</li>
+<li>Inspect your work from the browser on <strong>w01</strong> (<a href="http://s01:80" target="blanl">http://s01</a>)</li>
+<p class="description">
+Now, we could keep <strong>date.html</strong> up to date by sitting at our desk all day running <span class=cmd>mk-date-page.sh</span>, but that would be sad.
+</p>
+
+<li>Create a file named <strong>pub-date</strong> in <strong>/etc/cron.d</strong> to tell cron to run <span class=cmd>mk-date-page.sh</span> every minute.
+</li>
+</ol>
+
+<hr>
+<h2>Part G: Dynamic Web Pages</h2>
+<p class="description">
+Using cron, like we did in part E, is a good way to show that we understand cron, but not a very good way to create dynamic content.  The page gets generated every minute, even when nobody is looking, and the time can be up to a minute late.  Wouldn't it be great if we could generate a page fresh when the client requests it?  We can with dynamic web pages.  The grandmother of dynamic web pages is the Common Gateway Interface (CGI).  CGI is not used too much today, but it's great for quick little tasks like ours.
+</p>
+<p class="description">
+James has thoughtfully supplied a CGI script for our use.
+</p>
+<ol>
+<li>Install the script in Apache's CGI directory
+<pre class="code">
+cp date.cgi /var/www/cgi-bin
+</pre>
+</li>
+<li>Test the "more now" link.  </li>
+</ol>
+
+<hr>
+<h2>Part H: Evaluation</h2>
+<ol>
+<li>Get the grading script from Canvas (<a href="./host_info_services.zip">host_info_services.zip</a>)
+</li>
+<li>Run the script on <strong>s01</strong>
+</li>
+<li>Submit the output to the Canvas drop box for this lab (Graded Lab: Startup and Services )
+</li>
+</body>
+</html>

@@ -1,0 +1,32 @@
+rsyslog rhelp breaks on 8.3 , update on Dec 7 2021 fixed (core dump)
+
+
+For reliable forwarding use queue not @@s01
+
+   local5.*        action(type="omfwd"
+                       # An on-disk queue is created for this action. If the remote host is
+                        # down, messages are spooled to disk and sent when it is up again.
+                        queue.filename="fwdRule1"       # unique name prefix for spool files
+                        queue.maxdiskspace="1g"         # 1gb space limit (use as much as possible)
+                        queue.saveonshutdown="on"       # save messages to disk on shutdown
+                        queue.type="LinkedList"         # run asynchronously
+                        action.resumeRetryCount="-1"    # infinite retries if host is down
+                        Target="s01" Port="514" Protocol="tcp")
+For rhelp 
+
+module(load="omrelp") # out module 
+
+local5.*        action(type="omrelp"
+                        # An on-disk queue is created for this action. If the remote host is
+                        # down, messages are spooled to disk and sent when it is up again.
+                        queue.filename="fwdRule1"       # unique name prefix for spool files
+                        queue.maxdiskspace="1g"         # 1gb space limit (use as much as possible)
+                        queue.saveonshutdown="on"       # save messages to disk on shutdown
+                        queue.type="LinkedList"         # run asynchronously
+                        action.resumeRetryCount="-1"    # infinite retries if host is down
+                        Target="10.1.1.100" Port="20514" )
+#############
+
+module(load="imrelp")  # in module, on receiver
+input(type="imrelp" port="20514" maxDataSize="10k")
+

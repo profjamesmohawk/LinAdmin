@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Graded Lab: DNS	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Graded Lab: DNS </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+In our last lab, DNS, we configured our environment with a full-blown DNS server on ns1 resulting in a bit of a "funny" environment.  Hosts on the blue network, like s01, could resolve names for servers they could not reach and we had to provide a connection to the open internet for ns1.  Today you will build a DNS deployment better tailored to the needs of our lab.
+</p>
+<ul>
+	<h3>Design Requirements:</h3>
+	<ol type="a">
+	<br>
+	<li>Hosts on the blue network should only have access to the blue network and not the open Internet </li>
+	<li>All of our hosts names (s01, w01,...) should be maintained by a single DNS Primary server </li>
+	<li>w01 needs to access the open internet and access to the internal name server </li>
+	<li>Use bind as our name server </li>
+	</ol>
+	<h3>Implementation Strategy:</h3>
+	<ol type="a">
+	<br>
+	<li>Bind on s01:
+		<ul>
+		<li>Primary DNS Server for the domain example.com (s01 and w01 must be in the domain) </li>
+		<li>No caching behaviour (recursion) </li>
+		<li>No forwarding </li>
+		</ul>
+	</li>
+	<li>Bind on w01:
+		<ul>
+		<li>Caching server</li>
+		<li>Slave/Secondary server for "example.com" with s01 as the master</li>
+		<li><strong>/etc/resolv.conf</strong> must look like this
+		<pre class="code">
+nameserver localhost
+domain example.com </pre>
+		</li>
+		</ul>
+	</li>
+	</ol>
+</ul>
+<h3>Here is what we will build today</h3>
+<p> <IMG src="./graded_lab_dns.png" alt=""> </p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will run the host_info_dns.sh script on s01 and w01, submitting the output files to eLearn. <a href="./host_info_dns.zip">host_info_dns.zip</a>
+</p>
+
+<hr>
+<h2>Hints:</h2>
+<p class="description">
+You saw most of what you will need for this lab when you completed the first DNS lab.  Here are a few hints to help you along...
+</p>
+<ol>
+<li>Use the excellent tutorial from zytrax: <a href="http://www.zytrax.com/books/dns" target="blank">DNS For Rocket Scientists</a> </li>
+<li>The s01 configuration is very similar to the configuration we built on ns1, except we do not allow recursion.  </li>
+<li>The w01 configuration is very similar to the configuration we built on ns1, except:
+<ul>
+<br>
+<li>only listen on the loop-back interface </li>
+<li>has a zone with <span class=cmd>type slave</span> for <strong>example.com</strong>
+</li>
+<li>limit the amount of memory we use for the DNS cache (w01 is a small system) </li>
+</ul>
+</li>
+</ol>
+</body>
+</html>

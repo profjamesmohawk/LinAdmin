@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Hints: Logging</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Hints: Logging </h1>
+
+<hr>
+
+<h2>Part B: Modifying Log Destinations (s01)</h2>
+<ul>	
+<li>To log all messages with a facility of mail to mail.log
+<pre class="code">
+mail.*			/var/log/mail.log
+</pre>
+</li>
+<li>To log all messages with a priority of error and above
+<pre class="code">
+*.error		       /var/log/error.log 
+</pre>
+</li>
+</ul>
+
+<hr>
+<h2>Part C: Remote Logging (w01 to s01)</h2>
+<p class="description">
+We will now configure <strong>w01</strong> to send log messages to <strong>s01</strong>.  This is very common configuration in production environments.
+</p>
+<ol>
+<li>Enable remote logging via TCP on <strong>s01</strong> (<em><strong>hint</strong>: uncomment a total of 2 lines in <strong>rsyslog.conf</strong></em>)
+<br>Here's a short video tutorial from the author of rsyslog that tells you how (and a little more) <a target="blank" href="https://youtu.be/fewUSu_QZAY">Video</a>
+<pre class="code">
+module(load="imtcp") # needs to be done just once
+input(type="imtcp" port="514")
+</pre>
+</li>
+<li>Configure rsyslog on <strong>w01</strong> to send all security authorization messages (authpriv) to <strong>s01</strong> via TCP 
+<pre class="code">
+authpriv.*          @@s01:514
+</pre>
+</li>
+<li> Don't forget to open tcp port 514 on s01's firewall
+<pre class="code">
+firewall-cmd --permanent --add-port=514/tcp
+firewall-cmd --reload
+</pre>
+</li>
+<li>Log onto <strong>w01</strong> and see if log messages appear on <strong>s01</strong> </li>
+</ol>
+
+<hr>
+<h2>Part D: Sending Apache Errors </h2>
+<p class="description">
+The Apache httpd web server can send it's error messages to syslog.  This can be a useful way to implement remote logging for httpd.  In this section you will setup httpd running on w01 and logging to s01.
+</p>
+<ol>
+<li>Install the Apache <strong>httpd</strong> server on <strong>w01</strong> </li>
+<li>Modify the httpd config file, <strong>httpd.conf</strong> to send error messages to syslog with the facility <strong>local2</strong> 
+<a href="https://httpd.apache.org/docs/trunk/mod/mod_syslog.html">(hint)</a>
+<pre class="code">
+ErrorLog syslog:local2
+</pre>
+</li>
+<li>Start the httpd service </li>
+<li>Check that httpd is running by browsing to <strong>http://localhost</strong> </li>
+<li>Generate an error with curl.  This should result in an <em>autoindex:error</em>
+<pre class="code">
+curl http://localhost
+</pre>
+<li>Check <strong>/var/log/messages</strong>, you should see at least one error message from httpd </li>
+<li>Modify <strong>rsyslog.conf</strong> on <strong>w01</strong> to send all messages with a facility of <strong>local2</strong> to <strong>s01</strong>
+<pre class="code">
+local2.*       @@s01:514
+</pre>
+</li>
+<li>Modify <strong>rsyslog.conf</strong> on <strong>s01</strong> to send all messages with a facility of <strong>local2</strong> to <strong>/var/log/httpd_err</strong>
+<pre class="code">
+local2.*   /var/log/httpd_err
+</pre>
+</li>
+<li>Generate an other httpd error from <strong>w01</strong> </li>
+<li>Check <strong>/var/log/httpd_err</strong> on <strong>s01</strong> </li>
+</ol>
+
+<hr>
+<h2>Part E: Ignoring Some Messages</h2>
+<p class="description">
+The httpd errors sent from w01 to s01 in Part D, end up in three log files on s01: messages, msg_err, and httpd_err.  We really only want them in httpd_err.
+</p>
+<ol>
+<li>Modify the <strong>rsyslog.conf</strong> entry for <strong>/var/log/msg_err</strong> to log <strong>none</strong> of the messages with a facility of <strong>local2</strong>
+<br>
+<em><strong>Hint:</strong> Look at the entry for /var/log/messages, it already ignores messages with facilities of mail, authpriv, and cron.
+</em>
+</li>
+<li>Modify the entry for <strong>/var/log/messages</strong> to ignore facility <strong>local2</strong> as well.  </li>
+<li>Test your work by generating some httpd errors on <strong>w01</strong>, they should now appear only in <strong>httpd_err</strong>
+</li>
+</ol>
+</li>
+
+<hr>
+<h2>Part F: Evaluation</h2>
+<p class="description">
+Run <span class=cmd>host_info_syslog.sh</span>  on <strong>s01</strong> and submit the output to the eLearn dropbox for this lab.
+</p>
+</body>
+</html>

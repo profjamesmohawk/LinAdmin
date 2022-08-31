@@ -1,0 +1,122 @@
+<html>
+<head>
+<style type="text/css">
+table { margin: 1em; border-collapse: collapse; }
+td, th { padding: .3em; border: 2px #ccc solid; }
+</style>
+</head>
+<body><table>
+<h2> COMP-10018 Host Info Report - Test 1 (Fall 2017) </h2>
+<tr>
+<td valign="top"> Hostname </td>
+<td><pre>
+ 
+s01
+Mon Oct 25 17:42:12 EDT 2021
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Users And Groups (3 points) </td>
+<td><pre>
+ 
+uid=1000(andy) gid=1000(andy) groups=1000(andy),1002(web)
+uid=1001(amita) gid=1001(amita) groups=1001(amita),1002(web)
+
+aging:
+Last password change					: Oct 25, 2021
+Last password change					: Oct 25, 2021
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Add a Disks (3 points) </td>
+<td><pre>
+ 
+vgConfig:
+  VG Size               3.99 GiB
+  PV Name               /dev/sdb     
+  Total PE / Free PE    511 / 0
+  PV Name               /dev/sdc     
+  Total PE / Free PE    511 / 0
+
+mounted:
+/dev/mapper/vgWeb-lvol0  4.0G  8.0M  3.8G   1% /mnt/web
+
+fstab:
+/dev/vgWeb/lvol0  /mnt/web	ext4	defaults 0 2
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Install Apache (3 points) </td>
+<td><pre>
+ 
+installed:
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+
+Last metadata expiration check: 0:07:41 ago on Mon 25 Oct 2021 05:34:32 PM EDT.
+Installed Packages
+httpd.x86_64           2.4.37-30.module+el8.3.0+7001+0766b9e7            @mini83
+
+startup:
+UNIT FILE     STATE  
+httpd.service enabled
+
+1 unit files listed.
+
+running:
+● httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
+   Active: active (running) since Mon 2021-10-25 14:24:34 EDT; 3h 17min ago
+     Docs: man:httpd.service(8)
+ Main PID: 871 (httpd)
+   Status: "Running, listening on: port 80"
+    Tasks: 213 (limit: 4926)
+   Memory: 42.8M
+   CGroup: /system.slice/httpd.service
+           ├─871 /usr/sbin/httpd -DFOREGROUND
+           ├─897 /usr/sbin/httpd -DFOREGROUND
+           ├─898 /usr/sbin/httpd -DFOREGROUND
+           ├─899 /usr/sbin/httpd -DFOREGROUND
+           └─900 /usr/sbin/httpd -DFOREGROUND
+
+Oct 25 14:24:33 s01 systemd[1]: Starting The Apache HTTP Server...
+Oct 25 14:24:34 s01 httpd[871]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.1.1.20. Set the 'ServerName' directive globally to suppress this message
+Oct 25 14:24:34 s01 systemd[1]: Started The Apache HTTP Server.
+Oct 25 14:24:34 s01 httpd[871]: Server configured, listening on: port 80
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Welcome Page (2 points) </td>
+<td><pre>
+ 
+Welcome Andy and Amita
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Apache Gets Nights Off (2 points) </td>
+<td><pre>
+ 
+# Run the hourly jobs
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+01 00* * * * root systemctl stop httpd
+01 08 * * * root systemctl start http
+ 
+</pre>
+</td>
+</tr>
+<!-- report_id=5adf81f7-4c00-4f2d-a088-bfab1e8d2f88 -->
+</table></body></html>

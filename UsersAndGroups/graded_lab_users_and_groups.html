@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Graded Lab: Users And Groups
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Graded Lab: Users And Groups </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Today you will have a chance to test your mastery of user and group management.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will run a script to collect configuration information and submit the script output to Canvas for evaluation. Much like you did for the "Lab Tour".
+</p>
+
+<hr>
+<h2>Part A: Setup The Lab</h2>
+<ol>
+	<li>Import the appliance which contains w01 and s01.  </li>
+	<li>Boot w01 and s01 </li>
+	<li>Log on to w01 as alice </li>
+	<li>From alice log on to s01 as <strong>root</strong> using ssh (root's password is <em>adminpass</em> )
+	<pre class="code">
+ssh root@10.1.1.20 </pre>
+	</li>
+</ol>
+
+<hr>
+<h3>Note: All administration tasks are to be performed on s01</h3>
+<br>
+
+
+<hr>
+<h2>Part B: Welcome Message (1 mark) </h2>
+<p class="description">
+Every user we add should have a welcome message placed in their home directory.  We should set that up before we add any users.
+</p>
+<ol type="a">
+<li>Configure s01 so that every time a user is created with <span class=cmd>useradd</span> a file named <strong>welcome.txt</strong> is placed in their home directory.</li>
+<li>welcome.txt may contain any welcome message you like, but may not be empty</li>
+</ol>
+<hr>
+
+<h2>Part C: Create Users (2 marks)</h2>
+<p class="description">
+Create the users from the Catering and Accounting departments described in <a href="./user_list.html" target="blank">User List</a> with the following configuration.
+</p>
+<ol type="a">
+<li>Users must change their passwords every 90 days.  </li>
+<li>Set each user's password to <em>newpass</em> </li>
+</ol>
+
+<hr>
+<h2>Part D: Groups (2 marks)</h2>
+<p class="description">
+Create groups for the accounting and catering departments.
+</p>
+<ol type="a">
+	<li>Create a group named <strong>accounting</strong> to which just the members of the accounting department belong.  </li>
+	<li>Create a group named <strong>catering</strong> to which just the members of the catering department belong.  </li>
+	<li>Create a group named <strong>staff</strong> to which the members of the catering and accounting departments belong.  </li>
+
+</ol>
+
+<hr>
+<h2>Part E: Shared Directories (2 marks)</h2>
+<p class="description">
+Create directories where members of the accounting and catering departments can share files.
+</p>
+<ol type="a">
+<li>The directories must be called: <strong>/share/accounting</strong>, <strong>/share/catering</strong>, and <strong>/share/staff</strong> </li>
+<li>Set ownership and permissions so that group members have full access </li>
+<li>Regular users who are not in the group must have no access to the shared directories </li>
+</ol>
+
+<hr>
+<h2>Part D: Check Your Work</h2>
+<p class="description">
+In this section you will perform some tests.  Feel free to perform additional tests.
+</p>
+<ol>
+<li>Log on as each user </li>
+	<ol type="a">
+	<li>Use the <span class=cmd>id</span> command to command to check that you belong to the expected groups.  </li>
+	<li>Create files in the <strong>/share</strong> directories to which you should have access.  </li>
+	<li>Check that you can access files from other users in your group.  </li>
+	<li>Check that you can not access files from users in other groups.  </li>
+	</ol>
+</ol>
+
+<hr>
+<h2>Part E: Clean Up (1 mark)</h2>
+<p class="description">
+Before we give the new users their passwords we should clean up the test files we created in Part D, and we should leave some instructions about the use of the shared directories.
+</>
+<ol>
+<li>Remove all the test files you created under <strong>/share</strong> </li>
+<li>Create <strong>/share/accounting/ReadMe</strong> containing the text, "This directory is for the use of the accounting team only" </li>
+<li>Create <strong>/share/catering/ReadMe</strong> containing the text, "This directory is for the use of the catering team only (p.s. who's hungry) " </li>
+<li>All <strong>ReadMe</strong> files must be owned by root, and only readable by the appropriate group members.  </li>
+</ol>
+
+<hr>
+<h2>Part F: Prepare For Account Handover (1 mark)</h2>
+<p class="description">
+Now it's time to let the users on the system.
+</p>
+<ol>
+<li>Force all the new users to change their password the first time they log on </li>
+</ol>
+
+<hr>
+<h2>Part G: Late Breaking News (1 mark)</h2>
+<p class="description">
+Nairo and just attacked Eddy on the big hill outside work and as expected Eddy has counter attacked.  While this behaviour was acceptable, even encouraged, in their former jobs, it is not condoned here.
+</p>
+<ol>
+<li>Lock both Eddy and Nairo's accounts preventing them from logging on the <strong>s01</strong> until after their disciplinary hearing.  </li>
+</ol>
+
+<hr>
+<h2>Part H: Grading</h2>
+<p class="description">
+This process is identical to the steps you performed in Lab Tour exercise, just with a different script.
+</p>
+
+<ol>
+<h3>These steps run on w01, as alice</h3>
+<li>Open Firefox and logon to Canvas </li>
+<li>Download the file <a href="./host_info_ug.zip">host_info_ug.zip</a> from Canvas to w01.  Download this file to the <em>Downloads</em> directory.  This file is associated with the dropbox for this lab.  
+</li>
+
+</li>
+<li>Unzip the file.
+<pre class="code">
+cd ~/Downloads
+unzip host_info_ug.zip
+</pre>
+</li>
+<li>Check that the unzip succeeded,  (/home/alice/Downloads/host_info_ug.sh should now exist)
+<pre class="code">
+ls -l ~/Downloads
+</pre>
+</li>
+<li>Copy the script to <strong>s01</strong>
+<pre class="code">
+cd ~/Downloads
+scp ./host_info_ug.sh root@10.1.1.20:/tmp
+</pre>
+</li>
+<h3>These steps run on s01, as root</h3>
+<li>Run the script on s01
+<pre class="code">
+cd /tmp
+./host_info_ug.sh
+</pre>
+</li>
+<li>Check that the host report was generated (we're looking for s01_report.html)
+<pre class="code">
+ls -l /tmp
+</pre>
+</li>
+<h3>These steps run back on w01 as alice</h3>
+<li>Copy the report we just created on <strong>s01</strong> to <strong>w01</strong>
+<pre class="code">
+scp root@10.1.1.20:/tmp/s01_report_ug.html /tmp
+</pre>
+</li>
+<li>Inspect the report with Firefox
+<pre class="code">
+firefox /tmp/s01_report_ug.html 
+</pre>
+</li>
+
+<li>Submit <strong>s01_report_ug.html</strong> to Canvas, placing it in the drop-box for this lab.
+</li>
+</ol>
+
+
+
+</body>
+</html>

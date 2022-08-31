@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Lab: System Identity and Basic Networking
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Lab: System Identity and Basic Networking</h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Today we will investigate the configuration changes required to change a systems identity.  As administrators you will be required to perform these task when installing a new server or redeploying an old server to a new role or location.
+</p>
+<p class="description">
+We will first change an existing system's identity and then we will clone a system.
+</p>
+
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance.</li>
+		</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will demonstrate your understanding of this lab by completing an eLearn quiz.
+</p>
+
+<hr>
+<h2>Part A: Setup The Lab</h2>
+<ol>
+	<li>Import the appliance which contains w01 and s01.  </li>
+	<li>Boot w01 and s01 </li>
+</ol>
+
+
+<hr>
+<h2>Part B: Looking Around </h2>
+<p class="description">
+Before we change anything, we should have some practice with the tools that let us inspect a system's identity.
+</p>
+
+<ol>
+	<li>Log on to <strong>w01</strong>  as alice </li>
+	<li>Open an terminal window and log on to <strong>s01</strong> as root </li>
+	<li>What's the hostname?
+	<pre class="code">
+hostname
+</pre>
+	</li>
+	<li>What network cards are installed?
+	<pre class="code">
+ip link
+</pre>
+	</li>
+	<li>What IP addresses are configured?
+	<pre class="code">
+ip addr
+</pre>
+	</li>
+	<li>What connections are managed by Network Manager?
+<pre class="code">
+nmcli connection show 
+</pre>
+	</li>
+	<li>See everything Network Manager knows about enp0s3.
+	<pre class="code">
+nmcli connection show enp0s3
+</pre>
+	</li>
+
+	<li>What <em>name to IP address mappings are stored locally?</em>
+	<pre class="code">
+cat /etc/hosts
+</pre>
+	</li>
+	<li>Can we exchange ICMP Echo (a.k.a. ping) packets with w01
+<pre class="code">
+ping  -c 3 10.1.1.10
+</pre>
+	</li>
+	<li>What happens when we ping a systems that does not exist?
+
+<pre class="code">
+ping -c 3 10.1.1.11
+</pre>
+	</li>
+	<li>Can we ping <strong>w01</strong> by name?
+<pre class="code">
+ping -c 3 w01
+</pre>
+	</li>
+	<li>How did <strong>w01</strong> get turned into <strong>10.1.1.10</strong>?
+				<a href="javascript:unhide('A1')">Answer</a>
+				<span id="A1" class="hidden">
+				<em>The system looked in /etc/hosts for the first line matching w01</em>
+				</span>
+	</li>
+</ol>
+
+<hr>
+<h2>Part C: Redeploy s01</h2>
+<p class="description">
+Out boss has just informed us that we no longer need <strong>s01</strong>, but we do need a new server <strong>s02</strong> - time to redeploy <strong>s01</strong> as <strong>s02</strong> with an IP address of <strong>10.1.1.30</strong>
+</p>
+
+<ol>
+<li>Log on to <strong>s01</strong> as root, log on from the console not from w01 
+<em>We will be changing the IP address which can get messy if we are logged on over the network.</em>
+</li>
+<h3>Change the Hostname</h3>
+<li>To change the hostname we must edit <strong>/etc/hostname</strong> and make it look like this...
+<pre class="code">
+s02
+</pre>
+</li>
+<li>Check our work.
+<pre class="code">
+hostname
+</pre>
+</li>
+<li>Did the hostname change?
+				<a href="javascript:unhide('A2')">Answer</a>
+				<span id="A2" class="hidden">
+				<em>No.  /etc/hostname is a configuration file that is only read on boot.</em>
+				</span>
+
+</li>
+<li>Update the hostname, we could use the command <span class=cmd>hostname s02</span> to change the hostname without rebooting, but it's safer to reboot, that way we can be sure that we changed the configuration file correctly.
+<pre class="code">
+shutdown -r now
+</pre>
+</li>
+
+<li>Log back on to <strong>s02</strong> from w01 
+<pre class="code">
+ssh root@10.1.1.20
+</pre>
+</li>
+
+<li>Verify that our hostname change took place.
+<pre class="code">
+hostname
+</pre>
+</li>
+
+<h3>Change the IP address</h3>
+<li>Set the IP address mode to static
+<pre class="code">
+nmcli connection modify enp0s3 ipv4.method manual
+</pre>
+</li>
+<li>Set the static IP Address and network mask.
+<pre class="code">
+nmcli connection modify enp0s3 ipv4.addresses 10.1.1.30/24
+</pre>
+</li>
+<li>Check our work
+<pre class="code">
+ip addr
+</pre>
+</li>
+<li>Has our IP address changed?
+				<a href="javascript:unhide('A3')">Answer</a>
+				<span id="A3" class="hidden">
+			<em>No.  Network Manager only changed the stored configuration.</em>
+				</span>
+</li>
+
+<li>We have three choices to make the IP Address change effective
+<br>
+<br>
+<ol type="a">
+<li>Use the <span class=cmd>ip</span> command to change the address from the command line.  This is dangerous, because it does not use the config file we just changed and an error in the config file could go undiscovered until the next reboot.
+</li>
+<li>Reboot.  This is overkill.
+</li>
+<li>Tell Network Manager to apply the configuration.
+</li>
+</ol>
+Let's use option <strong>(c)</strong>, <em>Because this will change the IP address, it is best to do this from the console.</em>
+<pre class="code">
+nmcli connection up enp0s3
+</pre>
+</li>
+<li>Check our work
+<br>
+check our
+IP Address
+<pre class="code">
+ip addr
+</pre>
+ping ourself
+<pre class="code">
+ping -c 2 10.1.1.30
+</pre>
+ping w01
+<pre class="code">
+ping  -c 2 10.1.1.10
+</pre>
+ping ourself by name
+<pre class="code">
+ping -c 2 s02
+</pre>
+Ooops!  What's wrong?
+
+				<a href="javascript:unhide('A4')">Answer</a>
+				<span id="A4" class="hidden">
+			<em>We've changed the IP address but we have not changed <strong>/etc/hosts</strong> </em>
+</li>
+
+<h3>Update the hosts files</h3>
+<li> Add a line to <strong>/etc/hosts</strong> on <strong>s01</strong> that looks like this
+<pre class="code">
+10.1.1.30   s02
+</pre>
+</li>
+<li>Add a similar line to <strong>/etc/hosts</strong> on <strong>w01</strong>
+</li>
+<li>Check our working by pinging s02 from w01 by name and by piniging w01 from s02 by name.
+</li>
+</ol>
+
+<hr>
+<h2>Part D: Cloning </h2>
+<p class="description">
+Our boss has just informed us that we need a new server, <strong>s03</strong>, configured almost exactly like <strong>s02</strong> but with an IP address of 10.1.1.40 - time to clone!
+</p>
+
+<ol>
+
+<h3>VirtualBox Cloning</h3>
+<li>Shutdown s01 </li>
+<li>Use the VirtualBox administration GUI to clone s01
+	<ol type="a">
+	<li>Name your new VM s03  </li>
+	<li>Make a "full clone" </li>
+	<li>Make sure to select "Reinitialize the MAC address of all network cards."
+	</li>
+	</ol>	
+</li>
+<li>Boot the s03 VM </li>
+<li>Logon to the new VM from the console (note: hostname is still s02)</li>
+
+<h3>Configure our IP address</h3>
+<li>Set the static IP Address and network mask.
+<pre class="code">
+nmcli connection modify enp0s3 ipv4.addresses 10.1.1.40/24
+</pre>
+</li>
+
+
+<h3>Configure our host name</h3>
+<li>Change the hostname by editing <strong>/etc/hostname</strong> 
+
+<li>Update <strong>/etc/hosts</strong> on <strong>s03</strong> and <strong>w01</strong> </li>
+
+<li>reboot s03 </li>
+
+<li>Check our work
+<ol type="a">
+<li>log on to s03 and verify that the hostname is correct </li>
+<li>ping w01 from s03 by ip address </li>
+<li>ping w01 from s03 by name </li>
+<li>ping s03 from w01 by ip address </li>
+<li>ping s03 from w01 by name </li> 
+</ol>
+</li>
+</ol>
+
+<hr>
+<h2>Part E: Grading</h2>
+<pre class="code">
+Complete the eLearn quiz for this lab.
+</pre>
+</body>
+</html>

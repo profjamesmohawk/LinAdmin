@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Lab: Virtual Lab Tour
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Lab: Virtual Lab Tour </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Today we will take a tour of the virtual lab environment we will be using to practice our skills as administrators.  Our virtual lab contains two systems initially, we will add more later.  The system named w01 is your workstation, it has a GUI and is connected to the Open Internet for your convenience.  The system named s01 is our first server, it has no GUI. 
+</p>
+<p class="description">
+Relax and take a deep breath, it's time to dive back into UNIX.  This lab will require you to call upon the UNIX skills you already know and to build a few new ones.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab-revX.ova</strong> </li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+<h3>Before you start this lab you should be familiar with:</h3>
+	<ul>
+		<li>UNIX commands: ls, cd, cp, mv,  ...</li>
+	</ul>
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will demonstrate your understanding of this lab by uploading the output of a script file to Canvas and by completing an Canvas quiz.
+</p>
+
+<hr>
+<h2>Overview:</h2>
+<p class="description"> We will import the basic virtual lab environment and become familiar with the skill we need to perform the following labs. </p>
+<p> <IMG src="./lab_tour.png" alt=""> </p>
+
+<hr>
+<h2>Part A: Import The Appliance</h2>
+<p class="description">
+All three servers, w01, s01, and y01 are packaged in a single appliance.  Every time we import the appliance, two new virtual machines will be created along with their network connections.
+</p>
+
+<ol>
+<li>Open Oracle VirtualBox software </li>
+<li>Select "Import Appliance" from the File menu.  </li>
+<li>Find the appliance file on your system (comp-10018-vlab-revX.ova)</li>
+<li>Click "Import" </li>
+<li>Wait patiently, importing the VM could take a few minutes </li>
+<h3>Congratulations</h3>
+<p class="description">
+You should now have the virtual lab systems available in VirtualBox.
+</p>
+
+</ol>
+
+
+<hr>
+<h2>Part B: Boot The w01 and s01</h2>
+<p class="description">
+This is probably the easiest part of the lab.  Simply start each VM.
+</p>
+<p class="description">
+<strong>Note:</strong> For this lab we only need s01 and w01.
+</p>
+
+
+<hr>
+<h2>Part C: Explore w01</h2>
+<p class="description">
+Most labs will start with us logging on to w01, so let's start there.  
+</p>
+
+<ol>
+	<li>Log on to w01 as <strong>alice</strong>, her password is <strong>userpass</strong> </li>
+	<li>Check Internet Access
+		<ol type="a">
+			<li>Open the Firefox web browser and log on to Canvas
+			</li>
+		</ol>
+	</li>
+</ol>
+
+<hr>
+<h2>Part D: Explore s01</h2>
+<p class="description">
+Most of our administration work will be done on <strong>s01</strong>.  But s01 does not have a GUI, just a very basic small console window.  In this section we will log on to s01 directly at the console and over the network from <strong>w01</strong> using <strong>ssh</strong>.
+</p>
+
+<ol>
+<li>Log on to <strong>s01</strong> from the console window.  Log on as <strong>root</strong>, her password is <strong>adminpass</strong>
+</li>
+	<li>Answer the following questions:
+		<ol type="a">
+			<li>What is root's home directory?  		
+			</li>
+			<li>What is the largest file in the <span class=cmd>/opt/Mohawk/books</span>  directory? 
+				<a href="javascript:unhide('Hint2')">Hint</a>
+				<span id="Hint2" class="hidden">
+				<em>ls -lh</em>
+				</span>
+			</li>
+			<li>How many files are in the <span class=cmd>/opt/Mohawk/data</span> directory?
+				<a href="javascript:unhide('Hint3')">Hint</a>
+				<span id="Hint3" class="hidden">
+				<em>ls | wc</em>
+				</span>
+			</li>
+		</ol>
+	</li>
+	<li>Check Internet Access
+		<ol type="a">
+			<li>Use the <span class=cmd>ping</span> utility to see if we can contact <strong>w01</strong>
+			<pre class="code">
+ping  -c 3 10.1.1.10 </pre>
+			</li>
+			<li>Use the <span class=cmd>ping</span> utility to see if we can contact Google's free DNS server at <strong>8.8.8.8</strong>
+			<br><em>This is a good server to use for tests as it usually up, and answers pings.</em>
+			<pre class="code">
+ping  -c 3 8.8.8.8 </pre>
+			</li>
+			<a href="javascript:unhide('ER1')">Expected Results</a>
+				<span id="ER1" class="hidden">
+				<em><br>Ping to w01, 10.1.1.10, should succeed. <br>Ping to 8.8.8.8 should fail - s01 is not connected to the 'Net</em>
+				</span>
+		</ol>
+	</li>
+</ol>
+
+<hr>
+<h2>Part E: Remote Access </h2>
+<p class="description">
+Part D above should have shown us that the console on s01 is nowhere near as nice and the terminal window we can have on w01: it's small, we can't scroll back, we can't cut-and-paste.  Fear not, we can access s01 from w01, not only do we get a nicer terminal, but we can work from out virtual desk, rather than hiking into the load, cold, and uncomfortable virtual server room (where they do not allow coffee).
+</p>
+
+<ol>
+
+<li>Log onto <strong>w01</strong> as <strong>alice</strong>
+</li>
+<li>Open a terminal window
+</li>
+
+<li>Logon to <strong>s01</strong> from <strong>w01</strong> over the network using <span class=cmd>ssh</span>, the secure shell.
+<pre class="code">
+ssh root@10.1.1.20
+</pre>
+</li>
+</li>
+<li>Use the <span class=cmd>hostname</span> command to verify that you are now logged on to <strong>s01</strong>
+<pre class="code">
+hostname
+</pre>
+</li>
+
+<li>Let the world know we were here by creating a file named <strong>/root/hello</strong> containing the text <em>I was here</em>
+<ul>
+<li>You may use vi/vim or nano to edit the file </li>
+<li>For an excellent vim tutorial run the <strong>vimtutor</strong> command </li>
+<li>A <a href="https://staffwww.fullcoll.edu/sedwards/Nano/IntroToNano.html">nano introduction</a> from California's oldest community college.  </li>
+<li>Don't forget the file name is hello <strong>not</strong> hello.txt </li>
+</ul>
+</li>
+
+<li>Logoff <strong>s01</strong>
+<pre class="code">
+exit
+</pre>
+</li>
+
+<li>Use the <span class=cmd>hostname</span> command to verify that you are 'back on' <strong>w01</strong>
+<pre class="code">
+hostname
+</pre>
+</li>
+</ol>
+
+
+<hr>
+<h2>Part F: Remote File Copy</h2>
+<p class="description">
+We can use <span class=cmd>scp</span>, the secure copy command, to copy files from one system to an other over the network.  This is a very useful tool in every administrator's kit.  The <span class=cmd>scp</span> command works very much like the <span class=cmd>cp</span> command you already know.  To extend the <span class=cmd>cp</span> command across the network we need to expand the format of the source and destination arguments to include user names and host names.  Don't worry if this a little confusing right now, we'll have plenty of practice before the course is over ;)  Some examples will help...
+</p>
+
+
+<ol >
+<li>Create a file in alice's home directory <strong>on w01</strong>
+<pre class="code">
+ls &gt; f1.txt
+</pre>
+</li>
+<li>Copy a file, f1.txt, from alice's home directory on w01 to the /tmp directory on s01.
+<ol type="a">
+<li>Log on to w01 as alice and open a terminal window.
+</li>
+<li>Use scp to copy f1.txt to s01
+<pre class="code">
+scp f1.txt root@10.1.1.20:/tmp/f1.txt
+</pre>
+</li>
+<li>Log on to the console of s01 as root
+</li>
+<li>Check that /tmp/f1.txt exists and has a recent modification date.
+<pre class="code">
+ls -l /tmp/f1.txt
+</pre>
+</li>
+</ol>
+</li>
+</ol>
+
+<hr>
+<h2>Part G: Running A Grading Script</h2>
+<p class="description">
+Throughout this course, including exams, we will run scripts on our systems to collect configuration information for grading.  These scripts are located on Canvas and the configuration reports they output must be uploaded to Canvas for grading.  But, our servers, like s01, are on the blue network and can not access Canvas.  This is where scp comes to the rescue.  We now will walk through this process.  <br><br><em>Be patient and be careful, there is a lot going on here.  Take a deep breath and go slowly.</em>
+</p>
+
+<ol>
+<h3>These steps run on w01, as alice</h3>
+<li>Open Firefox and logon to Canvas </li>
+<li>Download the file <a href="./host_info_1.zip">host_info_1.zip</a> from Canvas to w01.  Download this file to the <em>Downloads</em> directory.  This file is associated with the dropbox for this lab.  
+</li>
+
+</li>
+<li>Unzip the file.
+<pre class="code">
+cd ~/Downloads
+unzip host_info_1.zip
+</pre>
+</li>
+<li>Check that the unzip succeeded,  (/home/alice/Downloads/host_info_1.sh should now exist)
+<pre class="code">
+ls -l ~/Downloads
+</pre>
+</li>
+<li>Copy the script to <strong>s01</strong>
+<pre class="code">
+cd ~/Downloads
+scp ./host_info_1.sh root@10.1.1.20:/tmp
+</pre>
+</li>
+<h3>These steps run on s01, as root</h3>
+<li>Run the script on s01
+<pre class="code">
+cd /tmp
+./host_info_1.sh
+</pre>
+</li>
+<li>Check that the host report was generated (we're looking for s01_report.html)
+<pre class="code">
+ls -l /tmp
+</pre>
+</li>
+<h3>These steps run back on w01 as alice</h3>
+<li>Copy the report we just created on <strong>s01</strong> to <strong>w01</strong>
+<pre class="code">
+scp root@10.1.1.20:/tmp/s01_report.html /tmp
+</pre>
+</li>
+<li>Inspect the report with Firefox
+<pre class="code">
+firefox /tmp/s01_report.html 
+</pre>
+</li>
+
+<li>Submit <strong>s01_report.html</strong> to Canvas, placing it in the drop-box for this lab.
+</li>
+</ol>
+
+<hr>
+<h2>Part H: Quiz</h2>
+<p class="description">
+Complete the Canvas quiz for this lab.
+</p>
+
+<hr>
+<h2>Part I: Put Away Our Toys</h2>
+<p class="description">
+Like most computer systems, we should never just power-off our systems, we should shut them down gracefully.
+</p>
+<ol>
+<li>Log on to s01 as root (root's password is <em>adminpass</em> </li>
+<li>Run the <span class=cmd>shutdown</span> command
+<pre class="code">
+shutdown -h now
+</pre>
+</li>
+<li>From the GUI on w01 select <em>Shutdown</em> from the <em>System</em> menu
+</li>
+<li>Shutting down y01.  If you started y01, you can shut it down by closing the host VM window and selecting 'Send the shutdown signal'.
+</li>
+</ol>
+
+<strong><em>Note: Our systems are packaged as an appliance we can get away with just powering them down, they will be created from scratch next lab.  This might come in handy at the end of a lab when time is short.</em></strong>
+</body>
+</html>

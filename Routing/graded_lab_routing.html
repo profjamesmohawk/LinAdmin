@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Graded Lab: Routing	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Graded Lab: Routing </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+The configuration we built in the routing lab has proved useful but the owners of s01 are upset. It seems they resent their expensive server being used as a router for those lazy no good owners of s02.  Your boss has commanded you to "stop using s01 as a router, but maintain the yellow and blue network separation."  Fortunately, you have an extra small server with two NICs in inventory.  Your task is to deploy it as a router named r01.
+</p>
+<h3>Here is what you will build today</h3>
+<p> <IMG src="./graded_lab_routing.png" alt=""> </p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will run a host info script on s02 and on w01 submitting two output files to eLearn.
+</p>
+
+<hr>
+<h2>Part A: Setup The Lab</h2>
+<p class="description">
+Use VirturalBox cloning to create the VM's you need.  Both <strong>r01</strong> and <strong>s02</strong> should be created by cloning <strong>s01</strong>
+</p>
+<h3>Requirements:</h3>
+<ol>
+<li>s02 must be able to communicate with s01 and w01 </li>
+<li>hosts files must be updated as appropriate.   With host names <strong>r01yellow</strong> and <strong>r01blue</strong> configured.  </li>
+<li>w01 must continue to have internet access. </li>
+<li>Install the <span class=cmd>traceroute</span> command on <strong>s02</strong> (it is on y01)
+</li>
+</ol>
+<h3>Hints:</h3>
+<ol>
+<li>Disable the firewall on r01
+<pre class="code">
+systemctl disable firewalld
+systemctl stop firewalld
+</pre>
+</li>
+<li>Add a default gateway to y01 </li>
+</ol>
+
+<hr>
+<h2>Part B: Evaluation</h2>
+<p class="description">
+Run the host info script, <a href="./host_info_routing.zip">host_info_routing.sh</a> on each of <strong>s02</strong> and <strong>w01</strong> and submit the output files to eLearn.
+</p>
+</body>
+</html>

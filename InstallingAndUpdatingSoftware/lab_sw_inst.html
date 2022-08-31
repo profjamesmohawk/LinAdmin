@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Lab: Installing And Updating Software
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Lab: Installing And Updating Software </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+Installing new software and keeping installed software current is one of an administrator's core duties, today we get to practice these skills.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>The RHEL 8.3 ISO image</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will demonstrate your understanding of this lab by completing an eLearn quiz.
+</p>
+
+
+
+<hr>
+<h2>Part A: Managing software with RPM</h2>
+<p class="description">
+The RedHat Package Manager (RPM) is the cornerstone on software management on Red Hat systems.  In this section we will use the <span class=cmd>rpm</span> command to install software on <strong>s01</strong> from RPM files.
+</p>
+<p class="description">
+You may recall that y01 is our YUM software repository server.  We will get the RPM file we need from there.  y01 uses http to access the repositories.  
+We can take advantage of this and use curl, a command line, file transfer tool.
+</p>
+<p class="description">
+<strong>Note:</strong> all operations in this section will be conducted on <strong>s01</strong> as <strong>root</strong>
+</p>
+
+<ol>
+<li>Use <span class=cmd>curl</span> to download the RPM file that contains the unzip command.
+<pre class="code">
+curl http://y01/mini83/unzip-6.0-43.el8.x86_64.rpm &gt; unzip-6.0-43.el8.x86_64.rpm
+</pre>
+</li>
+<li>Check our work with the md5sum command.
+<pre class="code">
+md5sum unzip-6.0-43.el8.x86_64.rpm
+</pre>
+The output should look like..
+<pre class="code">
+065f76d47c907d07cca8c719e0ecc1c0  unzip-6.0-43.el8.x86_64.rpm
+</pre>
+</li>
+<li><strong>Note:</strong> If your md5 does not match, do not continue.
+</li>
+
+<li>Use <span class=cmd>rpm</span> in query mode (<span class=cmd>-q</span>) to tell us about packages.
+	<ol>
+	<li>List all the packages installed
+<pre class="code">
+rpm -qa
+</pre>
+	</li>
+	<li>Determine which package the <strong>/bin/bash</strong> file came from
+<pre class="code">
+rpm -qf /bin/bash
+</pre>
+	</li>
+	<li>Determine the name of the package stored in the RPM file <strong>unzip-6.0-43.el8.x86_64.rpm</strong>
+<pre class="code">
+rpm -qp unzip-6.0-43.el8.x86_64.rpm
+</pre>
+	</li>
+	<li>List the files stored in the package <strong>unzip-6.0-43.el8.x86_64.rpm</strong>
+<pre class="code">
+rpm -qlp unzip-6.0-43.el8.x86_64.rpm
+</pre>
+	</li>
+	<li>Display the information about the package stored in  <strong>/unzip-6.0-43.el8.x86_64.rpm</strong>
+<pre class="code">
+rpm -qip unzip-6.0-43.el8.x86_64.rpm
+</pre>
+	</li>
+	</ol>
+</li>
+<li>Use <span class=cmd>rpm</span> to install the <span class=cmd>unzip</span> command
+<ol>
+	<li>Is unzip currently installed?
+<pre class="code">
+unzip
+</pre>
+<pre class="code">
+rpm -qa | grep -i unzip
+</pre>
+	</li>
+	<li>Install unzip
+<pre class="code">
+rpm -iv unzip-6.0-43.el8.x86_64.rpm
+</pre>
+	</li>
+	<li>Is unzip installed now?
+<pre class="code">
+unzip
+</pre>
+<pre class="code">
+rpm -qa | grep -i unzip
+</pre>
+	</li>
+</ol>
+
+</li>
+
+<li>Install the gcc compiler.
+<ol>
+<li>Use <span class=cmd>curl</span> to download the RPM file that contains the gcc command.
+<pre class="code">
+curl http://y01/mini83/gcc-8.3.1-5.1.el8.x86_64.rpm &gt; gcc-8.3.1-5.1.el8.x86_64.rpm
+</pre>
+</li>
+<li>Check our work with the md5sum command.
+<pre class="code">
+md5sum gcc-8.3.1-5.1.el8.x86_64.rpm
+</pre>
+The output should look like..
+<pre class="code">
+eef2ad4dfee421f7378c9efb535a2e93  gcc-8.3.1-5.1.el8.x86_64.rpm
+</pre>
+</li>
+	<li>Run <span class=cmd>rpm -i</span> to install the package.
+<pre class="code">
+rpm -iv gcc-8.3.1-5.1.el8.x86_64.rpm
+</pre>
+				<a href="javascript:unhide('A1')">What happened?</a>
+				<span id="A1" class="hidden">
+				<em>The install failed because gcc requires other packages to be installed in order to work. We need to install those first </em>
+				</span>
+				<br>
+				<a href="javascript:unhide('A1a')">What do we do next?</a>
+				<span id="A1a" class="hidden">
+				<em>We could use RPM to install each dependency in turn, but that seems like a lot of work...
+				</em>
+				</span>
+	</li>
+	</ol>
+</li> 
+</li>
+</ol>
+<hr>
+<h2>Part B: Installing software with yum</h2>
+<p class="description">
+Yellowdog Updater Modified (yum) adds automatic dependency resolution to RPM.
+</p>
+
+<ol>
+<li>Use yum to install the GNU C++ compiler(<strong>gcc</strong>) on <strong>s01</strong>
+<pre class="code">
+yum install gcc
+</pre>
+	<ol type="a">
+		<li>How man dependencies did yum automatically install?
+				<a href="javascript:unhide('A2')">Answer</a>
+				<span id="A2" class="hidden">
+				<em>9</em>
+				</span>
+		</li>
+		<li>How did yum know where to find <strong>gcc</strong>?
+				<a href="javascript:unhide('A3')">Hint</a>
+				<span id="A3" class="hidden">
+				<em>Have a look in /etc/yum.repos.d (heads-up, there will be quiz question on this)</em>
+				</span>
+		</li>
+	</ol>
+
+
+</li>
+</ol>
+<hr>
+<h2>Part C: Updating software with YUM</h2>
+<p class="description">
+In our tightly controlled lab we do not update from the Red Hat repositories available on the open Internet.  We get all our software from our own private YUM server, y01.
+</p>
+<ol>
+<li>On <strong>s01</strong> run the yum update command
+<pre class="code">
+yum update
+</pre>
+<em>This should update just 3 packages: curl, libcurl, and sudo</em>
+</li>
+</ol>
+<hr>
+<h2>Part D: Optional Activity -  Updating Software with yum, from the Red Hat repos</h2>
+<p class="description">
+As we mentioned in the lecture, a Red Hat developer account is required to talk to the repositories required to patch.  <br><strong>You do not need to sign up for a Red Hat developer account.  This section is optional.  It will not be on any evaluation.</strong>
+<br><strong>You are encouraged to sign-up, it is free and you get access to more documentation as well.</strong>
+</p>
+<ol>
+	
+	<li>Use <span class=cmd>yum</span> to update the software on <strong>y01</strong>
+<pre class="code">
+yum update
+</pre>
+	<ol type="a">
+		<li>Well, that was uneventful!  Why are there no updates for <strong>y01</strong>?
+				<a href="javascript:unhide('A7')">Answer</a>
+				<span id="A7" class="hidden">
+				<em>y01 was installed from the DVD, and the only repo it can see is the DVD - so it makes sense that it is "up to date"</em> </span>
+		</li>
+		<li>Who <strong>can</strong> see the current, up to date repos on the open internet?
+				<a href="javascript:unhide('A8')">Answer</a>
+				<span id="A8" class="hidden">
+				<em><strong>w01 can!</strong></em> </span>
+		</li>
+
+	</ol>
+	</li>
+	<li>Use <span class=cmd>yum</span> to update the software on <strong>w01</strong> <em>(This could take a few minutes)
+	<ul type="a">
+		<li>Visit <a href="https://developers.redhat.com/register">developers.redhat.com</a> sign up and get your username and password.</li>
+		<li>Register w01 with Red Hat
+<pre class="code">
+subscription-manager register --username={YOUR_USER_NAME} --password={YOUR_PASSWD} --auto-attach
+</pre>
+		</li>
+	<li>Allow subscription manager to manage repo files
+<pre class="code">
+subscription-manager config --rhsm.manage_repos=1
+</pre>
+	</li>
+	<li>Perform the update.
+<pre class="code">
+yum update
+</pre>
+	</li>
+	<li>Reboot <strong>w01</strong> 
+				<a href="javascript:unhide('A9')">Why?</a>
+				<span id="A9" class="hidden">
+				<em>The update should have included a new kernel and we need to reboot in order to use it.</em> </span>
+
+	</li>
+	<li>Give back the license we were using (we won't need it again)
+	<pre class="code">
+subscription-manager unregister
+</pre>
+	</li>
+	<br><strong>Note:</strong> Updating the kernel can break the VirtualBox guest extensions.  If this happens, don't panic you can import a fresh w01 from the OVA appliance.
+	</ul>
+</ol>
+
+
+<hr>
+<h2>Part E: Evaluation</h2>
+<p class="description">
+Complete the Canvas quiz for this lab.
+</p>
+
+</body>
+</html>

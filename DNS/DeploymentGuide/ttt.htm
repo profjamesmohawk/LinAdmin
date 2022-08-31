@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ext="http://exslt.org/common" class="chrometwo"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.2. Interface Configuration Files</title><meta name="generator" content="publican v4.3.2" /><meta name="package" content="Red_Hat_Enterprise_Linux-Deployment_Guide-6-en-US-8-3" /><link rel="stylesheet" type="text/css" href="../../../../../chrome.css" /><link rel="stylesheet" type="text/css" href="../../../../../db4.css" /><link rel="stylesheet" type="text/css" href="../../../../../RedHat/en-US/css/brand.css" /><link rel="stylesheet" type="text/css" href="../../../../../print.css" media="print" /><link rel="stylesheet" type="text/css" href="../../../../../site_overrides.css" /><script type="text/javascript" src="../../../../labels.js"></script><script type="text/javascript" src="../../../../../RedHat/en-US/scripts/highlight.pack.js"></script><link rel="home" href="index.html" title="Deployment Guide" /><link rel="up" href="ch-Network_Interfaces.html" title="Chapter 11. Network Interfaces" /><link rel="prev" href="ch-Network_Interfaces.html" title="Chapter 11. Network Interfaces" /><link rel="next" href="ch11s02s02.html" title="11.2.2. Specific ifcfg Options for Linux on System z" /><link rel="stylesheet" href="https://access.redhat.com/chrome_themes/umbra/s/chrometwo.css" /><script src="https://access.redhat.com/webassets/avalon/j/lib/require.js"></script><script type="text/javascript" src="../../../../../toc.js"></script></head><body class="chrometwo "><div id="chrometwo"><div id="main"><div id="navigation"></div><ul class="docnav top"><li class="previous"><a accesskey="p" href="ch-Network_Interfaces.html"><strong>Prev</strong></a></li><li class="doctoc"><div class="toc"><select class="pageSelect"><option value="index.html" class="menu-level-0">Document Home</option><option value="s1-networkscripts-interfaces.html#s2-networkscripts-interfaces-eth0" class="menu-level-0">11.2.1. Ethernet Interfaces</option><option value="ch11s02s02.html" class="menu-level-0">11.2.2. Specific ifcfg Options for Linux on System z</option><option value="ch11s02s03.html" class="menu-level-0">11.2.3. Required ifcfg Options for Linux on System z</option><option value="s2-networkscripts-interfaces-chan.html" class="menu-level-0">11.2.4. Channel Bonding Interfaces</option><option value="sec-Configuring_a_VLAN_over_a_Bond.html" class="menu-level-0">11.2.5. Configuring a VLAN over a Bond</option><option value="s2-networkscripts-interfaces_network-bridge.html" class="menu-level-0">11.2.6. Network Bridge</option><option value="s2-networkscripts-interfaces_802.1Q-vlan-tagging.html" class="menu-level-0">11.2.7. Setting Up 802.1Q VLAN Tagging</option><option value="s2-networkscripts-interfaces-alias.html" class="menu-level-0">11.2.8. Alias and Clone Files</option><option value="s2-networkscripts-interfaces-ppp0.html" class="menu-level-0">11.2.9. Dialup Interfaces</option><option value="s2-networkscripts-interfaces-other.html" class="menu-level-0">11.2.10. Other Interfaces</option></select></div></li><li class="next"><a accesskey="n" href="ch11s02s02.html"><strong>Next</strong></a></li></ul><div class="section"><div class="titlepage"><div><div><h2 class="title"><a id="s1-networkscripts-interfaces">
+      ⁠</a>11.2. Interface Configuration Files</h2></div></div></div><a id="idp8646848" class="indexterm"></a><a id="idp8648256" class="indexterm"></a><div class="para">
+			Interface configuration files control the software interfaces for individual network devices. As the system boots, it uses these files to determine what interfaces to bring up and how to configure them. These files are usually named <code class="filename">ifcfg-<em class="replaceable">name</em></code>, where <em class="replaceable">name</em> refers to the name of the device that the configuration file controls.
+		</div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="s2-networkscripts-interfaces-eth0">
+      ⁠</a>11.2.1. Ethernet Interfaces</h3></div></div></div><a id="idp8652608" class="indexterm"></a><a id="idp8654528" class="indexterm"></a><div class="para">
+				One of the most common interface files is <code class="filename">/etc/sysconfig/network-scripts/ifcfg-eth0</code>, which controls the first Ethernet <em class="firstterm">network interface card</em> or <acronym class="acronym">NIC</acronym> in the system. In a system with multiple NICs, there are multiple <code class="filename">ifcfg-eth<em class="replaceable">X</em></code> files (where <em class="replaceable">X</em> is a unique number corresponding to a specific interface). Because each device has its own configuration file, an administrator can control how each interface functions individually.
+			</div><div class="para">
+				The following is a sample <code class="filename">ifcfg-eth0</code> file for a system using a fixed <code class="systemitem">IP</code> address:
+			</div><pre class="programlisting">DEVICE=eth0
+BOOTPROTO=none
+ONBOOT=yes
+NETMASK=255.255.255.0
+IPADDR=10.0.1.27
+USERCTL=no</pre><div class="para">
+				The values required in an interface configuration file can change based on other values. For example, the <code class="filename">ifcfg-eth0</code> file for an interface using <code class="systemitem">DHCP</code> looks different because <code class="systemitem">IP</code> information is provided by the <code class="systemitem">DHCP</code> server:
+			</div><pre class="programlisting">DEVICE=eth0
+BOOTPROTO=dhcp
+ONBOOT=yes</pre><div class="para">
+				<span class="application"><strong>NetworkManager</strong></span> is graphical configuration tool which provides an easy way to make changes to the various network interface configuration files (see <a class="xref" href="ch-NetworkManager.html">Chapter 10, <em>NetworkManager</em></a> for detailed instructions on using this tool).
+			</div><div class="para">
+				However, it is also possible to manually edit the configuration files for a given network interface.
+			</div><div class="para">
+				Below is a listing of the configurable parameters in an Ethernet interface configuration file:
+			</div><div class="variablelist"><dl class="variablelist"><dt><span class="term"> <code class="option">BONDING_OPTS</code>=<em class="replaceable">parameters</em> </span></dt><dd><div class="para">
+							sets the configuration parameters for the bonding device, and is used in <code class="filename">/etc/sysconfig/network-scripts/ifcfg-bond<em class="replaceable">N</em></code> (see <a class="xref" href="s2-networkscripts-interfaces-chan.html">Section 11.2.4, “Channel Bonding Interfaces”</a>). These parameters are identical to those used for bonding devices in <code class="filename">/sys/class/net/<em class="replaceable">bonding_device</em>/bonding</code>, and the module parameters for the bonding driver as described in <span class="emphasis"><em><code class="filename">bonding</code> Module Directives</em></span>.
+						</div><div class="para">
+							This configuration method is used so that multiple bonding devices can have different configurations. In Red Hat Enterprise Linux 6, place all interface-specific bonding options after the <code class="option">BONDING_OPTS</code> directive in <code class="filename">ifcfg-<em class="replaceable">name</em></code> files. See <a class="xref" href="s2-networkscripts-interfaces-chan.html#important-Where_to_specify_bonding_module_parameters">Where to specify bonding module parameters</a> for more information.
+						</div></dd><dt><span class="term"> <code class="option">BOOTPROTO</code>=<em class="replaceable">protocol</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">protocol</em> is one of the following:
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+									<code class="literal">none</code> — No boot-time protocol should be used.
+								</div></li><li class="listitem"><div class="para">
+									<code class="literal">bootp</code> — The <code class="systemitem">BOOTP</code> protocol should be used.
+								</div></li><li class="listitem"><div class="para">
+									<code class="literal">dhcp</code> — The <code class="systemitem">DHCP</code> protocol should be used.
+								</div></li></ul></div></dd><dt><span class="term"><code class="option">BROADCAST</code>=<em class="replaceable">address</em></span></dt><dd><div class="para">
+							where <em class="replaceable">address</em> is the broadcast address. This directive is deprecated, as the value is calculated automatically with <code class="command">ipcalc</code>.
+						</div></dd><dt><span class="term"> <code class="option">DEVICE</code>=<em class="replaceable">name</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">name</em> is the name of the physical device (except for dynamically-allocated <code class="systemitem">PPP</code> devices where it is the <span class="emphasis"><em>logical name</em></span>).
+						</div></dd><dt><span class="term"><code class="option">DHCP_HOSTNAME</code>=<em class="replaceable">name</em></span></dt><dd><div class="para">
+							where <em class="replaceable">name</em> is a short host name to be sent to the <code class="systemitem">DHCP</code> server. Use this option only if the <code class="systemitem">DHCP</code> server requires the client to specify a host name before receiving an <code class="systemitem">IP</code> address.
+						</div></dd><dt><span class="term"><code class="option">DHCPV6C</code>=<em class="replaceable">answer</em></span></dt><dd><div class="para">
+							where <em class="replaceable">answer</em> is one of the following:
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+									<code class="literal">yes</code> — Use <code class="systemitem">DHCP</code> to obtain an <code class="systemitem">IPv6</code> address for this interface.
+								</div></li><li class="listitem"><div class="para">
+									<code class="literal">no</code> — Do not use <code class="systemitem">DHCP</code> to obtain an <code class="systemitem">IPv6</code> address for this interface. This is the default value.
+								</div></li></ul></div><div class="para">
+							An <code class="systemitem">IPv6</code> link-local address will still be assigned by default. The link-local address is based on the MAC address of the interface as per <em class="citetitle">RFC 4862</em>.
+						</div></dd><dt><span class="term"><code class="option">DHCPV6C_OPTIONS</code>=<em class="replaceable">answer</em></span></dt><dd><div class="para">
+							where <em class="replaceable">answer</em> is one of the following:
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+									<code class="option">-P</code> — Enable <code class="systemitem">IPv6</code> prefix delegation.
+								</div></li><li class="listitem"><div class="para">
+									<code class="option">-S</code> — Use <code class="systemitem">DHCP</code> to obtain stateless configuration only, not addresses, for this interface.
+								</div></li><li class="listitem"><div class="para">
+									<code class="option">-N</code> — Restore normal operation after using the <code class="option">-T</code> or <code class="option">-P</code> options.
+								</div></li><li class="listitem"><div class="para">
+									<code class="option">-T</code> — Use <code class="systemitem">DHCP</code> to obtain a temporary <code class="systemitem">IPv6</code> address for this interface.
+								</div></li><li class="listitem"><div class="para">
+									<code class="option">-D</code> — Override the default when selecting the type of <em class="firstterm">DHCP Unique Identifier</em> (<acronym class="acronym">DUID</acronym>) to use.
+								</div><div class="para">
+									By default, the <code class="systemitem">DHCP</code> client (dhclient) creates a <em class="firstterm">DHCP Unique Identifier</em> (<acronym class="acronym">DUID</acronym>) based on the link-layer address (DUID-LL) if it is running in stateless mode (with the <code class="option">-S</code> option, to not request an address), or it creates an identifier based on the link-layer address plus a timestamp (DUID-LLT) if it is running in stateful mode (without <code class="option">-S</code>, requesting an address). The <code class="option">-D</code> option overrides this default, with a value of either <code class="literal">LL</code> or <code class="literal">LLT</code>.
+								</div></li></ul></div></dd><dt><span class="term"><code class="option">DNS<em class="replaceable">{1,2}</em></code>=<em class="replaceable">address</em></span></dt><dd><div class="para">
+							where <em class="replaceable">address</em> is a name server address to be placed in <code class="filename">/etc/resolv.conf</code> provided that the <code class="option">PEERDNS</code> directive is not set to <code class="literal">no</code>.
+						</div></dd><dt><span class="term"> <code class="option">ETHTOOL_OPTS</code>=<em class="replaceable">options</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">options</em> are any device-specific options supported by <code class="command">ethtool</code>. For example, if you wanted to force 100Mb, full duplex:
+						</div><pre class="programlisting">ETHTOOL_OPTS="autoneg off speed 100 duplex full"</pre><div class="para">
+							Instead of a custom initscript, use <code class="option">ETHTOOL_OPTS</code> to set the interface speed and duplex settings. Custom initscripts run outside of the network init script lead to unpredictable results during a post-boot network service restart.
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="important"><div class="admonition_header"><p><strong>Set <span class="quote">“<span class="quote">autoneg off</span>”</span> before changing speed or duplex settings</strong></p></div><div class="admonition"><div class="para">
+								Changing speed or duplex settings almost always requires disabling auto-negotiation with the <code class="option">autoneg off</code> option. This option needs to be stated first, as the option entries are order-dependent.
+							</div></div></div><div class="para">
+							See <a class="xref" href="s1-ethtool.html">Section 11.8, “Ethtool”</a> for more <span class="application"><strong>ethtool</strong></span> options.
+						</div></dd><dt><span class="term"><code class="option">HOTPLUG</code>=<em class="replaceable">answer</em></span></dt><dd><div class="para">
+							where <em class="replaceable">answer</em> is one of the following:
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+									<code class="literal">yes</code> — This device should be activated when it is hot-plugged (this is the default option).
+								</div></li><li class="listitem"><div class="para">
+									<code class="literal">no</code> — This device should <span class="emphasis"><em>not</em></span> be activated when it is hot-plugged.
+								</div></li></ul></div><div class="para">
+							The <code class="option">HOTPLUG=no</code> option can be used to prevent a channel bonding interface from being activated when a bonding kernel module is loaded.
+						</div><div class="para">
+							See <a class="xref" href="s2-networkscripts-interfaces-chan.html">Section 11.2.4, “Channel Bonding Interfaces”</a> for more information about channel bonding interfaces.
+						</div></dd><dt><span class="term"> <code class="option">HWADDR</code>=<em class="replaceable">MAC-address</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">MAC-address</em> is the hardware address of the Ethernet device in the form <em class="replaceable">AA:BB:CC:DD:EE:FF</em>. This directive must be used in machines containing more than one NIC to ensure that the interfaces are assigned the correct device names regardless of the configured load order for each NIC's module. This directive should <span class="strong strong"><strong>not</strong></span> be used in conjunction with <code class="option">MACADDR</code>.
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="note"><div class="admonition_header"><p><strong>Note</strong></p></div><div class="admonition"><div class="itemizedlist"><ul><li class="listitem"><div class="para">
+										Persistent device names are now handled by <code class="filename">/etc/udev/rules.d/70-persistent-net.rules</code>.
+									</div></li><li class="listitem"><div class="para">
+										<code class="option">HWADDR</code> must not be used with System z network devices.
+									</div></li><li class="listitem"><div class="para">
+										See Section 25.3.3, "Mapping subchannels and network device names", in the <a href="https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Installation_Guide/index.html"><em class="citetitle">Red Hat Enterprise Linux 6 Installation Guide</em></a>.
+									</div></li></ul></div></div></div></dd><dt><span class="term"> <code class="option">IPADDR</code>=<em class="replaceable">address</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">address</em> is the <code class="systemitem">IPv4</code> address. 
+						</div></dd><dt><span class="term"> <code class="option">IPV6ADDR</code>=<em class="replaceable">address</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">address</em> is the first static, or primary, <code class="systemitem">IPv6</code> address on an interface.
+						</div><div class="para">
+							The format is Address/Prefix-length. If no prefix length is specified, <code class="literal">/64</code> is assumed. Note that this setting depends on <code class="option">IPV6INIT</code> being enabled.
+						</div></dd><dt><span class="term"> <code class="option">IPV6ADDR_SECONDARIES</code>=<em class="replaceable">address</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">address</em> is one or more, space separated, additional <code class="systemitem">IPv6</code> addresses.
+						</div><div class="para">
+							The format is Address/Prefix-length. If no prefix length is specified, <code class="literal">/64</code> is assumed. Note that this setting depends on <code class="option">IPV6INIT</code> being enabled.
+						</div></dd><dt><span class="term"> <code class="option">IPV6INIT</code>=<em class="replaceable">answer</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">answer</em> is one of the following:
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+									<code class="literal">yes</code> — Initialize this interface for <code class="systemitem">IPv6</code> addressing.
+								</div></li><li class="listitem"><div class="para">
+									<code class="literal">no</code> — Do not initialize this interface for <code class="systemitem">IPv6</code> addressing. This is the default value.
+								</div><div class="para">
+									 This setting is required for <code class="systemitem">IPv6</code> static and <code class="systemitem">DHCP</code> assignment of <code class="systemitem">IPv6</code> addresses. It does not affect <em class="firstterm">IPv6 Stateless Address Autoconfiguration</em> (<acronym class="acronym">SLAAC</acronym>) as per <a href="http://www.rfc-editor.org/info/rfc4862"><em class="citetitle">RFC 4862</em></a>.
+								</div><div class="para">
+									See <a class="xref" href="ch-The_sysconfig_Directory.html#s2-sysconfig-network">Section D.1.13, “/etc/sysconfig/network”</a> for information on disabling <code class="systemitem">IPv6</code>.
+								</div></li></ul></div></dd><dt><span class="term"> <code class="option">IPV6_AUTOCONF</code>=<em class="replaceable">answer</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">answer</em> is one of the following:
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+									<code class="literal">yes</code> — Enable <code class="systemitem">IPv6</code> autoconf configuration for this interface.
+								</div></li><li class="listitem"><div class="para">
+									<code class="literal">no</code> — Disable <code class="systemitem">IPv6</code> autoconf configuration for this interface.
+								</div></li></ul></div><div class="para">
+							If enabled, an <code class="systemitem">IPv6</code> address will be requested using <em class="firstterm">Neighbor Discovery</em> (<acronym class="acronym">ND</acronym>) from a router running the <code class="systemitem">radvd</code> daemon.
+						</div><div class="para">
+							Note that the default value of <code class="option">IPV6_AUTOCONF</code> depends on <code class="option">IPV6FORWARDING</code> as follows: 
+							<div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+										If <code class="option">IPV6FORWARDING</code>=<code class="literal">yes</code>, then <code class="option">IPV6_AUTOCONF</code> will default to <code class="literal">no</code>.
+									</div></li><li class="listitem"><div class="para">
+										If <code class="option">IPV6FORWARDING</code>=<code class="literal">no</code>, then <code class="option">IPV6_AUTOCONF</code> will default to <code class="literal">yes</code> and <code class="option">IPV6_ROUTER</code> has no effect.
+									</div></li></ul></div>
+
+						</div></dd><dt><span class="term"> <code class="option">IPV6_MTU</code>=<em class="replaceable">value</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">value</em> is an optional dedicated MTU for this interface.
+						</div></dd><dt><span class="term"> <code class="option">IPV6_PRIVACY</code>=<em class="replaceable">rfc3041</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">rfc3041</em> optionally sets this interface to support <a href="http://www.rfc-editor.org/info/rfc3041"><em class="citetitle">RFC 3041 Privacy Extensions for Stateless Address Autoconfiguration in IPv6</em></a>. Note that this setting depends on <code class="option">IPV6INIT</code> option being enabled.
+						</div><div class="para">
+							The default is for <em class="citetitle">RFC 3041</em> support to be disabled. Stateless Autoconfiguration will derive addresses based on the MAC address, when available, using the modified <code class="literal">EUI-64</code> method. The address is appended to a prefix but as the address is normally derived from the MAC address it is globally unique even when the prefix changes. In the case of a link-local address the prefix is <code class="systemitem">fe80::/64</code> as per <a href="http://www.rfc-editor.org/info/rfc2462"><em class="citetitle">RFC 2462 IPv6 Stateless Address Autoconfiguration</em></a>.
+						</div></dd><dt><span class="term"> <code class="option">LINKDELAY</code>=<em class="replaceable">time</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">time</em> is the number of seconds to wait for link negotiation before configuring the device. The default is 5 secs. Delays in link negotiation, caused by <code class="systemitem">STP</code> for example, can be overcome by increasing this value.
+						</div></dd><dt><span class="term"> <code class="option">MACADDR</code>=<em class="replaceable">MAC-address</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">MAC-address</em> is the hardware address of the Ethernet device in the form <em class="replaceable">AA:BB:CC:DD:EE:FF</em>.
+						</div><div class="para">
+							This directive is used to assign a MAC address to an interface, overriding the one assigned to the physical NIC. This directive should <span class="strong strong"><strong>not</strong></span> be used in conjunction with the <code class="option">HWADDR</code> directive.
+						</div></dd><dt><span class="term"> <code class="option">MASTER</code>=<em class="replaceable">bond-interface</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">bond-interface</em> is the channel bonding interface to which the Ethernet interface is linked.
+						</div><div class="para">
+							This directive is used in conjunction with the <code class="option">SLAVE</code> directive.
+						</div><div class="para">
+							See <a class="xref" href="s2-networkscripts-interfaces-chan.html">Section 11.2.4, “Channel Bonding Interfaces”</a> for more information about channel bonding interfaces.
+						</div></dd><dt><span class="term"> <code class="option">NETMASK</code>=<em class="replaceable">mask</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">mask</em> is the netmask value.
+						</div></dd><dt><span class="term"> <code class="option">NETWORK</code>=<em class="replaceable">address</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">address</em> is the network address. This directive is deprecated, as the value is calculated automatically with <code class="command">ipcalc</code>.
+						</div></dd><dt><span class="term"> <code class="option">NM_CONTROLLED</code>=<em class="replaceable">answer</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">answer</em> is one of the following:
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+									<code class="literal">yes</code> — <span class="application"><strong>NetworkManager</strong></span> is permitted to configure this device. This is the default behavior and can be omitted.
+								</div></li><li class="listitem"><div class="para">
+									<code class="literal">no</code> — <span class="application"><strong>NetworkManager</strong></span> is not permitted to configure this device.
+								</div></li></ul></div><div xmlns:d="http://docbook.org/ns/docbook" class="note"><div class="admonition_header"><p><strong>Note</strong></p></div><div class="admonition"><div class="para">
+								The <code class="option">NM_CONTROLLED</code> directive is now, as of Red Hat Enterprise Linux 6.3, dependent on the <code class="option">NM_BOND_VLAN_ENABLED</code> directive in <code class="filename">/etc/sysconfig/network</code>. If and only if that directive is present and is one of <code class="literal">yes</code>, <code class="literal">y</code>, or <code class="literal">true</code>, will <span class="application"><strong>NetworkManager</strong></span> detect and manage bonding and VLAN interfaces.
+							</div></div></div></dd><dt><span class="term"><code class="option">ONBOOT</code>=<em class="replaceable">answer</em></span></dt><dd><div class="para">
+							where <em class="replaceable">answer</em> is one of the following:
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+									<code class="literal">yes</code> — This device should be activated at boot-time.
+								</div></li><li class="listitem"><div class="para">
+									<code class="literal">no</code> — This device should not be activated at boot-time.
+								</div></li></ul></div></dd><dt><span class="term"><code class="option">PEERDNS</code>=<em class="replaceable">answer</em></span></dt><dd><div class="para">
+							where <em class="replaceable">answer</em> is one of the following:
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+									<code class="literal">yes</code> — Modify <code class="filename">/etc/resolv.conf</code> if the <code class="systemitem">DNS</code> directive is set, if using <code class="systemitem">DHCP</code>, or if using Microsoft's <a href="http://www.rfc-editor.org/info/rfc1877"><em class="citetitle">RFC 1877</em></a> <code class="systemitem">IPCP</code> extensions with <code class="systemitem">PPP</code>. In all cases <code class="literal">yes</code> is the default.
+								</div></li><li class="listitem"><div class="para">
+									<code class="literal">no</code> — Do not modify <code class="filename">/etc/resolv.conf</code>.
+								</div></li></ul></div></dd><dt><span class="term"><code class="option">SLAVE</code>=<em class="replaceable">answer</em></span></dt><dd><div class="para">
+							where <em class="replaceable">answer</em> is one of the following:
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+									<code class="literal">yes</code> — This device is controlled by the channel bonding interface specified in the <code class="option">MASTER</code> directive.
+								</div></li><li class="listitem"><div class="para">
+									<code class="literal">no</code> — This device is <span class="emphasis"><em>not</em></span> controlled by the channel bonding interface specified in the <code class="option">MASTER</code> directive.
+								</div></li></ul></div><div class="para">
+							This directive is used in conjunction with the <code class="option">MASTER</code> directive.
+						</div><div class="para">
+							See <a class="xref" href="s2-networkscripts-interfaces-chan.html">Section 11.2.4, “Channel Bonding Interfaces”</a> for more about channel bonding interfaces.
+						</div></dd><dt><span class="term"> <code class="option">SRCADDR</code>=<em class="replaceable">address</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">address</em> is the specified source <code class="systemitem">IP</code> address for outgoing packets.
+						</div></dd><dt><span class="term"> <code class="option">USERCTL</code>=<em class="replaceable">answer</em> </span></dt><dd><div class="para">
+							where <em class="replaceable">answer</em> is one of the following:
+						</div><div xmlns:d="http://docbook.org/ns/docbook" class="itemizedlist"><ul><li class="listitem"><div class="para">
+									<code class="literal">yes</code> — Non-<code class="systemitem">root</code> users are allowed to control this device.
+								</div></li><li class="listitem"><div class="para">
+									<code class="literal">no</code> — Non-<code class="systemitem">root</code> users are not allowed to control this device.
+								</div></li></ul></div></dd></dl></div></div></div><ul class="docnav bottom"><li class="previous"><a accesskey="p" href="ch-Network_Interfaces.html"><strong>Prev</strong></a></li><li class="doctoc"><div class="toc"><select class="pageSelect"><option value="index.html" class="menu-level-0">Document Home</option><option value="s1-networkscripts-interfaces.html#s2-networkscripts-interfaces-eth0" class="menu-level-0">11.2.1. Ethernet Interfaces</option><option value="ch11s02s02.html" class="menu-level-0">11.2.2. Specific ifcfg Options for Linux on System z</option><option value="ch11s02s03.html" class="menu-level-0">11.2.3. Required ifcfg Options for Linux on System z</option><option value="s2-networkscripts-interfaces-chan.html" class="menu-level-0">11.2.4. Channel Bonding Interfaces</option><option value="sec-Configuring_a_VLAN_over_a_Bond.html" class="menu-level-0">11.2.5. Configuring a VLAN over a Bond</option><option value="s2-networkscripts-interfaces_network-bridge.html" class="menu-level-0">11.2.6. Network Bridge</option><option value="s2-networkscripts-interfaces_802.1Q-vlan-tagging.html" class="menu-level-0">11.2.7. Setting Up 802.1Q VLAN Tagging</option><option value="s2-networkscripts-interfaces-alias.html" class="menu-level-0">11.2.8. Alias and Clone Files</option><option value="s2-networkscripts-interfaces-ppp0.html" class="menu-level-0">11.2.9. Dialup Interfaces</option><option value="s2-networkscripts-interfaces-other.html" class="menu-level-0">11.2.10. Other Interfaces</option></select></div></li><li class="next"><a accesskey="n" href="ch11s02s02.html"><strong>Next</strong></a></li></ul></div></div><script type="text/javascript">
+                            current_book = 'Deployment_Guide';
+                            current_version = '6';
+                            current_product = 'Red_Hat_Enterprise_Linux';
+                        
+
+                        docs.init('../../../..', current_product, current_version, current_book);
+                    </script></body></html>

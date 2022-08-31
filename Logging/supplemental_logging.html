@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Logging - Supplemental</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Logging: Supplemental Material </h1>
+<p class="description">
+This content is <em>supplmental</em>.  It will not be on any evaluation.
+</p>
+<p class="description">
+Our work with rsyslog has shown a scenario where classic TCP remote logging can drop messages even when using a queue.  
+<br>The symptoms we saw were: 
+<ul>
+<li>client sends log message(s) to server successfully (TCP connection established)</li>
+<li>server restarts rsyslog</li>
+<li>next message from client can be dropped occasionally</li>
+<li>normal operation resumes.</li>
+</ul>
+</p>
+<hr>
+
+<h2>Forwarding messages via TCP</h2>
+
+<ul>
+<li>rsyslog.conf fragment to log remotely to s01 without robust queueing
+<pre class="code">
+local6.*                                              @@s01
+</pre>
+</li>
+<li>rsyslog.conf fragment to log remotely to s01 with a robust queue
+<pre class="code">
+local5.*        action(type="omfwd"
+                        # An on-disk queue is created for this action. If the remote host is
+                        # down, messages are spooled to disk and sent when it is up again.
+                        queue.filename="fwdRule1"       # unique name prefix for spool files
+                        queue.maxdiskspace="1g"         # 1gb space limit (use as much as possible)
+                        queue.saveonshutdown="on"       # save messages to disk on shutdown
+                        queue.type="LinkedList"         # run asynchronously
+                        action.resumeRetryCount="-1"    # infinite retries if host is down
+                        Target="s01" Port="514" Protocol="tcp")
+</pre>
+</li>
+</ul>
+
+<hr>
+<h2>Forwarding messages via RELP</h2>
+<p class="description">
+For the most reliable message delivery use the RELP protocol.  Not all syslog deamons support this protocol, but rsyslog does.
+</p>
+
+<p class="description">
+<strong>Note:</strong> The version of rsyslog that ships with RHEL 8.3 is defective. RHEL 8.5 fixes this.
+<br><em><strong>The rsyslog daemon will core dump if we try to configure the relp input module on our s01.</strong></em>
+</p>
+
+<ul>
+<h3>On the receiving system:</h3>
+<li>Install the relp modules
+<pre class="code">
+yum install rsyslog-relp
+</pre>
+</li>
+<li>Include this fragment in rsyslog.conf
+<pre class="code">
+module(load="imrelp")
+input(type="imrelp" port="20514" maxDataSize="10k")
+</pre>
+</li>
+
+<h3>On the sending system:</h3>
+<pre class="code">
+local6.*        action(type="omrelp"
+                        # An on-disk queue is created for this action. If the remote host is
+                        # down, messages are spooled to disk and sent when it is up again.
+                        queue.filename="fwdRule1"       # unique name prefix for spool files
+                        queue.maxdiskspace="1g"         # 1gb space limit (use as much as possible)
+                        queue.saveonshutdown="on"       # save messages to disk on shutdown
+                        queue.type="LinkedList"         # run asynchronously
+                        action.resumeRetryCount="-1"    # infinite retries if host is down
+                        Target="10.1.1.100" Port="20514" )
+</pre>
+</ul>
+
+<hr>
+<h2>Testing our work</h2>
+<p class="description">
+We created a scriopt <span class=cmd>logloop.sh</span> to repeatedly call <span class=cmd>logger</span>.  The script is included here to help you generate messages.  (Is is also an good scripting example)
+
+<ul>
+<li>The key bit of script looks like...
+<pre class="code">
+while
+	true
+do
+	logger -p local6.DEBUG "test message"
+done
+</pre>
+</li>
+<li>Adding a couple of features and error checking grows these 5 lines to 88. </li>
+<li>You can view the complete script here: <a href="./logloop.sh">logloop.sh</a> </li>
+</ul>
+</p>
+</body>
+</html>

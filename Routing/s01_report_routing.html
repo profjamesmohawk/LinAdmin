@@ -1,0 +1,55 @@
+<html>
+<head>
+<style type="text/css">
+table { margin: 1em; border-collapse: collapse; }
+td, th { padding: .3em; border: 2px #ccc solid; }
+</style>
+</head>
+<body><table>
+<h2> COMP-10018 Host Info Report - NFS </h2>
+<tr>
+<td valign="top"> Hostname </td>
+<td><pre>
+ 
+s01
+Mon Jun 14 15:31:12 EDT 2021
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Routing configuration (2 points s02, 2 points w01) </td>
+<td><pre>
+ 
+10.1.1.0/24 dev enp0s3 proto kernel scope link src 10.1.1.20 metric 100 
+10.2.1.0/24 dev enp0s8 proto kernel scope link src 10.2.1.20 metric 101 
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Hosts File ( 1 point s02, 1 point w01) </td>
+<td><pre>
+ 
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+10.1.1.10   w01
+10.1.1.20   s01 s01blue
+10.2.1.20   s01yellow
+10.1.1.30   r01
+10.2.1.30   s02
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Does it work? (4 points) - s02 only </td>
+<td><pre>
+ 
+ 
+</pre>
+</td>
+</tr>
+<!-- report_id=ca723aa9-a894-4790-a9b0-f9203629d35a -->
+</table></body></html>

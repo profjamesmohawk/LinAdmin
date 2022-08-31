@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		nftables	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Lab: nftables </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+We have used the firewalld framework to manage packet filtering in all our labs.  This is reasonable for server and workstation deployments.  As we saw in the routing labs firewalld is not compatible with routers like r01.  There will always be cases where we need a more configurable framework.  The nftables framework fits that bill.
+</p>
+<p class="description">
+Today we will only enable the default configuration. <em>Which works well on r01, if you're curious.</em>
+</p>
+
+<hr>
+<h2>Migrate to nftables:</h2>
+<ol>
+<li>Stop and disable firewalld
+<pre class="code">
+systemctl stop firewalld
+systemctl disable firewalld
+</pre>
+</li>
+<li>Prevent firewalld from being started as a dependency
+<pre class="code">
+systemctl mask firewalld
+</pre>
+</li>
+<li>Tell nftables to use the default configuration
+	<ul>
+	<li>edit <strong>/etc/sysconfig/nftables.conf</strong> </li>
+	<li>uncomment the line <strong>include "/etc/nftables/main.nft"</strong> </li>
+	</ul>
+</li>
+<li>Start and enable nftables service
+<pre class="code">
+systemctl start nftables.service
+systemctl enable nftables.service
+</pre>
+</li>
+<li>Check our work <em>(should show output that looks a lot like /etc/nftables/main.nft)</em>
+<pre class="code">
+nft list table inet nftables_svc
+</pre>
+</li>
+</ol>
+<hr>
+<h2>Learning more</h2>
+<p class="description">
+If you are a firewall fan or you have your heart set on being a professional Linux admin, learning nftables might be something you want to do.
+</p>
+<ul>
+<li>Excellent documentation from the development team: <a href="https://wiki.nftables.org/">wiki.nftables.org</a> </li>
+<li>The team's home page: <a href="https://www.netfilter.org">www.netfilter.org</a>
+</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Graded Lab: Logging</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Graded Lab: Logging </h1>
+
+<h2>Introduction</h2>
+<p class="description">
+The syslog centralized logging facility is an excellent and flexible log management system.  Today you will use the "rocket fast" implementation of syslog know as rsyslog.  This is an advanced lab, you will need to use the man pages, the lecture notes, and perhaps "Lord Google" to complete it.
+</p>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this lab you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
+		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
+	</ul>
+
+
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will run the host_info_log script on <strong>s01</strong> and submit the output to eLearn. <a href="./host_info_log.zip">(host_info_log.zip)</a>
+</p>
+
+<hr>
+<h2>Part A: Local Logging (s01)</h2>
+<p class="description">
+Each of our lab servers is configured to use rsyslog to manage local log files in the <strong>/var/log</strong> directory.  We will generate some messages and change the local logging configuration.
+</p>
+<ol>
+	<li>Use the <strong>logger</strong> utility to send some messages to rsyslog
+	<pre class="code">
+logger -p cron.debug "FM1: This is fake msg from cron with pri=debug"
+logger -p mail.err "FM2: This is fake msg from mail with pri=err"
+logger -p local7.err "FM3: This is fake msg from local7 with pri=err"
+</pre>
+	</li>
+	<li>Use grep to see what log files your message ended up in.
+	<pre class="code">
+grep FM1 $(find /var/log -type f) </pre>
+	</li>
+	<pre class="code">
+grep FM2 $(find /var/log -type f) </pre>
+	</li>
+	<pre class="code">
+grep FM3 $(find /var/log -type f) </pre>
+	</li>
+</ol>
+<hr>
+<h2>Part B: Modifying Log Destinations (s01)</h2>
+<p class="description">
+We've experimented with the default configuration, now it's time for a custom configuration.
+</p>
+<ol>
+<li>Back <strong>rsyslog.conf</strong> before we start messing with it
+<pre class="code">
+cp /etc/rsyslog.conf /etc/rsyslog.conf.prev
+</pre>
+</li>
+<li>Modify <strong>rsyslog.conf</strong> to support the following requirements:
+<ol type="a">
+<li>Log all messages from the <strong>mail</strong> facility of priority <strong>warning</strong> and above to the file <strong>/var/log/mail_warn.log</strong> </li>
+<li>Log all messages from any facility with priority <strong>err</strong> and above to the file <strong>/var/log/msg_err.log</strong> </li>
+</li>
+</ol>
+</li>
+<li>Restart the <strong>rsyslog</strong> service to force a re-read of <strong>rsyslog.conf</strong> </li>
+<li>Check the <em>status</em> the <strong>rsyslog</strong> service to check that it restarted OK. </li>
+<li>Generate some messages to test your new configuration
+<pre class="code">
+logger -p mail.error "FM4: mail.error"
+logger -p mail.warn "FM5: mail.warn"
+logger -p mail.debug "FM6: mail.debug"
+logger -p cron.warn "FM7: cron.warn"
+logger -p cron.error "FM8: cron.error"
+</pre>
+</li>
+<li>Think about what log file or files each of the messages you just sent should end up it.  Use grep to check.
+</li>
+</ol>
+
+<hr>
+<h2>Part C: Remote Logging (w01 to s01)</h2>
+<p class="description">
+We will now configure <strong>w01</strong> to send log messages to <strong>s01</strong>.  This is very common configuration in production environments.
+</p>
+<ol>
+<li>Enable remote logging via TCP on <strong>s01</strong> (<em><strong>hint</strong>: uncomment a total of 2 lines in <strong>rsyslog.conf</strong></em>)
+<br>Here's a short video tutorial from the author of rsyslog that tells you how (and a little more) <a target="blank" href="https://youtu.be/fewUSu_QZAY">Video</a>
+</li>
+<li>Configure rsyslog on <strong>w01</strong> to send all security authorization messages (authpriv) to <strong>s01</strong> via TCP </li>
+<li>Log onto <strong>w01</strong> and see if log messages appear on <strong>s01</strong> </li>
+<li> Don't forget to open tcp port 514 on s01's firewall
+<pre class="code">
+firewall-cmd --permanent --add-port=514/tcp
+firewall-cmd --reload
+</pre>
+</li>
+</ol>
+
+<hr>
+<h2>Part D: Sending Apache Errors </h2>
+<p class="description">
+The Apache httpd web server can send it's error messages to syslog.  This can be a useful way to implement remote logging for httpd.  In this section you will setup httpd running on w01 and logging to s01.
+</p>
+<ol>
+<li>Install the Apache <strong>httpd</strong> server on <strong>w01</strong> </li>
+<li>Modify the httpd config file, <strong>httpd.conf</strong> to send error messages to syslog with the facility <strong>local2</strong> 
+<a href="https://httpd.apache.org/docs/trunk/mod/mod_syslog.html">(hint)</a></li>
+<li>Start the httpd service </li>
+<li>Check that httpd is running by browsing to <strong>http://localhost</strong> </li>
+<li>Generate an error with curl.  This should result in an <em>autoindex:error</em>
+<pre class="code">
+curl http://localhost
+</pre>
+<li>Check <strong>/var/log/messages</strong>, you should see at least one error message from httpd </li>
+<li>Modify <strong>rsyslog.conf</strong> on <strong>w01</strong> to send all messages with a facility of <strong>local2</strong> to <strong>s01</strong> </li>
+<li>Modify <strong>rsyslog.conf</strong> on <strong>s01</strong> to send all messages with a facility of <strong>local2</strong> to <strong>/var/log/httpd_err</strong> </li>
+<li>Generate an other httpd error from <strong>w01</strong> </li>
+<li>Check <strong>/var/log/httpd_err</strong> on <strong>s01</strong> </li>
+</ol>
+
+<hr>
+<h2>Part E: Ignoring Some Messages</h2>
+<p class="description">
+The httpd errors sent from w01 to s01 in Part D, end up in three log files on s01: messages, msg_err, and httpd_err.  We really only want them in httpd_err.
+</p>
+<ol>
+<li>Modify the <strong>rsyslog.conf</strong> entry for <strong>/var/log/msg_err</strong> to log <strong>none</strong> of the messages with a facility of <strong>local2</strong>
+<br>
+<em><strong>Hint:</strong> Look at the entry for /var/log/messages, it already ignores messages with facilities of mail, authpriv, and cron.
+</em>
+</li>
+<li>Modify the entry for <strong>/var/log/messages</strong> to ignore facility <strong>local2</strong> as well.  </li>
+<li>Test your work by generating some httpd errors on <strong>w01</strong>, they should now appear only in <strong>httpd_err</strong>
+</li>
+</ol>
+</li>
+
+<hr>
+<h2>Part F: Evaluation</h2>
+<p class="description">
+Run <span class=cmd>host_info_syslog.sh</span>  on <strong>s01</strong> and submit the output to the eLearn dropbox for this lab.
+</p>
+</body>
+</html>

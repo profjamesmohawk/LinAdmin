@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		COMP-10018: Test 2
+	</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>COMP-10018: Test 2</h1>
+
+<hr>
+<h2>Prerequisites:</h2>
+<h3>Before you start this test you must have:</h3>
+	<ul>
+		<li>The comp-10018 virtual lab appliance.  </li>
+	</ul>
+<hr>
+<h2>Grading:</h2>
+<p class="description">
+You will run a host info script on s01 and submit the output to Canvas.
+</p>
+
+
+<hr>
+<h2>Part A: Import The Appliance</h2>
+
+<ol>
+<li>Import <strong>clean, fresh</strong> copies of <strong>w01</strong>, <strong>s01</strong>, and <strong>y01</strong>
+</li>
+</li>
+</ol>
+
+<hr>
+<h3>Part B: Backup (2 points)</h3>
+<p class="description">
+Today you will be changing many files in the <strong>/etc</strong> directory tree, so you will first create a backup of <strong>/etc</strong> on <strong>s01</strong>
+</p>
+<ol>
+<li>Create a tar archive named <strong>/tmp/etc.tar</strong> on <strong>s01</strong> containing all files from the local <strong>/etc</strong> directory tree.  </li>
+</ol>
+
+<hr>
+<div style="page-break-before: always">
+<h3>Part C: NFS (5 points)</h3>
+<p class="description">
+In this section you will create an NFS share on s01 to be used by any and all users on w01.
+</p>
+<ol>
+<li>The shared directory must be called <strong>/nfs/w01</strong> </li>
+<li>Any user on w01 must appear as the user named <strong>alice</strong> when accessing the share </li>
+<li>Any user on w01 must appear to belong to the group  named <strong>w01users</strong> when accessing the share</li>
+<li>All configuration changes must survive a reboot </li>
+<li>The share must be mounted by w01 when you run the grading script </li>
+<li>The share must contain at least one test file created by a user from w01 </li>
+</ol>
+
+<hr>
+<h3>Part D: Logging (5 points) </h3>
+<p class="description">
+Install the Apache web server on <strong>w01</strong>. Configure httpd to log it's errors via <strong>rsyslog</strong> to the file <strong>/var/log/httpd.err</strong> on <strong>s01</strong>
+</p>
+<ol>
+<li>All changes must be permanent (survive reboot) </li>
+<li>You must cause the web server to generate some errors to test your work </li>
+</ol>
+
+<hr>
+<h3>Part E: Incremental Backup (2 points) </h3>
+<p class="description">
+You made some changes to the contents of the <strong>/etc</strong> directory tree on <strong>s01</strong> since the backup was created in section B.  Create a <span class=cmd>tar</span> archive named <strong>/tmp/changes.tar</strong> containing only the files that have changed since the tar backup from section B completed. 
+</p>
+
+<hr>
+<h2>Part F: Grading</h2>
+<p class="description">
+Run the grading script contained in <a href="./host_info_t2.zip">host_info_t2.zip</a> and submit the output to Canvas.
+</p>
+<p class="description">
+<strong>Note:</strong> The grading script requires the net-tools package.
+</p>
+
+
+
+</body>
+</html>
