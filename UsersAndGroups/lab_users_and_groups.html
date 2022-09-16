@@ -62,7 +62,7 @@ We'll start with just creating a user.
 <li>Log on to s01 as root </li>
 <li>Create an account for Kapil Dev</em>
 <pre class="code">
-useradd kapil -c "Kalip Dev" -m
+useradd kapil -c "Kapil Dev" -m
 </pre>
 </li>
 <li>Set his password to <em>cricket</em> 
@@ -77,24 +77,24 @@ passwd kapil
 ssh kapil@10.1.1.20
 </pre>
 </li>
-<li>What is Kalip's home directory?
+<li>What is Kapil's home directory?
 				<a href="javascript:unhide('A1')">Answer</a>
 				<span id="A1" class="hidden">
 				<em>/home/kapil</em>
 				</span>
 </li>
-<li>Use the <span class=cmd>id</span> command to see what Kalip's user ID number is
+<li>Use the <span class=cmd>id</span> command to see what Kapil's user ID number is
 <pre class="code">
 id kapil
 </pre>
 </li>
-<li>Use <span class=cmd>grep</span> to see Kalip's entry in <strong>/etc/passwd</strong>
+<li>Use <span class=cmd>grep</span> to see Kapil's entry in <strong>/etc/passwd</strong>
 <pre class="code">
 grep kapil /etc/passwd
 </pre>
 				<ol type="a">
 				
-				<li>What is Kalip's hashed password?
+				<li>What is Kapil's hashed password?
 				<a href="javascript:unhide('A2')">Answer</a>
 				<span id="A2" class="hidden">
 				<em>x</em>
@@ -166,7 +166,7 @@ Password aging is used to force users to change their passwords at regular inter
 <ol>
 <li>Log on to <strong>s01</strong> as root.
 </li>
-<li>Have a look at Kalip's current settings.
+<li>Have a look at Kapil's current settings.
 <pre class="code">
 chage -l kapil
 </pre>
@@ -177,7 +177,7 @@ chage -l kapil
 				<em>Sorry, you have to research this.  It will be on the quiz.</em>
 				</span>
 </li>
-<li>Require Kalip to change his password at least every 90 days.
+<li>Require Kapil to change his password at least every 90 days.
 <pre class="code">
 chage -M 90 kapil
 </pre>
@@ -187,7 +187,7 @@ chage -M 90 kapil
 chage -l kapil
 </pre>
 </li>
-<li>Force Kalip to change his password the next time he logs on.  This is useful when creating new users with temporary passwords.
+<li>Force Kapil to change his password the next time he logs on.  This is useful when creating new users with temporary passwords.
 <pre class="code">
 chage -d 0 kapil
 </pre>
@@ -217,8 +217,8 @@ Sometimes we want to prevent an account from logging on at all.  Consider the ca
 usermod -L kapil
 </pre>
 </li>
-<li>Try to log on as Kalip </li>
-<li>Is Kalip's home directory still there? 
+<li>Try to log on as Kapil </li>
+<li>Is Kapil's home directory still there? 
 <pre class="code">
 ls -d /home/kapil
 </pre>
@@ -228,7 +228,7 @@ ls -d ~kapil
 </pre>
 </li>
 <li>
-Unlock Kalip's account.
+Unlock Kapil's account.
 <pre class="code">
 usermod -U kapil
 </pre>
@@ -241,7 +241,7 @@ usermod -U kapil
 grep kapil /etc/shadow
 </pre>
 	</li>
-	<li>Lock Kalip's account
+	<li>Lock Kapil's account
 <pre class="code">
 usermod -L kapil
 </pre>
@@ -280,7 +280,7 @@ echo "Hello, and welcome to COMP-10018" &gt; /etc/skel/welcome.txt
 <hr>
 <h2>Part F: Groups</h2>
 <p class="description">
-We will create a group called <strong>athletes</strong> so that our Kalip and Eddy can share files.
+We will create a group called <strong>athletes</strong> so that our Kapil and Eddy can share files.
 <br>
 <em>To best understand what we are doing in this section you should review the lecture notes on groups.</em>
 </p>
@@ -292,7 +292,7 @@ We will create a group called <strong>athletes</strong> so that our Kalip and Ed
 groupadd athletes
 </pre>
 </li>
-<li>Add Eddy and Kalip to the group. <em>  There are two ways to do this, gpasswd and usermod, we will use each for demonstration purposes. </em>
+<li>Add Eddy and Kapil to the group. <em>  There are two ways to do this, gpasswd and usermod, we will use each for demonstration purposes. </em>
 <pre class="code">
 gpasswd -a kapil athletes
 </pre>
@@ -317,14 +317,14 @@ echo "Hi Eddy, what's for dinner?" &gt; /share/athletes/for_eddy.txt
 </pre>
 
 <h3>Check our work</h3>
-<li>On w01: Open a new terminal window, log on to s10 as eddy and see if you can read Kalip's message
+<li>On w01: Open a new terminal window, log on to s10 as eddy and see if you can read Kapil's message
 <pre class="code">
 ssh eddy@10.1.1.20
 cat /share/athletes/for_eddy.txt
 </pre>
 </li>
 
-<li>As eddy, leave a response for Kalip
+<li>As eddy, leave a response for Kapil
 <pre class="code">
 echo "Bugs" &gt; /share/athletes/for_kapil.txt
 </pre>
