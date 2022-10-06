@@ -6,13 +6,23 @@ td, th { padding: .3em; border: 2px #ccc solid; }
 </style>
 </head>
 <body><table>
-<h2> COMP-10018 Host Info Report - Test 1 (Fall 2017) </h2>
+<h2> COMP-10018 Host Info Report - Test 1 (Fall 2022) </h2>
 <tr>
 <td valign="top"> Hostname </td>
 <td><pre>
  
 s01
-Mon Oct 25 17:42:12 EDT 2021
+Mon Oct  3 11:33:39 EDT 2022
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Is this a fresh VM?<br><em>boot history</em> </td>
+<td><pre>
+ 
+Oct  3 10:35
+Oct  3 11:24
  
 </pre>
 </td>
@@ -21,12 +31,12 @@ Mon Oct 25 17:42:12 EDT 2021
 <td valign="top"> Users And Groups (3 points) </td>
 <td><pre>
  
-uid=1000(andy) gid=1000(andy) groups=1000(andy),1002(web)
-uid=1001(amita) gid=1001(amita) groups=1001(amita),1002(web)
+uid=1001(andy) gid=1001(andy) groups=1001(andy),1002(web)
+uid=1000(amita) gid=1000(amita) groups=1000(amita),1002(web)
 
-aging:
-Last password change					: Oct 25, 2021
-Last password change					: Oct 25, 2021
+<strong>aging:</strong>
+Last password change					: Oct 03, 2022
+Last password change					: Oct 03, 2022
  
 </pre>
 </td>
@@ -35,18 +45,18 @@ Last password change					: Oct 25, 2021
 <td valign="top"> Add a Disks (3 points) </td>
 <td><pre>
  
-vgConfig:
+<strong>vgConfig:</strong>
   VG Size               3.99 GiB
-  PV Name               /dev/sdb     
+  PV Name               /dev/sdb1     
   Total PE / Free PE    511 / 0
-  PV Name               /dev/sdc     
+  PV Name               /dev/sdc1     
   Total PE / Free PE    511 / 0
 
-mounted:
-/dev/mapper/vgWeb-lvol0  4.0G  8.0M  3.8G   1% /mnt/web
+<strong>mounted:</strong>
+/dev/mapper/vgWeb-lvol0  3.9G   16M  3.7G   1% /mnt/web
 
-fstab:
-/dev/vgWeb/lvol0  /mnt/web	ext4	defaults 0 2
+<strong>fstab:</strong>
+/dev/mapper/vgWeb-lvol0 /mnt/web	ext4	defaults	0 0
  
 </pre>
 </td>
@@ -55,42 +65,42 @@ fstab:
 <td valign="top"> Install Apache (3 points) </td>
 <td><pre>
  
-installed:
+<strong>installed:</strong>
 Updating Subscription Management repositories.
 Unable to read consumer identity
 
 This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
 
-Last metadata expiration check: 0:07:41 ago on Mon 25 Oct 2021 05:34:32 PM EDT.
+Last metadata expiration check: 0:15:59 ago on Mon 03 Oct 2022 11:17:42 AM EDT.
 Installed Packages
 httpd.x86_64           2.4.37-30.module+el8.3.0+7001+0766b9e7            @mini83
 
-startup:
+<strong>startup:</strong>
 UNIT FILE     STATE  
 httpd.service enabled
 
 1 unit files listed.
 
-running:
+<stong>running:</strong>
 ● httpd.service - The Apache HTTP Server
    Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
-   Active: active (running) since Mon 2021-10-25 14:24:34 EDT; 3h 17min ago
+   Active: active (running) since Mon 2022-10-03 11:25:12 EDT; 8min ago
      Docs: man:httpd.service(8)
- Main PID: 871 (httpd)
+ Main PID: 800 (httpd)
    Status: "Running, listening on: port 80"
     Tasks: 213 (limit: 4926)
-   Memory: 42.8M
+   Memory: 36.8M
    CGroup: /system.slice/httpd.service
-           ├─871 /usr/sbin/httpd -DFOREGROUND
-           ├─897 /usr/sbin/httpd -DFOREGROUND
-           ├─898 /usr/sbin/httpd -DFOREGROUND
-           ├─899 /usr/sbin/httpd -DFOREGROUND
-           └─900 /usr/sbin/httpd -DFOREGROUND
+           ├─800 /usr/sbin/httpd -DFOREGROUND
+           ├─831 /usr/sbin/httpd -DFOREGROUND
+           ├─832 /usr/sbin/httpd -DFOREGROUND
+           ├─833 /usr/sbin/httpd -DFOREGROUND
+           └─834 /usr/sbin/httpd -DFOREGROUND
 
-Oct 25 14:24:33 s01 systemd[1]: Starting The Apache HTTP Server...
-Oct 25 14:24:34 s01 httpd[871]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.1.1.20. Set the 'ServerName' directive globally to suppress this message
-Oct 25 14:24:34 s01 systemd[1]: Started The Apache HTTP Server.
-Oct 25 14:24:34 s01 httpd[871]: Server configured, listening on: port 80
+Oct 03 11:25:11 s01 systemd[1]: Starting The Apache HTTP Server...
+Oct 03 11:25:12 s01 httpd[800]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.1.1.20. Set the 'ServerName' directive globally to suppress this message
+Oct 03 11:25:12 s01 systemd[1]: Started The Apache HTTP Server.
+Oct 03 11:25:12 s01 httpd[800]: Server configured, listening on: port 80
  
 </pre>
 </td>
@@ -99,7 +109,7 @@ Oct 25 14:24:34 s01 httpd[871]: Server configured, listening on: port 80
 <td valign="top"> Welcome Page (2 points) </td>
 <td><pre>
  
-Welcome Andy and Amita
+Andy and Amita
  
 </pre>
 </td>
@@ -108,15 +118,10 @@ Welcome Andy and Amita
 <td valign="top"> Apache Gets Nights Off (2 points) </td>
 <td><pre>
  
-# Run the hourly jobs
-SHELL=/bin/bash
-PATH=/sbin:/bin:/usr/sbin:/usr/bin
-MAILTO=root
-01 00* * * * root systemctl stop httpd
-01 08 * * * root systemctl start http
+# incomplete
  
 </pre>
 </td>
 </tr>
-<!-- report_id=5adf81f7-4c00-4f2d-a088-bfab1e8d2f88 -->
+<!-- report_id=b78a346a-ca08-4355-ac55-5a1f3a2165c7 -->
 </table></body></html>

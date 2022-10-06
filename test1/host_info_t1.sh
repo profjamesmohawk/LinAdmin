@@ -55,11 +55,11 @@ function spit_section_header {
 #
 # are we root?
 #
-#if (( EUID != 0 ))
-#then
-	#echo "You must be root to run this script" >&2
-	#exit 1
-#fi
+if (( EUID != 0 ))
+then
+	echo "You must be root to run this script" >&2
+	exit 1
+fi
 
 #
 # Tell the nice people what we are going to do
@@ -76,18 +76,23 @@ echo "Be patient, it could take a few minutes to run." >&2
 #
 spit_pre
 
-spit_title "COMP-10018 Host Info Report - Test 1 (Fall 2017)"
+spit_title "COMP-10018 Host Info Report - Test 1 (Fall 2022)"
 
-spit_start Hostname
+spit_start Hostname and date
 hostname
 date
 spit_end
+
+spit_start "Is this a fresh VM?<br><em>boot history</em>"
+grep -h 'Command line: BOOT' /var/log/messages* | cut -c 1-12 | grep -v Jun| sort -M
+spit_end
+
 
 spit_start "Users And Groups (3 points)"
 id andy
 id amita
 echo ""
-echo "aging:"
+echo "<strong>aging:</strong>"
 chage -l andy | grep 'Last'
 chage -l amita | grep 'Last'
 spit_end
@@ -95,26 +100,26 @@ spit_end
 
 spit_start "Add a Disks (3 points)"
 
-echo "vgConfig:"
+echo "<strong>vgConfig:</strong>"
 vgdisplay -v vgWeb | grep -e 'PV Name' -e 'VG Size' -e 'Free PE'
 
 echo ""
-echo "mounted:"
+echo "<strong>mounted:</strong>"
 df -h | grep -e 'vgWeb' -e '/mnt/web'
 echo ""
-echo "fstab:"
+echo "<strong>fstab:</strong>"
 grep web /etc/fstab
 
 spit_end
 
 spit_start "Install Apache (3 points)"
-echo "installed:"
+echo "<strong>installed:</strong>"
 yum list httpd
 echo ""
-echo "startup:"
+echo "<strong>startup:</strong>"
 systemctl list-unit-files httpd.service
 echo ""
-echo "running:"
+echo "<stong>running:</strong>"
 systemctl status httpd
 spit_end
 
@@ -128,7 +133,8 @@ cat /etc/cron.d/[wW]eb
 spit_end
 
 echo "<!-- report_id=$(uuidgen) -->"
-$date
+CS=$(md5sum $OUT_FILE | cut -f 1 -d ' ')
+echo "<!-- check_sum=$CS -->"
 
 spit_post
 
