@@ -186,19 +186,19 @@ cfdisk /dev/sdb
 <pre class="code">
 fdisk -l /dev/sdb
 </pre>
-<em>should output...</em>
+<em>should output something like this (your results may vary a little)...</em>
 				<a href="javascript:unhide('A6')">Show/Hide</a>
 				<span id="A6" class="hidden">
 <pre class="code">
-Disk /dev/sdb: 2147 MB, 2147483648 bytes
-255 heads, 63 sectors/track, 261 cylinders
-Units = cylinders of 16065 * 512 = 8225280 bytes
+Disk /dev/sdb: 2 GiB, 2147483648 bytes, 4194304 sectors
+Units: sectors of 1 * 512 = 512 bytes
 Sector size (logical/physical): 512 bytes / 512 bytes
 I/O size (minimum/optimal): 512 bytes / 512 bytes
-Disk identifier: 0xfc45b7c7
+Disklabel type: dos
+Disk identifier: 0x43ce71e1
 
-   Device Boot      Start         End      Blocks   Id  System
-/dev/sdb1               1         261     2096451   83  Linux
+Device     Boot Start     End Sectors Size Id Type
+/dev/sdb1        2048 4194303 4192256   2G 83 Linux
 </pre>
 
 </li>
@@ -215,13 +215,13 @@ ll /dev/sdb*
 <pre class="code">
 mkfs -t ext4 /dev/sdb1
 </pre>
-<em>Out put should look like...</em>
+<em>Out put should look something like...</em>
 				<a href="javascript:unhide('A7')">Show/Hide</a>
 				<span id="A7" class="hidden">
 <pre class="code">
-mke2fs 1.44.5 (15-Dec-2018)
+mke2fs 1.45.6 (20-Mar-2020)
 Creating filesystem with 524032 4k blocks and 131072 inodes
-Filesystem UUID: 2efa34ec-a598-41af-9879-e3ac3b85267b
+Filesystem UUID: c3d406e7-9d51-4e43-acdd-3fd41b6467c7
 Superblock backups stored on blocks: 
 	32768, 98304, 163840, 229376, 294912
 
