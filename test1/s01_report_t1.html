@@ -12,7 +12,7 @@ td, th { padding: .3em; border: 2px #ccc solid; }
 <td><pre>
  
 s01
-Mon Oct  3 11:33:39 EDT 2022
+Wed Oct 12 11:57:04 EDT 2022
  
 </pre>
 </td>
@@ -21,8 +21,8 @@ Mon Oct  3 11:33:39 EDT 2022
 <td valign="top"> Is this a fresh VM?<br><em>boot history</em> </td>
 <td><pre>
  
-Oct  3 10:35
-Oct  3 11:24
+Oct 12 11:23
+Oct 12 11:35
  
 </pre>
 </td>
@@ -31,12 +31,12 @@ Oct  3 11:24
 <td valign="top"> Users And Groups (3 points) </td>
 <td><pre>
  
-uid=1001(andy) gid=1001(andy) groups=1001(andy),1002(web)
-uid=1000(amita) gid=1000(amita) groups=1000(amita),1002(web)
+uid=1000(andy) gid=1000(andy) groups=1000(andy),1002(web)
+uid=1001(amita) gid=1001(amita) groups=1001(amita),1002(web)
 
 <strong>aging:</strong>
-Last password change					: Oct 03, 2022
-Last password change					: Oct 03, 2022
+Last password change					: Oct 12, 2022
+Last password change					: Oct 12, 2022
  
 </pre>
 </td>
@@ -56,7 +56,7 @@ Last password change					: Oct 03, 2022
 /dev/mapper/vgWeb-lvol0  3.9G   16M  3.7G   1% /mnt/web
 
 <strong>fstab:</strong>
-/dev/mapper/vgWeb-lvol0 /mnt/web	ext4	defaults	0 0
+/dev/mapper/vgWeb-lvol0		/mnt/web	ext4 defaults 0 0
  
 </pre>
 </td>
@@ -71,7 +71,7 @@ Unable to read consumer identity
 
 This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
 
-Last metadata expiration check: 0:15:59 ago on Mon 03 Oct 2022 11:17:42 AM EDT.
+Last metadata expiration check: 0:04:57 ago on Wed 12 Oct 2022 11:52:07 AM EDT.
 Installed Packages
 httpd.x86_64           2.4.37-30.module+el8.3.0+7001+0766b9e7            @mini83
 
@@ -84,23 +84,23 @@ httpd.service enabled
 <stong>running:</strong>
 ● httpd.service - The Apache HTTP Server
    Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
-   Active: active (running) since Mon 2022-10-03 11:25:12 EDT; 8min ago
+   Active: active (running) since Wed 2022-10-12 11:54:34 EDT; 2min 31s ago
      Docs: man:httpd.service(8)
- Main PID: 800 (httpd)
-   Status: "Running, listening on: port 80"
+ Main PID: 4215 (httpd)
+   Status: "Total requests: 2; Idle/Busy workers 100/0;Requests/sec: 0.0134; Bytes served/sec:   5 B/sec"
     Tasks: 213 (limit: 4926)
-   Memory: 36.8M
+   Memory: 25.0M
    CGroup: /system.slice/httpd.service
-           ├─800 /usr/sbin/httpd -DFOREGROUND
-           ├─831 /usr/sbin/httpd -DFOREGROUND
-           ├─832 /usr/sbin/httpd -DFOREGROUND
-           ├─833 /usr/sbin/httpd -DFOREGROUND
-           └─834 /usr/sbin/httpd -DFOREGROUND
+           ├─4215 /usr/sbin/httpd -DFOREGROUND
+           ├─4216 /usr/sbin/httpd -DFOREGROUND
+           ├─4217 /usr/sbin/httpd -DFOREGROUND
+           ├─4218 /usr/sbin/httpd -DFOREGROUND
+           └─4219 /usr/sbin/httpd -DFOREGROUND
 
-Oct 03 11:25:11 s01 systemd[1]: Starting The Apache HTTP Server...
-Oct 03 11:25:12 s01 httpd[800]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.1.1.20. Set the 'ServerName' directive globally to suppress this message
-Oct 03 11:25:12 s01 systemd[1]: Started The Apache HTTP Server.
-Oct 03 11:25:12 s01 httpd[800]: Server configured, listening on: port 80
+Oct 12 11:54:34 s01 systemd[1]: Starting The Apache HTTP Server...
+Oct 12 11:54:34 s01 httpd[4215]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.1.1.20. Set the 'ServerName' directive globally to suppress this message
+Oct 12 11:54:34 s01 systemd[1]: Started The Apache HTTP Server.
+Oct 12 11:54:34 s01 httpd[4215]: Server configured, listening on: port 80
  
 </pre>
 </td>
@@ -109,7 +109,7 @@ Oct 03 11:25:12 s01 httpd[800]: Server configured, listening on: port 80
 <td valign="top"> Welcome Page (2 points) </td>
 <td><pre>
  
-Andy and Amita
+<h2>Amita and Andy</h2>
  
 </pre>
 </td>
@@ -118,10 +118,16 @@ Andy and Amita
 <td valign="top"> Apache Gets Nights Off (2 points) </td>
 <td><pre>
  
-# incomplete
+# Run the hourly jobs
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+30 23 * * * root systemctl stop httpd
+0 07 * * * root systemctl start httpd
  
 </pre>
 </td>
 </tr>
-<!-- report_id=b78a346a-ca08-4355-ac55-5a1f3a2165c7 -->
+<!-- report_id=491de45b-8bc0-4904-85ed-b6f24ef01245 -->
+<!-- check_sum=f309798c2a1a8395ab6b3d9c9525f099 -->
 </table></body></html>
