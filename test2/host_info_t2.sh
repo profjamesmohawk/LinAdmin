@@ -83,6 +83,11 @@ hostname
 date
 spit_end
 
+spit_start "Is this a fresh VM?<br><em>boot history</em>"
+grep -h 'Command line: BOOT' /var/log/messages* | cut -c 1-12 | grep -v Jun| sort -M
+spit_end
+
+
 spit_section_header "Part B: Backup (2 points)"
 
 spit_start "tar ball exists (1 point)<br>should have around 700 files"
