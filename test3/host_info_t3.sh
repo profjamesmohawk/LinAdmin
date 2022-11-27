@@ -84,110 +84,68 @@ hostname
 date
 spit_end
 
-if [ "s01" = $(hostname) ]
+spit_start "Is this a fresh VM?<br><em>boot history</em>"
+grep -h 'Command line: BOOT' /var/log/messages* | cut -c 1-12 | grep -v Jun| sort -M
+spit_end
+
+spit_start "s01: ping r01 blue by IP"
+if 
+ping 10.1.1.1 -c 1 > /dev/null
 then
-	spit_start "s01: ping r01 blue by IP"
-	if 
-		ping 10.1.1.1 -c 1 > /dev/null
-	then
-		echo OK
-		(( C++ ))
-	else
-		echo Fail
-	fi
-	spit_end
-
-	spit_start "s01: ping r01 orange by IP"
-	if 
-		ping 10.3.1.1 -c 1 > /dev/null
-	then
-		echo OK
-		(( C++ ))
-	else
-		echo Fail
-	fi
-	spit_end
-
-	spit_start "s01: ping s03 by IP"
-	if 
-		ping 10.3.1.40 -c 1 > /dev/null
-	then
-		echo OK
-		(( C++ ))
-	else
-		echo Fail
-	fi
-	spit_end
-
-	spit_start "s01: ping s03 by name"
-	if 
-		ping s03 -c 1 > /dev/null
-	then
-		echo OK
-		(( C++ ))
-	else
-		echo Fail
-	fi
-	spit_end
-
-	spit_start "s01 Part B (cpio): <br><em>expect about 90</em>"
-	cpio -t </tmp/conf.cpio  | wc -l
-	spit_end
-
-	spit_start "s01 Part B (tar) first 10 files:"
-	tar tf /tmp/root_home.tar | head 
-	spit_end
-
-	spit_start "s01 Part C (ssh)"
-	cat /tmp/ssh_cmd.txt
-	spit_end
-
-
-
+echo OK
+(( C++ ))
 else
-	# not s01, must be r01
-
-	spit_start "r01: ping s01 by IP"
-	if 
-		ping 10.1.1.20 -c 1 > /dev/null
-	then
-		echo OK
-		(( C++ ))
-	else
-		echo Fail
-	fi
-	spit_end
-
-	spit_start "r01: ping s03 by IP"
-	if 
-		ping 10.3.1.40 -c 1 > /dev/null
-	then
-		echo OK
-		(( C++ ))
-	else
-		echo Fail
-	fi
-	spit_end
-
-	spit_start "r01: ping s03 by name"
-	if 
-		ping s03 -c 1 > /dev/null
-	then
-		echo OK
-		(( C++ ))
-	else
-		echo Fail
-	fi
-	spit_end
-
-	spit_start "r01: hostname"
-		hostname
-	spit_end
-
-	spit_start "r01: /etc/hosts"
-		cat /etc/hosts
-	spit_end
+echo Fail
 fi
+spit_end
+
+spit_start "s01: ping r01 orange by IP"
+if 
+ping 10.3.1.1 -c 1 > /dev/null
+then
+echo OK
+(( C++ ))
+else
+echo Fail
+fi
+spit_end
+
+spit_start "s01: ping s03 by IP"
+if 
+ping 10.3.1.40 -c 1 > /dev/null
+then
+echo OK
+(( C++ ))
+else
+echo Fail
+fi
+spit_end
+
+spit_start "s01: ping s03 by name"
+if 
+ping s03 -c 1 > /dev/null
+then
+echo OK
+(( C++ ))
+else
+echo Fail
+fi
+spit_end
+
+spit_start "s01 Part B (cpio): <br><em>expect about 90</em>"
+cpio -t </tmp/conf.cpio  | wc -l
+spit_end
+
+spit_start "s01 Part B (tar) first 10 files:"
+tar tf /tmp/root_home.tar | head 
+spit_end
+
+spit_start "s01 Part C (ssh)"
+cat /tmp/ssh_cmd.txt
+spit_end
+
+
+
 
 spit_start "Ping count:"
 	echo $C
