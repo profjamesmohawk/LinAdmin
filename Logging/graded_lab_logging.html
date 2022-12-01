@@ -85,11 +85,11 @@ cp /etc/rsyslog.conf /etc/rsyslog.conf.prev
 <li>Check the <em>status</em> the <strong>rsyslog</strong> service to check that it restarted OK. </li>
 <li>Generate some messages to test your new configuration
 <pre class="code">
-logger -p mail.error "FM4: mail.error"
-logger -p mail.warn "FM5: mail.warn"
+logger -p mail.err "FM4: mail.err"
+logger -p mail.warning "FM5: mail.warn"
 logger -p mail.debug "FM6: mail.debug"
-logger -p cron.warn "FM7: cron.warn"
-logger -p cron.error "FM8: cron.error"
+logger -p cron.warning "FM7: cron.warn"
+logger -p cron.err "FM8: cron.err"
 </pre>
 </li>
 <li>Think about what log file or files each of the messages you just sent should end up it.  Use grep to check.
