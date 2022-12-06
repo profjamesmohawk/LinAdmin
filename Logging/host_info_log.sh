@@ -83,19 +83,24 @@ hostname
 date
 spit_end
 
-spit_start "Part B.1,  (2 point) <br> FM_T1 in maillog, mail_warn, and msg_err"
+# send all the log messages we will use
 logger -p mail.error "FM_T1: mail.error"
-grep -l FM_T1 /var/log/*
+logger -p mail.debug "FM_T2: mail.debug"
+logger -p cron.error "FM_T3: cron.error"
+
+# sleep to give rsyslog time to write, (looks like rsyslog writes twice a second)
+sleep 1
+
+spit_start "Part B.1,  (2 point) <br> FM_T1 in maillog, mail_warn, and msg_err"
+grep -l FM_T1 $(find /var/log/ -type f)
 spit_end
 
 spit_start "Part B.1,  (1 point) <br> FM_T2 in maillog"
-logger -p mail.debug "FM_T2: mail.debug"
-grep -l FM_T2 /var/log/*
+grep -l FM_T2 $(find /var/log/ -type f)
 spit_end
 
 spit_start "Part B.1,  (1 point) <br> FM_T3 in cron, msg_err"
-logger -p cron.error "FM_T3: cron.error"
-grep -l FM_T3 /var/log/*
+grep -l FM_T3 $(find /var/log/ -type f)
 spit_end
 
 spit_start "Part C: (3 points) <br> authpriv messages from w01 in /var/log/secure"
