@@ -205,68 +205,9 @@ yum update
 <em>This should update just 3 packages: curl, libcurl, and sudo</em>
 </li>
 </ol>
-<hr>
-<h2>Part D: Optional Activity -  Updating Software with yum, from the Red Hat repos</h2>
-<p class="description">
-As we mentioned in the lecture, a Red Hat developer account is required to talk to the repositories required to patch.  <br><strong>You do not need to sign up for a Red Hat developer account.  This section is optional.  It will not be on any evaluation.</strong>
-<br><strong>You are encouraged to sign-up, it is free and you get access to more documentation as well.</strong>
-</p>
-<ol>
-	
-	<li>Use <span class=cmd>yum</span> to update the software on <strong>y01</strong>
-<pre class="code">
-yum update
-</pre>
-	<ol type="a">
-		<li>Well, that was uneventful!  Why are there no updates for <strong>y01</strong>?
-				<a href="javascript:unhide('A7')">Answer</a>
-				<span id="A7" class="hidden">
-				<em>y01 was installed from the DVD, and the only repo it can see is the DVD - so it makes sense that it is "up to date"</em> </span>
-		</li>
-		<li>Who <strong>can</strong> see the current, up to date repos on the open internet?
-				<a href="javascript:unhide('A8')">Answer</a>
-				<span id="A8" class="hidden">
-				<em><strong>w01 can!</strong></em> </span>
-		</li>
-
-	</ol>
-	</li>
-	<li>Use <span class=cmd>yum</span> to update the software on <strong>w01</strong> <em>(This could take a few minutes)
-	<ul type="a">
-		<li>Visit <a href="https://developers.redhat.com/register">developers.redhat.com</a> sign up and get your username and password.</li>
-		<li>Register w01 with Red Hat
-<pre class="code">
-subscription-manager register --username={YOUR_USER_NAME} --password={YOUR_PASSWD} --auto-attach
-</pre>
-		</li>
-	<li>Allow subscription manager to manage repo files
-<pre class="code">
-subscription-manager config --rhsm.manage_repos=1
-</pre>
-	</li>
-	<li>Perform the update.
-<pre class="code">
-yum update
-</pre>
-	</li>
-	<li>Reboot <strong>w01</strong> 
-				<a href="javascript:unhide('A9')">Why?</a>
-				<span id="A9" class="hidden">
-				<em>The update should have included a new kernel and we need to reboot in order to use it.</em> </span>
-
-	</li>
-	<li>Give back the license we were using (we won't need it again)
-	<pre class="code">
-subscription-manager unregister
-</pre>
-	</li>
-	<br><strong>Note:</strong> Updating the kernel can break the VirtualBox guest extensions.  If this happens, don't panic you can import a fresh w01 from the OVA appliance.
-	</ul>
-</ol>
-
 
 <hr>
-<h2>Part E: Evaluation</h2>
+<h2>Part D: Evaluation</h2>
 <p class="description">
 Complete the Canvas quiz for this lab.
 </p>
