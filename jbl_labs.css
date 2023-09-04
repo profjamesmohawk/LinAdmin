@@ -48,14 +48,13 @@ code{
 .code{
    overflow: auto;
    display: block;
-   qwidth: 95%;
+   width: 90%;
    border: 1px solid #ccc;
    padding: 3px;
    background: #ece9d8; 
-   /*color: DarkBlue; */
-   /* margin-bottom: 20px; */
    margin-top: 0px;
    margin-left: 5px;
+   border-radius: 5px; 
 }
 
 p.description{

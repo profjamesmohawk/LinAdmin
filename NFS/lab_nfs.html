@@ -44,7 +44,7 @@ You will demonstrate your understanding of this lab by completing an Canvas quiz
 <ol>
 	<li>Import and start the appliance which contains w01, s01, and y01.  </li>
 	</li>
-	<li>Install the NFS utilities on <strong>w01, s01</strong> system
+	<li>Install the NFS utilities on <strong>s01</strong> <em>they are already on w01</em>
 	<pre class="code">
 yum install nfs-utils </pre>
 	</li>
@@ -241,7 +241,7 @@ ll /shares/backups
 				<em>An unnamed user with UID=1000 (if you have added no users to s01) </em>
 				</span>
 </li>
-<li>To "fix" this NFS v4 "feature", we must add a user to s01 named alice with a UID of 1000 (alice does not need to be able to log on to s01)
+<li>We will add a user to s01 named alice with a UID of 1000 (alice does not need to be able to log on to s01)
 <pre class="code">
 useradd -m  -u 1000 alice 
 </pre>

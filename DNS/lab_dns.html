@@ -286,19 +286,6 @@ dig -x 10.1.1.10
 </li>
 </ol>
 
-<hr>
-<h2>Part E: Finish The Job</h2>
-<p class="description">
-Configure <strong>ns1</strong> and <strong>w01</strong> to use <strong>ns1</strong> as their name server.
-</p>
-<ol>
-
-<li>Configure <strong>/etc/resolv.conf</strong> on <strong>ns1</strong> and <strong>w01</strong> to match <strong>resolv.conf</strong> on <strong>s01</strong> </li>
-<li><strong>ns1</strong> and <strong>w01</strong> ara a little tricky, the DHCP client populated resolve.conf automatically, we we can't just change resolv.conf because the dhcp client will overwrite it every time we restart. Your challenge is to find an attribute you can set with <span class=cmd>nmcli</span> to prevent the dhcp-client from overwriting resolv.conf. <strong>Note:</strong> This <a href="https://developer-old.gnome.org/NetworkManager/stable/settings-ipv4.html">List of ipv4.XXX settings will help.</a>
-
-</li>
-<li>Remove the entries for s01, w01 from all the hosts files, we won't need them any more ;) </li>
-
 
 </ol>
 
