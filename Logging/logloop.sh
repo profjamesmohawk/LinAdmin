@@ -35,7 +35,7 @@ function usage(){
 	echo "      -c N, send N messages then exit.  (N=-1 loops forever)"
 	echo " "
 	echo "  Bash script to send a series of syslog messages via logger."
-	echo "  The series is numbered.  The index is preseved between runs"
+	echo "  The series is numbered.  The index is preserved between runs"
 	echo "  in the file $DB_FILE."
 	echo ""
 } >&2
