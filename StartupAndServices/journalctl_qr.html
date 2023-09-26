@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+			journalctl</title>
+
+
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Quick Reference: journalctl</h1>
+
+View all messages
+<pre class="code">
+journalctl
+</pre>
+
+View all messages and <strong>follow</strong> to see messages as they come in
+<pre class="code">
+journalctl -f
+</pre>
+
+View the last 10 messages
+<pre class="code">
+journalctl -n 10
+</pre>
+
+View messages from the kernel since the last boot
+<pre class="code">
+journalctl -b -k
+</pre>
+
+View messages from the httd.service
+<pre class="code">
+journalctl -u httd.service
+</pre>
+
+<p class="description">
+Tutorial from DigitalOcean: <a href="https://www.digitalocean.com/community/tutorials/how-to-use-journalctl-to-view-and-manipulate-systemd-logs">journalctl tutorial</a>
+</p>
+
+</body>
+</html>

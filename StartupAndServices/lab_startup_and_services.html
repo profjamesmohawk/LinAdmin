@@ -40,16 +40,9 @@ You will demonstrate your understanding of this lab by completing an Canvas quiz
 </p>
 
 <hr>
-<h2>Part A: Setup The Lab</h2>
-<ol>
-	<li>Import the appliance.  </li>
-</ol>
-
-
-<hr>
-<h2>Part B: Modify the boot parameters</h2>
+<h2>Part A: Modify the boot parameters</h2>
 <p class="description">
-The default our installation boots with a pretty splash screen, but we want to see more detailed messages during the startup process.
+Our installation boots with a pretty splash screen, but we want to see more detailed messages during the startup process.
 </p>
 
 <ol>
@@ -84,12 +77,17 @@ grub2-mkconfig &gt; /boot/grub2/grub.cfg
 systemctl reboot
 </pre>
 </li>
+<li>The boot messages are also logged to the systemd journal.  View log messages from the kernel, <strong>-k</strong>, since the last boot, <strong>-b</strong>.
+<pre class="code">
+journalctl -b -k
+</pre>
+</li>
 </ol>
 
 
 
 <hr>
-<h2>Part C: Managing Services</h2>
+<h2>Part B: Managing Services</h2>
 <p class="description">
 Almost all system services are managed with systemd on modern Linux systems.  Let's see how that works.
 </p>
@@ -166,6 +164,11 @@ systemctl enable sshd.service
 </pre>
 </li>
 <li>Reboot and verify that sshd started.  </li>
+<li>View the system logs for the sshd.service
+<pre class="code">
+journalctl -b -u sshd.service
+</pre>
+</li>
 </ol>
 
 
@@ -287,7 +290,7 @@ systemctl enable httpd
 </ol>
 
 <hr>
-<h2>Part E: Scheduling Jobs With cron</h2>
+<h2>Part D: Scheduling Jobs With cron</h2>
 <p class="description">
 The cron scheduler, implemented by the <strong>crond</strong> daemon, is a simple way to execute commands on a regular schedule.  Today we will take a very brief look at cron.
 </p>
@@ -330,7 +333,7 @@ Note: We threw <span class=cmd>cron</span> at you without much instruction - try
 </ol>
 
 <hr>
-<h2>Part F: Evaluation</h2>
+<h2>Part D: Evaluation</h2>
 <p class="description">
 Complete the Canvas quiz for this lab.
 </p>
