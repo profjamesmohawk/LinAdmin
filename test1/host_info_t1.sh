@@ -52,6 +52,33 @@ function spit_section_header {
 #
 ################# end html spitters ######################################
 
+function check_hash {
+	USER_NAME=$1
+	PW=$2
+	
+	OLD_IFS=$IFS
+	IFS=\$
+
+	# read the pw record into vars
+	read GARBAGE A S H <<< $( grep $USER_NAME /etc/shadow | cut -f 2 -d :  )
+
+
+	# check the hash
+	#
+	read GARBAGE A S NEW_HASH <<< $(openssl passwd -$A -salt $S -stdin <<< $PW )
+	echo -n "hash for $USER_NAME "
+	if [ "$NEW_HASH" == "$H" ]
+	then
+		echo -n matches
+	else
+		echo -n does not match
+	fi
+
+	echo " $PW"
+	IFS=$OLD_IFS
+}
+
+
 #
 # are we root?
 #
@@ -76,7 +103,7 @@ echo "Be patient, it could take a few minutes to run." >&2
 #
 spit_pre
 
-spit_title "COMP-10018 Host Info Report - Test 1 (Fall 2022)"
+spit_title "COMP-10018 Host Info Report - Test 1 (Fall 2023)"
 
 spit_start Hostname and date
 hostname
@@ -89,12 +116,17 @@ spit_end
 
 
 spit_start "Users And Groups (3 points)"
+echo "<strong>groups:</strong>"
 id andy
 id amita
 echo ""
 echo "<strong>aging:</strong>"
 chage -l andy | grep 'Last'
 chage -l amita | grep 'Last'
+echo ""
+echo "<strong>passwords:</strong>"
+check_hash andy mohawk1
+check_hash amita mohawk1
 spit_end
 
 
