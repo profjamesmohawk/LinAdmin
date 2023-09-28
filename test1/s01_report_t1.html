@@ -1,0 +1,148 @@
+<html>
+<head>
+<style type="text/css">
+table { margin: 1em; border-collapse: collapse; }
+td, th { padding: .3em; border: 2px #ccc solid; }
+</style>
+</head>
+<body><table>
+<h2> COMP-10018 Host Info Report - Test 1 (Fall 2023) </h2>
+<tr>
+<td valign="top"> Hostname </td>
+<td><pre>
+ 
+s01
+Thu Sep 28 07:35:58 EDT 2023
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Is this a fresh VM?<br><em>boot history</em> </td>
+<td><pre>
+ 
+Sep 27 21:15
+Sep 27 21:28
+Sep 28 07:30
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Users And Groups (3 points) </td>
+<td><pre>
+ 
+<strong>groups:</strong>
+uid=1000(andy) gid=1000(andy) groups=1000(andy),1002(web)
+uid=1001(amita) gid=1001(amita) groups=1001(amita),1002(web)
+
+<strong>aging:</strong>
+Last password change					: Sep 28, 2023
+Last password change					: password must be changed
+
+<strong>passwords:</strong>
+hash for andy matches mohawk1
+hash for amita matches mohawk1
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Add a Disks (3 points) </td>
+<td><pre>
+ 
+<strong>vgConfig:</strong>
+  VG Size               3.99 GiB
+  PV Name               /dev/sdb1     
+  Total PE / Free PE    511 / 0
+  PV Name               /dev/sdc1     
+  Total PE / Free PE    511 / 0
+
+<strong>mounted:</strong>
+/dev/mapper/vgWeb-lvol0  3.9G   16M  3.7G   1% /mnt/web
+
+<strong>fstab:</strong>
+/dev/vgWeb/lvol0	/mnt/web	ext4 defaults 0 0
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Share /mnt/web (2 points) </td>
+<td><pre>
+ 
+drwxrws---. 3 root web 4096 Sep 27 21:37 /mnt/web
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Install Apache (3 points) </td>
+<td><pre>
+ 
+<strong>installed:</strong>
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+
+Last metadata expiration check: 10:09:50 ago on Wed 27 Sep 2023 09:26:09 PM EDT.
+Installed Packages
+httpd.x86_64           2.4.37-30.module+el8.3.0+7001+0766b9e7            @mini83
+
+<strong>startup:</strong>
+UNIT FILE     STATE  
+httpd.service enabled
+
+1 unit files listed.
+
+<stong>running:</strong>
+● httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2023-09-28 07:30:38 EDT; 5min ago
+     Docs: man:httpd.service(8)
+ Main PID: 859 (httpd)
+   Status: "Running, listening on: port 80"
+    Tasks: 213 (limit: 4928)
+   Memory: 42.8M
+   CGroup: /system.slice/httpd.service
+           ├─859 /usr/sbin/httpd -DFOREGROUND
+           ├─895 /usr/sbin/httpd -DFOREGROUND
+           ├─896 /usr/sbin/httpd -DFOREGROUND
+           ├─897 /usr/sbin/httpd -DFOREGROUND
+           └─898 /usr/sbin/httpd -DFOREGROUND
+
+Sep 28 07:30:37 s01 systemd[1]: Starting The Apache HTTP Server...
+Sep 28 07:30:38 s01 httpd[859]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.1.1.20. Set the 'ServerName' directive globally to suppress this message
+Sep 28 07:30:38 s01 systemd[1]: Started The Apache HTTP Server.
+Sep 28 07:30:38 s01 httpd[859]: Server configured, listening on: port 80
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Welcome Page (2 points) </td>
+<td><pre>
+ 
+hello Andy and Amita
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Apache Gets Nights Off (2 points) </td>
+<td><pre>
+ 
+# Apache gets the night off
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+00 07 * * * root systemctl start httpd
+30 23 * * * root systemctl stop httpd
+ 
+</pre>
+</td>
+</tr>
+<!-- report_id=7afc9cf0-5747-4bdf-91df-fa1620208489 -->
+<!-- check_sum=b4ee5d96bc3e95b39ed25dc52f6527f7 -->
+</table></body></html>

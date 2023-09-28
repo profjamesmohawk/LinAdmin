@@ -144,6 +144,10 @@ grep web /etc/fstab
 
 spit_end
 
+spit_start "Share /mnt/web (2 points)"
+ls -ld /mnt/web
+spit_end
+
 spit_start "Install Apache (3 points)"
 echo "<strong>installed:</strong>"
 yum list httpd
