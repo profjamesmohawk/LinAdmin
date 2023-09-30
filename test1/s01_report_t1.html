@@ -1,8 +1,12 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+
 <style type="text/css">
 table { margin: 1em; border-collapse: collapse; }
 td, th { padding: .3em; border: 2px #ccc solid; }
+.hidden { display: none; }
 </style>
 </head>
 <body><table>
@@ -12,7 +16,7 @@ td, th { padding: .3em; border: 2px #ccc solid; }
 <td><pre>
  
 s01
-Thu Sep 28 07:35:58 EDT 2023
+Thu Sep 28 21:55:03 EDT 2023
  
 </pre>
 </td>
@@ -86,7 +90,7 @@ Unable to read consumer identity
 
 This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
 
-Last metadata expiration check: 10:09:50 ago on Wed 27 Sep 2023 09:26:09 PM EDT.
+Last metadata expiration check: 1 day, 0:28:55 ago on Wed 27 Sep 2023 09:26:09 PM EDT.
 Installed Packages
 httpd.x86_64           2.4.37-30.module+el8.3.0+7001+0766b9e7            @mini83
 
@@ -99,12 +103,12 @@ httpd.service enabled
 <stong>running:</strong>
 ● httpd.service - The Apache HTTP Server
    Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
-   Active: active (running) since Thu 2023-09-28 07:30:38 EDT; 5min ago
+   Active: active (running) since Thu 2023-09-28 07:30:38 EDT; 14h ago
      Docs: man:httpd.service(8)
  Main PID: 859 (httpd)
-   Status: "Running, listening on: port 80"
+   Status: "Total requests: 10; Idle/Busy workers 100/0;Requests/sec: 0.000193; Bytes served/sec:   0 B/sec"
     Tasks: 213 (limit: 4928)
-   Memory: 42.8M
+   Memory: 43.1M
    CGroup: /system.slice/httpd.service
            ├─859 /usr/sbin/httpd -DFOREGROUND
            ├─895 /usr/sbin/httpd -DFOREGROUND
@@ -143,6 +147,75 @@ MAILTO=root
 </pre>
 </td>
 </tr>
-<!-- report_id=7afc9cf0-5747-4bdf-91df-fa1620208489 -->
-<!-- check_sum=b4ee5d96bc3e95b39ed25dc52f6527f7 -->
+<tr>
+<td valign="top"> command history </td>
+<td><pre>
+ 
+<a href="javascript:unhide(command_history)">show/hide</a> <span id="command_history" class="hint1">
+<span id="hint1" class="hidden">
+-- Logs begin at Thu 2023-09-28 07:30:25 EDT, end at Thu 2023-09-28 21:55:00 EDT. --
+Sep 28 09:37:32 s01 root[5563]: msg from james
+Sep 28 09:44:04 s01 root[5631]:   200  PROMPT_COMMAND='logger -p local6.debug "$(history|tail -1)"'
+Sep 28 09:44:16 s01 root[5635]:   200  PROMPT_COMMAND='logger -p local6.debug "$(history|tail -1)"'
+Sep 28 09:44:21 s01 root[5641]:   201  journalctl   SYSLOG_FACILITY=22
+Sep 28 09:44:32 s01 root[5646]:   202  find .
+Sep 28 09:44:34 s01 root[5650]:   203  cd /
+Sep 28 09:44:41 s01 root[5656]:   204  journalctl   SYSLOG_FACILITY=22
+Sep 28 09:44:56 s01 root[5662]:   204  journalctl   SYSLOG_FACILITY=22
+Sep 28 09:45:12 s01 root[5666]:   205  cd /etc
+Sep 28 09:45:13 s01 root[5671]:   206  ls
+Sep 28 09:45:34 s01 root[5692]:   207  vi profile
+Sep 28 09:45:38 s01 root[5697]:   208  cd /etc/profile.d/
+Sep 28 09:46:04 s01 root[5718]:   209  vi ../profile
+Sep 28 09:46:26 s01 root[5723]:   210  vi custom.sh
+Sep 28 09:46:29 s01 root[5727]:   211  history
+Sep 28 09:46:50 s01 root[5756]:   212  vi custom.sh
+Sep 28 09:46:57 s01 root[5785]:   213  exit
+Sep 28 09:46:59 s01 root[5790]:   214  find foo
+Sep 28 09:47:13 s01 root[5794]:   214  find foo
+Sep 28 09:47:18 s01 root[5800]:   215  journalctl   SYSLOG_FACILITY=22
+Sep 28 09:47:23 s01 root[5805]:   216  date
+Sep 28 09:51:35 s01 root[5833]:   217  vi host_info_t1.sh
+Sep 28 09:51:46 s01 root[5844]:   218  mv host_info_t1.sh host_info_t1_with_hist.sh
+Sep 28 09:58:32 s01 root[5867]:   219  vi host_info_t1_with_hist.sh
+Sep 28 09:58:34 s01 root[5874]:   220  ./host_info_t1_with_hist.sh
+Sep 28 09:58:45 s01 root[5887]:   221  vi host_info_t1.s
+Sep 28 09:59:12 s01 root[5908]:   222  vi host_info_t1_with_hist.sh
+Sep 28 09:59:16 s01 root[5974]:   223  ./host_info_t1_with_hist.sh
+Sep 28 09:59:29 s01 root[5995]:   224  view s01_report_t1.html
+Sep 28 10:00:24 s01 root[6000]:   225  vi host_info_t1_with_hist.sh
+Sep 28 10:00:29 s01 root[6066]:   226  ./host_info_t1_with_hist.sh
+Sep 28 10:00:56 s01 root[6071]:   227  view s01_report_t1.html
+Sep 28 10:05:22 s01 root[6112]:   228  vi host_info_t1_with_hist.sh
+Sep 28 10:05:28 s01 root[6178]:   229  ./host_info_t1_with_hist.sh
+Sep 28 21:40:18 s01 root[6502]:   230  lt
+Sep 28 21:40:46 s01 root[6523]:   231  vi host_info_t1_with_hist.sh
+Sep 28 21:41:40 s01 root[6544]:   231  vi host_info_t1_with_hist.sh
+Sep 28 21:41:49 s01 root[6550]:   232  ls
+Sep 28 21:42:06 s01 root[6612]:   233  ./host_info_t1.sh
+Sep 28 21:42:13 s01 root[6619]:   234  file host_info_t1
+Sep 28 21:42:19 s01 root[6628]:   235  file host_info_t1.s
+Sep 28 21:42:24 s01 root[6633]:   236  rm host_info_t1.s
+Sep 28 21:42:27 s01 root[6638]:   237  clear
+Sep 28 21:42:28 s01 root[6643]:   238  ls
+Sep 28 21:42:36 s01 root[6705]:   239  ./host_info_t1.sh
+Sep 28 21:45:21 s01 root[6734]:   240  vi host_info_t1.sh
+Sep 28 21:45:26 s01 root[6796]:   241  ./host_info_t1.sh
+Sep 28 21:45:58 s01 root[6840]:   242  vi host_info_t1.sh
+Sep 28 21:46:00 s01 root[6902]:   243  ./host_info_t1.sh
+Sep 28 21:49:25 s01 root[6923]:   244  vi host_info_t1.sh
+Sep 28 21:49:29 s01 root[6985]:   245  ./host_info_t1.sh
+Sep 28 21:50:44 s01 root[7005]:   246  lt
+Sep 28 21:51:00 s01 root[7022]:   247  mv host_info_t1_with_hist.sh ttt
+Sep 28 21:52:16 s01 root[7027]:   248  vi ttt
+Sep 28 21:52:41 s01 root[7048]:   249  vi host_info_t1.sh
+Sep 28 21:52:47 s01 root[7113]:   250  ./host_info_t1.sh
+Sep 28 21:55:00 s01 root[7134]:   251  vi ./host_info_t1.sh
+</span>
+ 
+</pre>
+</td>
+</tr>
+<!-- report_id=3457c51f-d375-4e32-a472-2118cda420df -->
+<!-- check_sum=a7e10a7cb632229e05ea4422d9629f80 -->
 </table></body></html>
