@@ -18,7 +18,14 @@
 </head>
 
 <body>
-<h1>Optional Lab: Updating with YUM  </h1>
+<h2>Optional Lab: Updating with YUM  </h2>
+<h1>Warning</h1>
+<p class="description">
+This lab will not work on the fall 2023 VM.  There is not enough disk space on the VM.
+</p>
+
+<a href="javascript:unhide('foo')">Show/Hide Lab</a>
+<span id="foo" class="hidden">
 
 <h2>Updating Software with yum, from the Red Hat repos</h2>
 <p class="description">
@@ -29,7 +36,13 @@ As we mentioned in the lecture, a Red Hat developer account is required to talk 
 	<li>Clone w01.  This lab will break the VirtualBox guest extensions and leave w01 in an unsupported configuration.
 	<li>Use <span class=cmd>yum</span> to update the software on <strong>w01 clone</strong> <em>(This could take a few minutes)</em>
 	<ul type="a">
-		<li>Visit <a href="https://developers.redhat.com/register">developers.redhat.com</a> sign up and get your username and password.</li>
+	<li>Hide the repo files that point to the DVD drive
+	<pre class="code">
+cd /etc/yum.repos.d
+mv Local* hide
+</pre>
+	</li>
+		<li>Visit <a href="https://developers.redhat.com">developers.redhat.com</a> sign up and get your username and password.</li>
 		<li>Register w01 with Red Hat
 <pre class="code">
 subscription-manager register --username={YOUR_USER_NAME} --password={YOUR_PASSWD} --auto-attach
@@ -61,6 +74,7 @@ subscription-manager unregister
 </ol>
 
 
+</span>
 
 
 </body>
