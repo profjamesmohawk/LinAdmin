@@ -86,6 +86,12 @@ mkdir /shares/backups
 systemctl enable --now nfs-server
 </pre>
 </li>
+<li>Tell NFS to re-export all shares
+<pre class="code">
+exportfs -ar
+</pre>
+</li>
+
 <li>Check to see that NFS has exported our share
 <pre class="code">
 exportfs -v
@@ -176,7 +182,7 @@ exportfs -v
 </li>
 <li>Tell NFS to re-read <strong>/etc/exports</strong>
 <pre class="code">
-exportfs -r
+exportfs -ar
 </pre>
 </li>
 
@@ -292,7 +298,7 @@ mkdir /shares/reading_room
 </li>
 <li>Tell NFS check the exports file
 <pre class="code">
-exportfs -r
+exportfs -ar
 </pre>
 </li>
 <li>Temporarily mount the share on <strong>w01</strong> (will not survive reboot)
