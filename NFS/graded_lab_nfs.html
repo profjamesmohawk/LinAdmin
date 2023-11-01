@@ -68,8 +68,9 @@ You will run the host_info_nfs script on <strong>s01</strong> and submit the out
 </tr>
 
 </table>
+<strong>Note:</strong> Running <span class=cmd>useradd</span> on w01 will likely result in warnings from sss_cache.  You can safely ignore these warnings.  You can stop the warnings by running <span class=cmd>rm /var/lib/sss/db/*</span> on w01.
 	</li>
-	<li>Create an group named <strong>research</strong> containing margaret and katherine on both systems.
+	<li>Create an group named <strong>research</strong> containing margaret and katherine on both systems.</li>
 </ol>
 
 <hr>
