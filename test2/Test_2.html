@@ -20,10 +20,14 @@
 <body>
 <h1>COMP-10018: Test 2</h1>
 <ul>
-<li>This evaluation must be completed in class </li>
-<li>You have 60 minutes to complete this evaluation </li>
-<li>You must use a freshly imported VM </li>
+<li>You have 60 minutes to complete this test.  </li>
+<li>All work must be done in class on a <strong>freshly imported</strong> VM.  </li>
+<li>The test is 100% open book including resources from the Internet.  </li>
+<li>You may use scripts you have written yourself.  </li>
+<li>The test is an individual effort.  </li>
+<li>Communication with another person during the test is forbidden.  </li>
 </ul>
+
 <hr>
 <h2>Grading:</h2>
 <p class="description">
@@ -35,53 +39,50 @@ You will run a host info script on s01 and submit the output to Canvas.
 <h2>Part A: Import The Appliance</h2>
 
 <ol>
-<li>Import <strong>clean, fresh</strong> copies of <strong>w01</strong>, <strong>s01</strong>, and <strong>y01</strong> </li>
+<li>Import <strong>clean, fresh</strong> copy of <strong>s01</strong></li>
 <li>Use <a href="../test1/fresh_check.zip">fresh_check.sh</a> to verify that you are working with a freshly imported s01.
 </li>
 </ol>
 
 <hr>
-<h3>Part B: Backup (2 points)</h3>
-<p class="description">
-Today you will be changing many files in the <strong>/etc</strong> directory tree, so you will first create a backup of <strong>/etc</strong> on <strong>s01</strong>
-</p>
+<h2>Part B: Backup (5 points)</h2>
 <ol>
-<li>Create a tar archive named <strong>/tmp/etc.tar</strong> on <strong>s01</strong> containing all files from the local <strong>/etc</strong> directory tree.  </li>
+<li>Create a tar archive named <strong>/tmp/etc.tar</strong> on <strong>s01</strong> containing all files from the <strong>/etc</strong> directory tree.  </li>
+<li>Create a cpio archive named <strong>/tmp/books.cpio</strong> containing the contents of <strong>/opt/Mohawk/books</strong></li>
+<li>Create a tar archive named <strong>/tmp/foo.tar</strong> such that <span class=cmd>tar -tf /tmp/foo.tar</span> returns
+<pre class="code">
+opt/Mohawk/data/4_f.green
+opt/Mohawk/books/ShelockHolmes.txt
+</pre>
+</li>
 </ol>
 
 <hr>
 <div style="page-break-before: always">
-<h3>Part C: NFS (5 points)</h3>
+<h2>Part C: NFS (5 points)</h2>
 <p class="description">
-In this section you will create an NFS share on s01 to be used by any and all users on w01.
+In this section you will create an NFS share on s01 to be used by any user from w01.
 </p>
 <ol>
 <li>The shared directory must be called <strong>/nfs/w01</strong> </li>
-<li>Any user on w01 must appear as the user named <strong>alice</strong> when accessing the share </li>
-<li>Any user on w01 must appear to belong to the group  named <strong>w01users</strong> when accessing the share</li>
+<li>Any user on w01 must appear as the user named <strong>w01user</strong> when accessing the share </li>
+<li>Any user on w01 must appear to belong to the group  named <strong>w01user</strong> when accessing the share</li>
 <li>All configuration changes must survive a reboot </li>
 <li>The share must be mounted by w01 when you run the grading script </li>
 <li>The share must contain at least one test file created by a user from w01 </li>
 </ol>
 
 <hr>
-<h3>Part D: Logging (5 points) </h3>
-<p class="description">
-Install the Apache web server on <strong>w01</strong>. Configure httpd to log it's errors via <strong>rsyslog</strong> to the file <strong>/var/log/httpd.err</strong> on <strong>s01</strong>
-</p>
+<h2>Part D: Logging (5 points) </h2>
 <ol>
-<li>All changes must be permanent (survive reboot) </li>
-<li>You must cause the web server to generate some errors to test your work </li>
+<li>Install and configure httpd to log to rsyslog with a facility of local5</li>
+<li>Configure rsyslog to log all messages from httpd to /var/log/web.log</li>
+<li>Configure rsyslog on w01 to forward authpriv messages to s01 </li>
+<li>Generate messages to test your changes </li>
 </ol>
 
 <hr>
-<h3>Part E: Incremental Backup (2 points) </h3>
-<p class="description">
-You made some changes to the contents of the <strong>/etc</strong> directory tree on <strong>s01</strong> since the backup was created in section B.  Create a <span class=cmd>tar</span> archive named <strong>/tmp/changes.tar</strong> containing only the files that have changed since the tar backup from section B completed. 
-</p>
-
-<hr>
-<h2>Part F: Grading</h2>
+<h2>Part E: Grading</h2>
 <p class="description">
 Run the grading script contained in <a href="./host_info_t2.zip">host_info_t2.zip</a> and submit the output to Canvas.
 </p>
