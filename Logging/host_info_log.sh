@@ -55,11 +55,11 @@ function spit_section_header {
 #
 # are we root?
 #
-#if (( EUID != 0 ))
-#then
-	#echo "You must be root to run this script" >&2
-	#exit 1
-#fi
+if (( EUID != 0 ))
+then
+	echo "You must be root to run this script" >&2
+	exit 1
+fi
 
 #
 # Tell the nice people what we are going to do
@@ -91,29 +91,24 @@ logger -p cron.error "FM_T3: cron.error"
 # sleep to give rsyslog time to write, (looks like rsyslog writes twice a second)
 sleep 1
 
-spit_start "Part B.1,  (2 point) <br> FM_T1 in maillog, mail_warn, and msg_err"
+spit_start "Part B.1,  (2 points) <br> FM_T1 in maillog, mail_warn, and msg_err"
 grep -l FM_T1 $(find /var/log/ -type f)
 spit_end
 
-spit_start "Part B.1,  (1 point) <br> FM_T2 in maillog"
+spit_start "Part B.1,  (2 point) <br> FM_T2 in maillog"
 grep -l FM_T2 $(find /var/log/ -type f)
 spit_end
 
-spit_start "Part B.1,  (1 point) <br> FM_T3 in cron, msg_err"
+spit_start "Part B.1,  (2 point) <br> FM_T3 in cron, msg_err"
 grep -l FM_T3 $(find /var/log/ -type f)
 spit_end
 
-spit_start "Part C: (3 points) <br> authpriv messages from w01 in /var/log/secure"
+spit_start "Part C: (2 points) <br> authpriv messages from w01 in /var/log/secure"
 grep w01 /var/log/secure | tail -5
 spit_end
 
-spit_start "Part D: (2 points) <br> http errors in /var/log/httpd_err"
-grep w01 /var/log/httpd_err | tail -2
-spit_end
-
-spit_start "Part E: (1 point) <br> local2.none for msg_err and messages"
-grep /var/log/msg_err /etc/rsyslog.conf
-grep /var/log/messages /etc/rsyslog.conf
+spit_start "Part D: (2 points) <br> http errors in /var/log/messages"
+grep httpd /var/log/messages | tail -5
 spit_end
 
 

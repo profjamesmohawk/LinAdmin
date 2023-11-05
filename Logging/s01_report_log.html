@@ -1,0 +1,73 @@
+<html>
+<head>
+<style type="text/css">
+table { margin: 1em; border-collapse: collapse; }
+td, th { padding: .3em; border: 2px #ccc solid; }
+</style>
+</head>
+<body><table>
+<h2> COMP-10018 Host Info Report - Logging </h2>
+<tr>
+<td valign="top"> Hostname </td>
+<td><pre>
+ 
+s01
+Sun Nov  5 16:58:22 EST 2023
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part B.1,  (2 points) <br> FM_T1 in maillog, mail_warn, and msg_err </td>
+<td><pre>
+ 
+/var/log/maillog
+/var/log/mail_warn.log
+/var/log/msw_err.log
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part B.1,  (2 point) <br> FM_T2 in maillog </td>
+<td><pre>
+ 
+/var/log/maillog
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part B.1,  (2 point) <br> FM_T3 in cron, msg_err </td>
+<td><pre>
+ 
+/var/log/cron
+/var/log/msw_err.log
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part C: (2 points) <br> authpriv messages from w01 in /var/log/secure </td>
+<td><pre>
+ 
+Nov  5 14:41:20 w01 unix_chkpwd[8703]: password check failed for user (root)
+Nov  5 14:41:20 w01 su[8701]: pam_unix(su:auth): authentication failure; logname= uid=1000 euid=0 tty=pts/1 ruser=alice rhost=  user=root
+ 
+</pre>
+</td>
+</tr>
+<tr>
+<td valign="top"> Part D: (2 points) <br> http errors in /var/log/messages </td>
+<td><pre>
+ 
+Nov  5 14:33:25 s01 httpd[3291]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.1.1.20. Set the 'ServerName' directive globally to suppress this message
+Nov  5 14:33:25 s01 httpd[3291]: [http2:warn] [pid 3291:tid 139773622290752] AH02951: mod_ssl does not seem to be enabled
+Nov  5 14:33:25 s01 httpd[3291]: Server configured, listening on: port 80
+Nov  5 14:34:42 s01 httpd[3294]: [autoindex:error] [pid 3294:tid 139772748044032] [client 127.0.0.1:39356] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html) found, and server-generated directory index forbidden by Options directive
+Nov  5 14:43:41 s01 httpd[3294]: [autoindex:error] [pid 3294:tid 139772972898048] [client 127.0.0.1:39360] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html) found, and server-generated directory index forbidden by Options directive
+ 
+</pre>
+</td>
+</tr>
+</table></body></html>
