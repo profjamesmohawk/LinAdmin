@@ -76,7 +76,7 @@ echo "Be patient, it could take a few minutes to run." >&2
 #
 spit_pre
 
-spit_title "COMP-10018 Host Info Report - Routing"
+spit_title "COMP-10018 Host Info Report - NFS"
 
 spit_start Hostname
 hostname

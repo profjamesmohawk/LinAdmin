@@ -14,6 +14,7 @@ function spit_pre {
 	echo "<html>"
 	echo "<head>"
 	echo "<style type=\"text/css\">"
+	echo "body { font-family: Arial; }"
 	echo "table { margin: 1em; border-collapse: collapse; }"
 	echo "pre { overflow: auto; display: block; width: 90%; border: 1px solid #ccc; padding: 3px; background: #ece9d8; margin-top: 0px; margin-left: 5px; border-radius: 5px; }"
 	echo "td, th { padding: .3em; border: 2px #ccc solid; }"

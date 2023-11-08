@@ -1,0 +1,94 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<style type="text/css">
+body { font-family: Arial; }
+table { margin: 1em; border-collapse: collapse; }
+pre { overflow: auto; display: block; width: 90%; border: 1px solid #ccc; padding: 3px; background: #ece9d8; margin-top: 0px; margin-left: 5px; border-radius: 5px; }
+td, th { padding: .3em; border: 2px #ccc solid; }
+</style>
+</head>
+<body>
+<h2> COMP-10018 Host Info Report - Test 2 </h2>
+
+Host Info:
+<pre>s01
+Sun Nov  5 16:08:08 EST 2023
+</pre>
+
+Is this a fresh VM? (boot history)
+<pre>Nov  1 17:32
+Nov  5 12:03
+</pre>
+<h3>Backup</h3>
+
+/tmp/etc.tar should have around 700 files (1 point)
+<pre>707
+</pre>
+
+books.cpio: correct files, dates (2 points)
+<pre>drwxr-xr-x   2 root     root            0 Jun  1  2015 books/
+-rw-r--r--   1 root     root       594933 Jun  1  2015 books/ShelockHolmes.txt
+-rw-r--r--   1 root     root      3291648 Jun  1  2015 books/WarAndPeace.txt
+</pre>
+
+foo.tar correct files, dates (2 points)
+<pre>-rw-r--r-- root/root        42 2015-06-01 14:55 opt/Mohawk/data/4_f.green
+-rw-r--r-- root/root    594933 2015-06-01 13:49 opt/Mohawk/books/ShelockHolmes.txt
+</pre>
+<h3>Backup</h3>
+
+NFS Connecton from w01 (1 point)
+<pre>tcp        0      0 s01:nfs                 w01:826                 ESTABLISHED
+</pre>
+
+/nfs/w01 in exports (2 points)
+<pre>/nfs/w01  w01(rw,all_squash,anonuid=9317,anongid=9317)
+</pre>
+
+Test files in /nfs/w01 (2 points)
+<pre>total 0
+-rw-r--r--. 1 w01user w01user 0 Nov  5 12:51 f1
+</pre>
+<h3>Backup</h3>
+
+remote logging enabled (1 point)
+<pre>module(load="imudp") # needs to be done just once
+input(type="imudp" port="514")
+module(load="imtcp") # needs to be done just once
+input(type="imtcp" port="514")
+</pre>
+
+contents of /var/log/web.log (2 points)
+<pre>Nov  5 14:43:41 s01 httpd[3294]: [autoindex:error] [pid 3294:tid 139772972898048] [client 127.0.0.1:39360] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html) found, and server-generated directory index forbidden by Options directive
+</pre>
+
+authpriv from w01 in /var/log/secure (2 points)
+<pre>Nov  5 14:41:20 w01 unix_chkpwd[8703]: password check failed for user (root)
+Nov  5 14:41:20 w01 su[8701]: pam_unix(su:auth): authentication failure; logname= uid=1000 euid=0 tty=pts/1 ruser=alice rhost=  user=root
+</pre>
+<!-- report_id=6cbffebc-7b93-48f6-8a0a-afcbbc248b6e -->
+<!-- altenc
+H4sIADkESGUAA5VVaW/jNhD9rl8xTVDABiKLOnzRcYrt7hZJ0T3QLNoPwSKgSMpSI5MqSUU2iv3v
+HcpHskm22MoGJFEzbx4f5zgv3bq+CM5LyQTerNvWEty2kcsTJzcu4taeXASO5bj8D6yZWVWKQizX
+C8i1EdKEXNc1a6ykcHhawJegMd5e30tT1LqjwFqnFyAq29RsSyGvNb9bQFcJV1KYkx8PcIjdbMDq
+uhJwyjlfQMOEqNSKQtps0Irxu5XRrRIUTiWXczFb7GmFTjcUiLfaL9SycBTGvd+OrGGiau1+7Uvg
+xBm4Eokeg4zSh61RSJCLZ7Ej5D3Oo14ilCraS5ZrsfUCJhfw+sO7j2FMSDyDS20dXKlCw++y0cZB
+CJ8kLiWAjslFEBwNaHCOYl1YEgfXrYL3+h5gDPGEkhklc3h7/QkSkqQY0JsFwZVFypUFBoWRtoQ/
+3v0Eg1xrB7jqtNkOd4A9UAzxlKZJcEBNKDkinZcG4SK3biLp+MgxA7bUbS2gZPcSWK8yTAmBoqql
+hUEMja6U2+NPyfTICcPf2RFvKu2zwBjJ3c7pDARz3jfZ+dq9szDdxoT+D4CaGE/fX8eH/UXgV9QE
+t4EaxGPo40RBaLrQhP4P/ttL3uN5Nk/Tl7yvS+mT71LXa2lHbuO+Ay5N5vEkm70E9yczr5T4KBmX
+PdhBkkLrXtLvkuMRAx80eixDlvThQjIJCR5nRsdj0I2L3umSdXcRArIouy1GKyOlCr6FtNfjMVJK
+s/ljpG/J81W6vP/lGl5rpXBLWmEG6jV0CPYkNxxvHk5wf8MEp6qw8PRCdzpLJs/WMfFf/fzb1fXl
+2zdHUSMEiHy8SoHc+Lp6ruXRxiMPTHfG6vrW/t0yW54xpVVbieU8jaf9y2r/MjyG6Kt0l/AY5Aj2
+NIrTjtVAHuk9wsRAy9ZKc7wTeCi8cQxF/LWYRq61k1DrFXarFUjl26x4KuZai7aWg1ozsTyp1q1o
+ToZwCkpKga1AQy5BaCXhrxaZa8VlUKmmdYNdF985gNdqeTKOs5Nh8AQQD+v/AXqHrwAP2nGtnESN
+QBcQ3TMT4c6iTuYjvD9T8KBMRjPMxNjnB5TONeIGqy37TOHGz4xKCbmh0hhtPsNNg1PBf6UOH+J0
+Pp0m82kym89INsPPvK4wPIo9HRH8xTSdpxPyGV5dElybUHjNlMJ6wKPBBicqX5jYMHdcu66L/DCM
+KB4aThDHS38obw5WV54JDHpCI284hMJ3yDNg2CZ7SBOupJIGS1w8Qu890NbklRBSQb6FD42rtLJ7
+o+peHiXEPZeNqe4fSstn4UFLK3mLg/U/pIxpQnq3VlWbW17eNZ24mU1JioI2zNoOJxvwUvI7KFjl
+sw2JQZ+sA98rhsFLYLb1GHGPsb710APbUs912I/2EmWvOPOb6mGR5MKntWJruQRfcTgVCUj/RMC5
+7bJxNsJW6wMvWV1xCabEibiEnsvSUznWyg++mfVT9Bb9JzwvCpnzcJrP0zCbFZNwxggLWcHznCfZ
+LJ9ICMO9H6sxI3nwL1KWuC7nCAAA
+altenc -->
+
+</body></html>
