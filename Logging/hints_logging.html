@@ -72,58 +72,15 @@ firewall-cmd --reload
 <hr>
 <h2>Part D: Sending Apache Errors </h2>
 <p class="description">
-The Apache httpd web server can send it's error messages to syslog.  This can be a useful way to implement remote logging for httpd.  In this section you will setup httpd running on w01 and logging to s01.
+The Apache httpd web server can send it's error messages to syslog.
 </p>
 <ol>
-<li>Install the Apache <strong>httpd</strong> server on <strong>w01</strong> </li>
 <li>Modify the httpd config file, <strong>httpd.conf</strong> to send error messages to syslog with the facility <strong>local2</strong> 
 <a href="https://httpd.apache.org/docs/trunk/mod/mod_syslog.html">(hint)</a>
 <pre class="code">
 ErrorLog syslog:local2
 </pre>
 </li>
-<li>Start the httpd service </li>
-<li>Check that httpd is running by browsing to <strong>http://localhost</strong> </li>
-<li>Generate an error with curl.  This should result in an <em>autoindex:error</em>
-<pre class="code">
-curl http://localhost
-</pre>
-<li>Check <strong>/var/log/messages</strong>, you should see at least one error message from httpd </li>
-<li>Modify <strong>rsyslog.conf</strong> on <strong>w01</strong> to send all messages with a facility of <strong>local2</strong> to <strong>s01</strong>
-<pre class="code">
-local2.*       @@s01:514
-</pre>
-</li>
-<li>Modify <strong>rsyslog.conf</strong> on <strong>s01</strong> to send all messages with a facility of <strong>local2</strong> to <strong>/var/log/httpd_err</strong>
-<pre class="code">
-local2.*   /var/log/httpd_err
-</pre>
-</li>
-<li>Generate an other httpd error from <strong>w01</strong> </li>
-<li>Check <strong>/var/log/httpd_err</strong> on <strong>s01</strong> </li>
 </ol>
-
-<hr>
-<h2>Part E: Ignoring Some Messages</h2>
-<p class="description">
-The httpd errors sent from w01 to s01 in Part D, end up in three log files on s01: messages, msg_err, and httpd_err.  We really only want them in httpd_err.
-</p>
-<ol>
-<li>Modify the <strong>rsyslog.conf</strong> entry for <strong>/var/log/msg_err</strong> to log <strong>none</strong> of the messages with a facility of <strong>local2</strong>
-<br>
-<em><strong>Hint:</strong> Look at the entry for /var/log/messages, it already ignores messages with facilities of mail, authpriv, and cron.
-</em>
-</li>
-<li>Modify the entry for <strong>/var/log/messages</strong> to ignore facility <strong>local2</strong> as well.  </li>
-<li>Test your work by generating some httpd errors on <strong>w01</strong>, they should now appear only in <strong>httpd_err</strong>
-</li>
-</ol>
-</li>
-
-<hr>
-<h2>Part F: Evaluation</h2>
-<p class="description">
-Run <span class=cmd>host_info_syslog.sh</span>  on <strong>s01</strong> and submit the output to the Canvas dropbox for this lab.
-</p>
 </body>
 </html>
