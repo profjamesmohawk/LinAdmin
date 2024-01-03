@@ -91,7 +91,7 @@ end
 
 e3 "Backup (5 points)"
 
-start  "/tmp/etc.tar should have around 700 files (1 point)"
+start  "/tmp/etc.tar should have approximately 700 files (1 point)"
 tar tf /tmp/etc.tar | wc -l
 end
 
