@@ -130,7 +130,8 @@ tail -5 /var/log/web.log
 end
 
 start "authpriv from w01 in /var/log/secure (2 points)"
-grep w01 /var/log/secure | tail -2
+# improve pattern to not match w01_guest user add message
+grep w01 /var/log/secure | tail -10
 end
 
 echo "<!-- report_id=$(uuidgen) -->"
