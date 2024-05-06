@@ -135,14 +135,13 @@ grep w01 /var/log/secure | tail -10
 end
 
 echo "<!-- report_id=$(uuidgen) -->"
-
-echo "<!-- altenc"
 } > $OUT_FILE
 
 # squirrel away a copy in a comment
 #
 TF=$(mktemp)
-cat $OUT_FILE | gzip | base64 > $TF
+echo "<!-- altenc" > $TF
+cat $OUT_FILE | gzip | base64 >> $TF
 cat $TF >> $OUT_FILE
 
 {
