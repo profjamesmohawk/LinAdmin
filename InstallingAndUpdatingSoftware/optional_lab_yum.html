@@ -18,32 +18,41 @@
 </head>
 
 <body>
-<h2>Optional Lab: Updating with YUM  </h2>
-<h1>Warning</h1>
-<p class="description">
-This lab will not work on the fall 2023 VM.  There is not enough disk space on the VM.
-</p>
-
-<a href="javascript:unhide('foo')">Show/Hide Lab</a>
-<span id="foo" class="hidden">
-
-<h2>Updating Software with yum, from the Red Hat repos</h2>
+<h2>Optional Lab: Updating Software with yum, from the Red Hat repos</h2>
 <p class="description">
 As we mentioned in the lecture, a Red Hat developer account is required to talk to the repositories required to patch.  <br><strong>You do not need to sign up for a Red Hat developer account.  This section is optional.  It will not be on any evaluation.</strong>
 <br><strong>You are encouraged to sign-up, it is free and you get access to more documentation as well.</strong>
 </p>
 <ol>
-	<li>Clone w01.  This lab will break the VirtualBox guest extensions and leave w01 in an unsupported configuration.
-	<li>Use <span class=cmd>yum</span> to update the software on <strong>w01 clone</strong> <em>(This could take a few minutes)</em>
-	<ul type="a">
-	<li>Hide the repo files that point to the DVD drive
+	<li>Clone s01 to create s02
+	<ul>
+	<li>Add a NAT interface to s02 in the VirtualBox GUI </li>
+	<li>Set hostname and IP </li>
+	<li>Rename the NAT connection to enp0s8
+	<pre class="code">
+nmcli connection modify 'Wired connection 1' connection.id enp0s8
+</pre>
+	</li>
+	<li>Set the NAT connection to DHCP
+<pre class="code">
+nmcli connection modify enp0s8 ipv4.method auto
+</pre>
+	</li>
+	<li>Bring up the NAT connection
+	<pre class="code">
+nmcli connection up enp0s8 
+</pre>
+	</li>
+	</ul>
+	</li>
+	<li>Hide the repo files that point to y01
 	<pre class="code">
 cd /etc/yum.repos.d
-mv Local* hide
+mv *.repo hide
 </pre>
 	</li>
 		<li>Visit <a href="https://developers.redhat.com">developers.redhat.com</a> sign up and get your username and password.</li>
-		<li>Register w01 with Red Hat
+		<li>Register s01 with Red Hat
 <pre class="code">
 subscription-manager register --username={YOUR_USER_NAME} --password={YOUR_PASSWD} --auto-attach
 </pre>
@@ -58,7 +67,7 @@ subscription-manager config --rhsm.manage_repos=1
 yum update
 </pre>
 	</li>
-	<li>Reboot <strong>w01</strong> 
+	<li>Reboot <strong>s01</strong> 
 				<a href="javascript:unhide('A9')">Why?</a>
 				<span id="A9" class="hidden">
 				<em>The update should have included a new kernel and we need to reboot in order to use it.</em> </span>
@@ -69,12 +78,11 @@ yum update
 subscription-manager unregister
 </pre>
 	</li>
-	<br><strong>Note:</strong> Updating the kernel can break the VirtualBox guest extensions.  If this happens, don't panic you can import a fresh w01 from the OVA appliance.
-	</ul>
+	<li>Remove the <strong>s02</strong> VM from the VirtualBox GUI.  Using it with future labs is not supported.
+	</li>
 </ol>
 
 
-</span>
 
 
 </body>
