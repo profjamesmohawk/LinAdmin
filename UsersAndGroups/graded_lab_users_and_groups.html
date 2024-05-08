@@ -152,53 +152,11 @@ This process is identical to the steps you performed in Lab Tour exercise, just 
 </p>
 
 <ol>
-<h3>These steps run on w01, as alice</h3>
-<li>Open Firefox and logon to Canvas </li>
-<li>Download the file <a href="./host_info_ug.zip">host_info_ug.zip</a> from Canvas to w01.  Download this file to the <em>Downloads</em> directory.  This file is associated with the dropbox for this lab.  
-</li>
-
-</li>
-<li>Unzip the file.
-<pre class="code">
-cd ~/Downloads
-unzip host_info_ug.zip
-</pre>
-</li>
-<li>Check that the unzip succeeded,  (/home/alice/Downloads/host_info_ug.sh should now exist)
-<pre class="code">
-ls -l ~/Downloads
-</pre>
-</li>
-<li>Copy the script to <strong>s01</strong>
-<pre class="code">
-cd ~/Downloads
-scp ./host_info_ug.sh root@10.1.1.20:/tmp
-</pre>
-</li>
-<h3>These steps run on s01, as root</h3>
-<li>Run the script on s01
-<pre class="code">
-cd /tmp
-./host_info_ug.sh
-</pre>
-</li>
-<li>Check that the host report was generated (we're looking for s01_report.html)
-<pre class="code">
-ls -l /tmp
-</pre>
-</li>
-<h3>These steps run back on w01 as alice</h3>
-<li>Copy the report we just created on <strong>s01</strong> to <strong>w01</strong>
-<pre class="code">
-scp root@10.1.1.20:/tmp/s01_report_ug.html /tmp
-</pre>
-</li>
-<li>Inspect the report with Firefox
-<pre class="code">
-firefox /tmp/s01_report_ug.html 
-</pre>
-</li>
-
+<li>Download the file <a href="./host_info_ug.zip">host_info_ug.zip</a> </li>
+<li>Unzip the file  </li>
+<li>Copy the script to <strong>s01</strong> </li>
+<li>Run the script on <strong>s01</strong> </li>
+<li>Copy the report we just created on <strong>s01</strong> to <strong>w01</strong> </li>
 <li>Submit <strong>s01_report_ug.html</strong> to Canvas, placing it in the drop-box for this lab.
 </li>
 </ol>
