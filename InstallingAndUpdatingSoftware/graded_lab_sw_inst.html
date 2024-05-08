@@ -29,22 +29,25 @@ This lab will require a little reading and research to complete.
 </p>
 
 <hr>
-<h2>Prerequisites:</h2>
-<h3>Before you start this lab you must have:</h3>
-	<ul>
-		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
-		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
-	</ul>
-<hr>
 <h2>Grading:</h2>
 <p class="description">
 You will demonstrate your understanding of this lab by running the host_info script <span class=cmd>(host_info_sw.zip)</span> and submitting the output to Canvas.
 </p>
 
+<hr>
+<h2>Part A: Set up</h2>
+<ol>
+<li>Clone <strong>s01</strong> to create <strong>s02</strong>
+<ul>
+<li>hostname: s02 </li>
+<li>IP ADDR: 10.1.1.30 </li>
+</ul>
+</li>
+</ol>
 
 
 <hr>
-<h2>Part A: Install the Apache web server s01</h2>
+<h2>Part B: Install the Apache web server s01</h2>
 <p class="description">
 The web server from the Apache Software Foundation is one of the most popular.  Let's install it.
 </p>
@@ -54,7 +57,7 @@ The web server from the Apache Software Foundation is one of the most popular.  
 </ol>
 
 <hr>
-<h2>Part B: Building Software From Source</h2>
+<h2>Part C: Building Software From Source</h2>
 <p class="description">
 Most software comes packaged and compiled, but not all.  They come with single script that builds and installs them, but most software you have have to build from source will use standard tools to configure, build, and install.
 </p>
@@ -80,12 +83,12 @@ netperf -?
 </pre>
 </ul>
 </li>
-<li>Repeat these steps on <strong>w01</strong> (we need Netperf on both s01 and w01 for the next part of the lab)
+<li>Repeat these steps to build netperf on s02
 </li>
 </ol>
 
 <hr>
-<h2>Part C: Test Network Performance</h2>
+<h2>Part D: Test Network Performance</h2>
 <p class="description">
 You will use Netperf and scp to test the performance.
 </p>
@@ -107,7 +110,7 @@ ll -h /tmp/f1
 </li>
 <li>Use scp to test the network speed
 <pre class=code>
-scp /tmp/f1 root@10.1.1.10:/tmp
+scp /tmp/f1 root@10.1.1.30:/tmp
 </pre>
 </li>
 <li>Record the throughput </li>
@@ -122,9 +125,9 @@ Netperf has two components <span class=cmd>netserver</span> and <span class=cmd>
 </p>
 
 <ol>
-<li>On <strong>s01</strong>, stop the fire wall.
+<li>On <strong>s01</strong>, stop the firewall
 <pre class="code">
-systemctl stop firewalld.service 
+systemctl stop firewalld.service
 </pre>
 </li>
 <li>On <strong>s01</strong>, start <span class=cmd>netserver</span> listening on port 9317.
@@ -137,9 +140,9 @@ netserver -p 9317
 ps -efl |grep netserver
 </pre>
 </li>
-<li>On <strong>w01</strong> run a TCP Stream test to w01, and send the output to <strong>/tmp/test_a</strong>
+<li>On <strong>s02</strong> run a TCP Stream test to s01
 <pre class="code">
-netperf -H s01 -p 9317 -f G &gt; /tmp/test_a
+netperf -H s01 -p 9317 -f G 
 </pre>
 </li>
 <li>Record the throughput </li>
@@ -156,7 +159,7 @@ Compare the results from scp and netperf.  If they reported different values, tr
 </p>
 
 <hr>
-<h2>Part D: Grading</h2>
+<h2>Part E: Grading</h2>
 <ol>
 <li>Get the grading script from Canvas (<a href="./host_info_sw.zip">host_info_sw.zip</a>)
 </li>
