@@ -32,7 +32,7 @@ Relax and take a deep breath, it's time to dive back into UNIX.  This lab will r
 <h2>Prerequisites:</h2>
 <h3>Before you start this lab you must have:</h3>
 	<ul>
-		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab-revX.ova</strong> </li>
+		<li>The comp-10018 virtual lab appliances: <strong>s01_y01_comp-10018_revc1.ova</strong> and <strong>w01_comp-10018_rev2a.ova</strong> </li>
 		<li>Oracle VirtualBox software, found on all lab systems at the college and available from <a href="http://virtualbox.org" target="blank">http://virtualbox.org</a>
 	</ul>
 
@@ -249,33 +249,34 @@ unzip host_info_1.zip
 ls -l ~/Downloads
 </pre>
 </li>
-<li>Copy the script to <strong>s01</strong>
+<li>Copy the script to root's home directory on <strong>s01</strong> 
 <pre class="code">
 cd ~/Downloads
-scp ./host_info_1.sh root@10.1.1.20:/tmp
+scp ./host_info_1.sh root@10.1.1.20:.
 </pre>
 </li>
 <h3>These steps run on s01, as root</h3>
 <li>Run the script on s01
 <pre class="code">
-cd /tmp
+cd 
 ./host_info_1.sh
 </pre>
 </li>
 <li>Check that the host report was generated (we're looking for s01_report.html)
 <pre class="code">
-ls -l /tmp
+ls -l 
 </pre>
 </li>
 <h3>These steps run back on w01 as alice</h3>
 <li>Copy the report we just created on <strong>s01</strong> to <strong>w01</strong>
 <pre class="code">
-scp root@10.1.1.20:/tmp/s01_report.html /tmp
+cd
+scp root@10.1.1.20:./s01_report.html .
 </pre>
 </li>
 <li>Inspect the report with Firefox
 <pre class="code">
-firefox /tmp/s01_report.html 
+firefox s01_report.html 
 </pre>
 </li>
 
@@ -301,12 +302,12 @@ Like most computer systems, we should never just power-off our systems, we shoul
 shutdown -h now
 </pre>
 </li>
-<li>From the GUI on w01 select <em>Shutdown</em> from the <em>System</em> menu
+<li>From the GUI on w01 select <em>Shutdown</em> from the <em>alice</em> menu found in the upper right hand corner
 </li>
 <li>Shutting down y01.  If you started y01, you can shut it down by closing the host VM window and selecting 'Send the shutdown signal'.
 </li>
 </ol>
 
-<strong><em>Note: Our systems are packaged as an appliance we can get away with just powering them down, they will be created from scratch next lab.  This might come in handy at the end of a lab when time is short.</em></strong>
+<strong><em>Note: Our systems are packaged as appliances so we can get away with just powering them down, they will be created from scratch next lab.  This might come in handy at the end of a lab when time is short.</em></strong>
 </body>
 </html>

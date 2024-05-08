@@ -18,3 +18,5 @@ WHAT_IS_MY_IP_URL="https://csunix.mohawkcollege.ca/~long/php/what_is_my_ip.php"
 
 curl -s $WHAT_IS_MY_IP_URL  | grep client
 
+# for proxy add -x host:port
+# tinyproxy defaults to 8888

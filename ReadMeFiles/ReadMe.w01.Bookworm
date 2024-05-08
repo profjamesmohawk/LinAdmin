@@ -1,0 +1,36 @@
+Steps to build w01 from Bookworm (Debian 12.5) ISO
+
+Base install
+	xfce4
+	firefox-esr
+	xfce-terminal
+	vim
+	tinyproxy
+	zip
+	unzip
+
+Configure
+	remove panels
+	IP
+	hosts
+	launchers from terminal, firefox
+	homepage
+	tinyproxy:
+		- bind to 10.1.1.10
+		- allow 10.1.1.0/24
+		- log via syslog
+
+Guest Extentions as per Infra Lab
+	apt install build-essential dkms linux-headers-$(uname -r)
+	./VBoxLinxAdditions.run
+
+Clean apt cache
+	apt clean
+
+Zero F/S
+	dd if=/dev/zero of=/tmp/foo
+	rm /tmp/foo
+
+Export Appliance
+	aprox 1GB ova
+
