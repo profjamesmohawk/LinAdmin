@@ -1,56 +1,53 @@
 #!/bin/bash
 
 OUT_FILE=$(hostname)_report_t1.html
-
-# map stdout to OUT_FILE
-#
 rm $OUT_FILE 2>/dev/null
-exec 1<> $OUT_FILE
 
 ################ functions to spit html ################################
 #
-function spit_start {
-	echo "<tr>"
-	echo "<td valign=\"top\"> $1 </td>"
-	echo "<td><pre>"
-	echo " "
-
-	# tell the user what we are up to
-	echo "Collecting Info for $1" | sed -e 's/<.*>//g' >&2
-}
-
-function spit_end {
-	echo " "
-	echo "</pre>"
-	echo "</td>"
-	echo "</tr>"
-}
 
 function spit_pre {
-	echo "<html>"
-	echo "<head>"
-	echo "<style type=\"text/css\">"
-	echo "table { margin: 1em; border-collapse: collapse; }"
-	echo "td, th { padding: .3em; border: 2px #ccc solid; }"
-	echo "</style>"
-	echo "</head>"
+        echo "<html>"
+        echo "<head>"
+        echo "<style type=\"text/css\">"
+        echo "body { font-family: Arial; }"
+        echo "table { margin: 1em; border-collapse: collapse; }"
+        echo "pre { overflow: auto; display: block; width: 90%; border: 1px solid #ccc; padding: 3px; background: #ece9d8; margin-top: 0px; margin-left: 5px; border-radius: 5px; }"
+        echo "td, th { padding: .3em; border: 2px #ccc solid; }"
+        echo "</style>"
+        echo "</head>"
 
-	echo "<body><table>"
+        echo "<body>"
 }
 
 function spit_post {
-	echo "</table></body></html>"
+        echo "</body></html>"
 }
 
 function spit_title {
-	echo "<h2> $1 </h2>"
+        echo "<h2> $1 </h2>"
 }
 
-function spit_section_header {
-	echo "<tr><td colspan=\"2\"> $1 </td></tr>"
+
+function start {
+        echo ""
+        #echo "<strong>${1}</strong>"
+        echo "${1}"
+        echo -n "<pre>" 
+}
+function end {
+        echo "</pre>"
+}
+
+function e3 {
+        echo "<hr>"
+        #echo "<h3>${1}</h3>"
+        #echo "<strong>${1}</strong><br>"
+        #echo "<br>"
 }
 #
 ################# end html spitters ######################################
+
 
 function check_hash {
 	USER_NAME=$1
@@ -61,7 +58,12 @@ function check_hash {
 
 	# read the pw record into vars
 	read GARBAGE A S H <<< $( grep $USER_NAME /etc/shadow | cut -f 2 -d :  )
-
+	if [ "$GARBAGE" == "" ] 
+	then
+		echo user not found
+		IFS=$OLD_IFS
+		return
+	fi
 
 	# check the hash
 	#
@@ -78,7 +80,7 @@ function check_hash {
 	IFS=$OLD_IFS
 }
 
-
+{
 #
 # are we root?
 #
@@ -103,19 +105,22 @@ echo "Be patient, it could take a few minutes to run." >&2
 #
 spit_pre
 
-spit_title "COMP-10018 Host Info Report - Test 1 (Fall 2023)"
+spit_title "COMP-10018 Host Info Report - Test 1"
 
-spit_start Hostname and date
+start "Hostname and date"
 hostname
 date
-spit_end
+end
 
-spit_start "Is this a fresh VM?<br><em>boot history</em>"
-grep -h 'Command line: BOOT' /var/log/messages* | cut -c 1-12 | grep -v Jun| sort -M
-spit_end
+start "Is this a fresh VM?(boot history)"
+journalctl --since="2024-01-01" | grep 'Command line:' | cut -c 1-12
+end
 
+start "Where are we"
+	curl -x 10.1.1.10:8888 -s "https://csunix.mohawkcollege.ca/~long/php/what_is_my_ip.php"  | grep client
+end
 
-spit_start "Users And Groups (3 points)"
+start "Users And Groups (3 points)"
 echo "<strong>groups:</strong>"
 id andy
 id amita
@@ -127,10 +132,10 @@ echo ""
 echo "<strong>passwords:</strong>"
 check_hash andy mohawk1
 check_hash amita mohawk1
-spit_end
+end
 
 
-spit_start "Add a Disks (3 points)"
+start "Add a Disks (3 points)"
 
 echo "<strong>vgConfig:</strong>"
 vgdisplay -v vgWeb | grep -e 'PV Name' -e 'VG Size' -e 'Free PE'
@@ -142,35 +147,48 @@ echo ""
 echo "<strong>fstab:</strong>"
 grep web /etc/fstab
 
-spit_end
+end
 
-spit_start "Share /mnt/web (2 points)"
+start "Share /mnt/web (2 points)"
 ls -ld /mnt/web
-spit_end
+end
 
-spit_start "Install Apache (3 points)"
+start "Install Apache (3 points)"
 echo "<strong>installed:</strong>"
 yum list httpd
 echo ""
 echo "<strong>startup:</strong>"
 systemctl list-unit-files httpd.service
 echo ""
-echo "<stong>running:</strong>"
+echo "<strong>running:</strong>"
 systemctl status httpd
-spit_end
+end
 
 
-spit_start "Welcome Page (2 points)"
+start "Welcome Page (2 points)"
 wget http://localhost -q -O - | grep -i -e 'andy' -e 'amita'
-spit_end
+end
 
-spit_start "Apache Gets Nights Off (2 points)"
+start "Apache Gets Nights Off (2 points)"
 cat /etc/cron.d/[wW]eb
-spit_end
+end
+
 
 echo "<!-- report_id=$(uuidgen) -->"
-CS=$(md5sum $OUT_FILE | cut -f 1 -d ' ')
-echo "<!-- check_sum=$CS -->"
+} > $OUT_FILE
+
+# squirrel away a copy in a comment
+#
+TF=$(mktemp)
+echo "<!-- altenc" > $TF
+cat $OUT_FILE | gzip | base64 >> $TF
+cat $TF >> $OUT_FILE
+
+{
+echo "altenc -->"
 
 spit_post
+
+} >> $OUT_FILE
+
 

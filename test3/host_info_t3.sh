@@ -2,56 +2,53 @@
 
 OUT_FILE=$(hostname)_report_t3.html
 
-# map stdout to OUT_FILE
-#
-rm $OUT_FILE 2>/dev/null
-exec 1<> $OUT_FILE
 C="0"
 
 ################ functions to spit html ################################
 #
-function spit_start {
-	echo "<tr>"
-	echo "<td valign=\"top\"> $1 </td>"
-	echo "<td><pre>"
-	echo " "
-
-	# tell the user what we are up to
-	echo "Collecting Info for $1" | sed -e 's/<.*>//g' >&2
-}
-
-function spit_end {
-	echo " "
-	echo "</pre>"
-	echo "</td>"
-	echo "</tr>"
-}
 
 function spit_pre {
-	echo "<html>"
-	echo "<head>"
-	echo "<style type=\"text/css\">"
-	echo "table { margin: 1em; border-collapse: collapse; }"
-	echo "td, th { padding: .3em; border: 2px #ccc solid; }"
-	echo "</style>"
-	echo "</head>"
+        echo "<html>"
+        echo "<head>"
+        echo "<style type=\"text/css\">"
+        echo "body { font-family: Arial; }"
+        echo "table { margin: 1em; border-collapse: collapse; }"
+        echo "pre { overflow: auto; display: block; width: 90%; border: 1px solid #ccc; padding: 3px; background: #ece9d8; margin-top: 0px; margin-left: 5px; border-radius: 5px; }"
+        echo "td, th { padding: .3em; border: 2px #ccc solid; }"
+        echo "</style>"
+        echo "</head>"
 
-	echo "<body><table>"
+        echo "<body>"
 }
 
 function spit_post {
-	echo "</table></body></html>"
+        echo "</body></html>"
 }
 
 function spit_title {
-	echo "<h2> $1 </h2>"
+        echo "<h2> $1 </h2>"
 }
 
-function spit_section_header {
-	echo "<tr><td colspan=\"2\"> $1 </td></tr>"
+
+function spit_start {
+        echo ""
+        #echo "<strong>${1}</strong>"
+        echo "${1}"
+        echo -n "<pre>" 
+}
+function spit_end {
+        echo "</pre>"
+}
+
+function e3 {
+        echo "<hr>"
+        #echo "<h3>${1}</h3>"
+        #echo "<strong>${1}</strong><br>"
+        #echo "<br>"
 }
 #
 ################# end html spitters ######################################
+
 
 #
 # are we root?
@@ -61,7 +58,7 @@ then
 	echo "You must be root to run this script" >&2
 	exit 1
 fi
-
+{
 #
 # Tell the nice people what we are going to do
 #
@@ -85,8 +82,13 @@ date
 spit_end
 
 spit_start "Is this a fresh VM?<br><em>boot history</em>"
-grep -h 'Command line: BOOT' /var/log/messages* | cut -c 1-12 | grep -v Jun| sort -M
+journalctl --since="2024-01-01" | grep 'Command line:' | cut -c 1-12
 spit_end
+
+spit_start "Where are we"
+        curl -x 10.1.1.10:8888 -s "https://csunix.mohawkcollege.ca/~long/php/what_is_my_ip.php"  | grep client
+spit_end
+
 
 spit_start "s01: ping r01 blue by IP"
 if 
@@ -157,5 +159,20 @@ echo "<!-- report_id=$(uuidgen) -->"
 
 echo "<!-- C=$C -->"
 
+echo "<!-- report_id=$(uuidgen) -->"
+} > $OUT_FILE
+
+# squirrel away a copy in a comment
+#
+TF=$(mktemp)
+echo "<!-- altenc" > $TF
+cat $OUT_FILE | gzip | base64 >> $TF
+cat $TF >> $OUT_FILE
+
+{
+echo "altenc -->"
+
 spit_post
+
+} >> $OUT_FILE
 

@@ -85,9 +85,12 @@ date
 end
 
 start "Is this a fresh VM? (boot history)"
-grep -h 'Command line: BOOT' /var/log/messages* | cut -c 1-12 | grep -v Jun| sort -M
+journalctl --since="2024-01-01" | grep 'Command line:' | cut -c 1-12
 end
 
+start "Where are we"
+        curl -x 10.1.1.10:8888 -s "https://csunix.mohawkcollege.ca/~long/php/what_is_my_ip.php"  | grep client
+end
 
 e3 "Backup (5 points)"
 
