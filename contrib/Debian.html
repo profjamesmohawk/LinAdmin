@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title>
+		Lab: Debian</title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Lab: debian survival guide</h1>
+<p class="description">
+Debian was chosen for the reference O/S for it's stability, consistency, and excellent documentation.
+</p>
+<p class="description">
+Debian is very similar to the RedHat based distributions we have used in previous courses.  The most visible difference is that debian uses the APT package manager not YUM/DNF.  Debian also provides simple script based network configuration, which we will use.
+</p>
+
+<hr>
+
+<h2>Part A: Configure the network</h2>
+<ul>
+<li>Network configuration can be stored in a single file <strong>/etc/network/interfaces</strong> </li>
+<ul>
+
+<li>Stanza for DHCP
+<pre class="code">
+auto enp0s3
+iface enp0s3 inet dhcp
+</pre>
+</li>
+<li>Stanza for static address
+<pre class="code">
+auto enp0s8
+iface enp0s8 inet static
+    address 10.1.1.205/24
+</pre>
+</li>
+</ul>
+</li>
+<li>Bring enp0s8 down
+<pre class="code">
+ifdown enp0s8
+</pre>
+</li>
+<li>Bring enp0s8 up
+<pre class="code">
+ifup enp0s8
+</pre>
+</li>
+<li><a href="https://wiki.debian.org/NetworkConfiguration" >Network Configuration from the debian manual</a>
+</li>
+</ul>
+
+<h2>Part B: Install software with APT</h2>
+<ol>
+<li>Update the repository information - <em>difference from YUM</em>
+<pre class="code">
+apt update
+</pre>
+</li>
+<li>Update all the packages to the latest version - <em>difference from YUM</em>
+<pre class="code">
+apt upgrade
+</pre>
+</li>
+<li>Install curl
+<pre class="code">
+apt install curl
+</pre>
+</li>
+</ol>
+
+<hr>
+<h2>Part C: Install a GUI (only required if you want a debian workstation)</h2>
+
+<ol>
+<li>Install a debian task package (package that groups other packages)
+<pre class="code">
+apt update
+apt install task-xfce-desktop
+</pre>
+Note: If you prefer gnome use task-gnome-desktop
+</li>
+<li>reboot </li>
+<li>Install VBox Guest Additions (as described on <a href="https://wiki.debian.org/NetworkConfiguration">debian Wiki)</a>
+<ol type=a>
+<li>Install the debian packages required to build the guest addition modules
+<pre class="code">
+apt install build-essential dkms linux-headers-$(uname -r)
+</pre>
+</li>
+<li>Mount the Guest Additions ISO from the VirtualBox GUI </li>
+<li>Run the install script (as root)
+<p class="description">
+./VBoxLinuxAdditions.run
+</p>
+</li>
+</ol>
+<strong>Notes:</strong>
+<ol type=a>
+<p class="description">
+<li>
+If you can not execute VBoxLinuxAdditions.run, it is likely because your system has an entry in /etc/fstab for the ISO without the <span class=cmd>exec</span> option.  If this is the case: add <span class=cmd>exec</span> to the fstab line; umount the ISO; mount the IS0
+</li>
+</p>
+</li>
+<li>Note: updating the kernel, apt upgrade, usually means you need to rebuild the Guest Additions.
+</li>
+</ol>
+</li>
+</ol>
+
+</body>
+</html>

@@ -36,10 +36,12 @@ You will run a host info script on s01 and submit the output to Canvas.
 
 
 <hr>
-<h2>Part A: Import The Appliance</h2>
-
+<h2>Part A: Setup</h2>
+<p> <IMG src="../NFS/s01_s02.png" alt=""> </p>
 <ol>
 <li>Import <strong>clean, fresh</strong> copy of <strong>s01</strong></li>
+<li>Clone s01 to create s02 </li>
+<li>Update /etc/hosts on s01 and s02 </li>
 <li>Use <a href="../test1/fresh_check.zip">fresh_check.sh</a> to verify that you are working with a freshly imported s01.
 </li>
 </ol>
@@ -61,15 +63,15 @@ opt/Mohawk/books/ShelockHolmes.txt
 <div style="page-break-before: always">
 <h2>Part C: NFS (5 points)</h2>
 <p class="description">
-In this section you will create an NFS share on s01 to be used by any user from w01.
+In this section you will create an NFS share on s01 to be used by any user from s02.
 </p>
 <ol>
-<li>The shared directory must be called <strong>/nfs/w01</strong> </li>
-<li>Any user on w01 must appear as the user named <strong>w01user</strong> when accessing the share </li>
-<li>Any user on w01 must appear to belong to the group  named <strong>w01user</strong> when accessing the share</li>
+<li>The shared directory must be called <strong>/nfs/s02</strong> </li>
+<li>Any user on s02 must appear as the user named <strong>s02user</strong> when accessing the share </li>
+<li>Any user on s02 must appear to belong to the group  named <strong>s02user</strong> when accessing the share</li>
 <li>All configuration changes must survive a reboot </li>
-<li>The share must be mounted by w01 when you run the grading script </li>
-<li>The share must contain at least one test file created by a user from w01 </li>
+<li>The share must be mounted by s02 when you run the grading script </li>
+<li>The share must contain at least one test file created by a user from s02 </li>
 </ol>
 
 <hr>
@@ -77,7 +79,7 @@ In this section you will create an NFS share on s01 to be used by any user from 
 <ol>
 <li>Install and configure httpd to log to rsyslog with a facility of local5</li>
 <li>Configure rsyslog to log all messages from httpd to /var/log/web.log</li>
-<li>Configure rsyslog on w01 to forward authpriv messages to s01 </li>
+<li>Configure rsyslog on s02 to forward authpriv messages to s01 </li>
 <li>Generate messages to test your changes </li>
 </ol>
 

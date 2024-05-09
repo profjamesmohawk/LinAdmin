@@ -12,7 +12,7 @@ td, th { padding: .3em; border: 2px #ccc solid; }
 <td><pre>
  
 s01
-Sun Nov  5 16:58:22 EST 2023
+Thu May  9 11:42:17 EDT 2024
  
 </pre>
 </td>
@@ -22,8 +22,8 @@ Sun Nov  5 16:58:22 EST 2023
 <td><pre>
  
 /var/log/maillog
+/var/log/msg_err.log
 /var/log/mail_warn.log
-/var/log/msw_err.log
  
 </pre>
 </td>
@@ -42,17 +42,19 @@ Sun Nov  5 16:58:22 EST 2023
 <td><pre>
  
 /var/log/cron
-/var/log/msw_err.log
+/var/log/msg_err.log
  
 </pre>
 </td>
 </tr>
 <tr>
-<td valign="top"> Part C: (2 points) <br> authpriv messages from w01 in /var/log/secure </td>
+<td valign="top"> Part C: (2 points) <br> authpriv messages from s02 in /var/log/secure </td>
 <td><pre>
  
-Nov  5 14:41:20 w01 unix_chkpwd[8703]: password check failed for user (root)
-Nov  5 14:41:20 w01 su[8701]: pam_unix(su:auth): authentication failure; logname= uid=1000 euid=0 tty=pts/1 ruser=alice rhost=  user=root
+May  9 11:37:51 s02 unix_chkpwd[2359]: password check failed for user (root)
+May  9 11:37:51 s02 su[2357]: pam_unix(su:auth): authentication failure; logname=alice uid=1000 euid=0 tty=pts/1 ruser=alice rhost=  user=root
+May  9 11:38:20 s02 sshd[2361]: Accepted password for alice from 10.1.1.2 port 34266 ssh2
+May  9 11:38:20 s02 sshd[2361]: pam_unix(sshd:session): session opened for user alice by (uid=0)
  
 </pre>
 </td>
@@ -61,11 +63,10 @@ Nov  5 14:41:20 w01 su[8701]: pam_unix(su:auth): authentication failure; logname
 <td valign="top"> Part D: (2 points) <br> http errors in /var/log/messages </td>
 <td><pre>
  
-Nov  5 14:33:25 s01 httpd[3291]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.1.1.20. Set the 'ServerName' directive globally to suppress this message
-Nov  5 14:33:25 s01 httpd[3291]: [http2:warn] [pid 3291:tid 139773622290752] AH02951: mod_ssl does not seem to be enabled
-Nov  5 14:33:25 s01 httpd[3291]: Server configured, listening on: port 80
-Nov  5 14:34:42 s01 httpd[3294]: [autoindex:error] [pid 3294:tid 139772748044032] [client 127.0.0.1:39356] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html) found, and server-generated directory index forbidden by Options directive
-Nov  5 14:43:41 s01 httpd[3294]: [autoindex:error] [pid 3294:tid 139772972898048] [client 127.0.0.1:39360] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html) found, and server-generated directory index forbidden by Options directive
+May  9 11:41:03 s01 httpd[2941]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 10.1.1.20. Set the 'ServerName' directive globally to suppress this message
+May  9 11:41:03 s01 httpd[2941]: [http2:warn] [pid 2941:tid 140238363126080] AH02951: mod_ssl does not seem to be enabled
+May  9 11:41:03 s01 httpd[2941]: Server configured, listening on: port 80
+May  9 11:41:12 s01 httpd[2945]: [autoindex:error] [pid 2945:tid 140237611177728] [client 127.0.0.1:46296] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.html) found, and server-generated directory index forbidden by Options directive
  
 </pre>
 </td>

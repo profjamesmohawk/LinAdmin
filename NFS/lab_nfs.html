@@ -35,13 +35,15 @@ You will demonstrate your understanding of this lab by completing an Canvas quiz
 <hr>
 <h2>Part A: Setup The Lab</h2>
 <ol>
-	<li>Import and start the appliance which contains w01, s01, and y01.  </li>
-	</li>
-	<li>Install the NFS utilities on <strong>s01</strong> <em>they are already on w01</em>
+<p> <IMG src="./s01_s02.png" alt=""> </p>
+	<li>Clone s01 to create s02 </li>
+	<li>Create an account for alice on s02 </li>
+	<li>Add s02 to /etc/hosts on s01 and s02 </li>
+	<li>Install the NFS utilities on s01 and s02
 	<pre class="code">
 yum install nfs-utils </pre>
 	</li>
-	<li>Open the firewall on <strong>s01</strong>
+	<li>Open the firewall on s01
 <pre class="code">
 firewall-cmd --permanent --add-service=nfs3
 firewall-cmd --reload
@@ -53,7 +55,7 @@ firewall-cmd --reload
 <hr>
 <h2>Part B: Create Our First NFS Share</h2>
 <p class="description">
-Users on <strong>w01</strong> want a safe place to backup files, <strong>s01</strong> has some <em>extra</em> disk space so let's allow <strong>w01</strong> to access a directory on <strong>s01</strong> as if it were local.
+Users on s02 want a safe place to backup files, s02 has some extra disk space so let's allow s02 to access a directory on s01 as if it were local.
 </p>
 
 <ol>
@@ -64,14 +66,14 @@ Users on <strong>w01</strong> want a safe place to backup files, <strong>s01</st
 mkdir /shares
 </pre>
 </li>
-<li>Create a directory to share with w01 called <strong>backups</strong>
+<li>Create a directory to share with s02 called <strong>backups</strong>
 <pre class="code">
 mkdir /shares/backups
 </pre>
 </li>
-<li>We tell NFS that we want to export <strong>/shares/backup</strong> to <strong>w01</strong> by placing an entry in <strong>/etc/exports</strong>
+<li>We tell NFS that we want to export <strong>/shares/backup</strong> to s02 by placing an entry in <strong>/etc/exports</strong>
 <pre class="code">
-/shares/backups	w01
+/shares/backups	s02
 </pre>
 </li>
 <li>NFS is off by default, let's start it and make sure it starts every time we reboot, we will use the <span class=cmd>--now</span> option to tell systemd to enable and start the nfs-server in a single call.
@@ -93,7 +95,7 @@ exportfs -v
 <em>The output should look like this...</em>
 <pre class="code">
 /shares/backups
-		w01(ro,wdelay,root_squash,no_subtree_check)
+		s02(ro,wdelay,root_squash,no_subtree_check)
 </pre>
 </ul>
 </li>
@@ -103,11 +105,8 @@ Welcome to the backups share on s01.  Place any files here you like.
 </pre>
 </li>
 
-<h3>Perform these tasks on w01</h3>
-<li>Become root
-<pre class="code">
-su -
-</pre>
+<h3>Perform these tasks on s02</h3>
+<li>Logon as  root
 </li>
 <li>Make a directory where we can mount the share
 <pre class="code">
@@ -142,7 +141,7 @@ cat /s01/backups/ReadMe
 </li>
 <li>Create as simple file on the share
 <pre class="code">
-echo "hi from root on w01" &gt; /s01/backups/msg_from_root_w01
+echo "hi from root on s02" &gt; /s01/backups/msg_from_root_s02
 </pre>
 </li>
 <li>How did that go?
@@ -157,9 +156,9 @@ echo "hi from root on w01" &gt; /s01/backups/msg_from_root_w01
 exportfs -v
 </pre>
 </li>
-<li>Modify <strong>/etc/exports</strong> to allow read-write access from w01
+<li>Modify <strong>/etc/exports</strong> to allow read-write access from s02
 <pre class="code">
-/shares/backups w01(rw)
+/shares/backups s02(rw)
 </pre>
 </li>
 <li>Check our work
@@ -179,10 +178,10 @@ exportfs -ar
 </pre>
 </li>
 
-<h3>From w01</h3>
+<h3>From s02</h3>
 <li>Try to create our ReadMe file once more
 <pre class="code">
-echo "hi from root on w01" > /s01/backups/msg_from_root_w01
+echo "hi from root on s02" > /s01/backups/msg_from_root_s02
 </pre>
 </li>
 <li>Better?
@@ -199,10 +198,10 @@ chmod 777 /shares/backups
 </pre>
 </li>
 
-<h3>From w01</h3>
+<h3>From s02</h3>
 <li>Try once more to create our message
 <pre class="code">
-echo "hi from root on w01" &gt; /s01/backups/msg_from_root_w01
+echo "hi from root on s02" &gt; /s01/backups/msg_from_root_s02
 </pre>
 </li>
 <li>Better?
@@ -213,7 +212,7 @@ echo "hi from root on w01" &gt; /s01/backups/msg_from_root_w01
 </li>
 <li>Perfect?
 <pre class="code">
-ls -l  /s01/backups/msg_from_root_w01
+ls -l  /s01/backups/msg_from_root_s02
 </pre>
 				<a href="javascript:unhide('A5')">What happened?</a>
 				<span id="A5" class="hidden">
@@ -223,7 +222,7 @@ ls -l  /s01/backups/msg_from_root_w01
 <br>
 <li>Let's try as a regular user.  Log on as <em>alice</em> and try this...
 <pre class="code">
-echo "hi from alice on w01" &gt; /s01/backups/msg_from_alice_w01
+echo "hi from alice on s02" &gt; /s01/backups/msg_from_alice_s02
 </pre>
 </li>
 
@@ -245,22 +244,22 @@ ll /shares/backups
 useradd -m  -u 1000 alice 
 </pre>
 </li>
-<li>Check our work by running <span class=cmd>ls -l</span> on the share from both <strong>s01</strong> and <strong>w01</strong>.  </li>
+<li>Check our work by running <span class=cmd>ls -l</span> on the share from both <strong>s01</strong> and <strong>s02</strong>.  </li>
 
-<li>To allow root access from w01 make this change to <strong>/etc/exports</strong> and tell nfs to re-read.
+<li>To allow root access from s02 make this change to <strong>/etc/exports</strong> and tell nfs to re-read.
 <pre class="code">
-/shares/backups	w01(rw,no_root_squash)
+/shares/backups	s02(rw,no_root_squash)
 </pre>
 </li>
 <li>Check our work: <span class=cmd>exportfs -v</span> should output...
 <pre class="code">
 /shares/backups
-		w01(rw,wdelay,no_root_squash,no_subtree_check)
+		s02(rw,wdelay,no_root_squash,no_subtree_check)
 </pre>
 
 </li>
 
-<h3>From w01</h3>
+<h3>From s02</h3>
 <li>Check if root can create, and delete files on the share.  </li>
 <li>
 				<a href="javascript:unhide('A7')">Could this be a security problem?
@@ -276,7 +275,7 @@ useradd -m  -u 1000 alice
 <hr>
 <h2>Part C: Create A Public Read-Only Share</h2>
 <p class="description">
-We trust the users on w01, but not completely.  We want to give them read only access to a part of s01's file system tree.
+We trust the users on s02, but not completely.  We want to give them read only access to a part of s01's file system tree.
 </p>
 <ol>
 <li>Create the directory to share.
@@ -286,7 +285,7 @@ mkdir /shares/reading_room
 </li>
 <li>Make this addition to <strong>/etc/exports</strong>
 <pre class="code">
-/shares/reading_room w01(ro)
+/shares/reading_room s02(ro)
 </pre>
 </li>
 <li>Tell NFS check the exports file
@@ -294,7 +293,7 @@ mkdir /shares/reading_room
 exportfs -ar
 </pre>
 </li>
-<li>Temporarily mount the share on <strong>w01</strong> (will not survive reboot)
+<li>Temporarily mount the share on <strong>s02</strong> (will not survive reboot)
 <pre class="code">
 mkdir /s01/reading_room
 mount -t nfs s01:/shares/reading_room /s01/reading_room

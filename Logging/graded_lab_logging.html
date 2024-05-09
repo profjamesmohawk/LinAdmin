@@ -25,7 +25,12 @@ The syslog centralized logging facility is an excellent and flexible log managem
 </p>
 
 <hr>
-<h2>Prerequisites:</h2>
+<h2>Setup:</h2>
+<p> <IMG src="../NFS/s01_s02.png" alt=""> </p>
+<ol>
+<li>Clone s01 to create s02 </li>
+<li>Update /etc/hosts on s01 and s02 </li>
+</ol>
 <h3>Before you start this lab you must have:</h3>
 	<ul>
 		<li>The comp-10018 virtual lab appliance, <strong>comp-10018-vlab.ova</strong> found on the CSAIT lab systems.</li>
@@ -97,16 +102,16 @@ logger -p cron.err "FM8: cron.err"
 </ol>
 
 <hr>
-<h2>Part C: Remote Logging (w01 to s01)</h2>
+<h2>Part C: Remote Logging (s02 to s01)</h2>
 <p class="description">
-We will now configure <strong>w01</strong> to send log messages to <strong>s01</strong>.  This is very common configuration in production environments.
+We will now configure <strong>s02</strong> to send log messages to <strong>s01</strong>.  This is very common configuration in production environments.
 </p>
 <ol>
 <li>Enable remote logging via TCP on <strong>s01</strong> (<em><strong>hint</strong>: uncomment a total of 2 lines in <strong>rsyslog.conf</strong></em>)
 <br>Here's a short video tutorial from the author of rsyslog that tells you how (and a little more) <a target="blank" href="https://youtu.be/fewUSu_QZAY">Video</a>
 </li>
-<li>Configure rsyslog on <strong>w01</strong> to send all security authorization messages (authpriv) to <strong>s01</strong> via TCP </li>
-<li>Log onto <strong>w01</strong> and see if log messages appear on <strong>s01</strong> </li>
+<li>Configure rsyslog on <strong>s02</strong> to send all security authorization messages (authpriv) to <strong>s01</strong> via TCP </li>
+<li>Log onto <strong>s02</strong> and see if log messages appear on <strong>s01</strong> </li>
 <li> Don't forget to open tcp port 514 on s01's firewall
 <pre class="code">
 firewall-cmd --permanent --add-port=514/tcp

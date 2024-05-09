@@ -27,7 +27,7 @@ As we mentioned in the lecture, a Red Hat developer account is required to talk 
 	<li>Clone s01 to create s02
 	<ul>
 	<li>Add a NAT interface to s02 in the VirtualBox GUI </li>
-	<li>Set hostname and IP </li>
+	<li>Set hostname to s02 and IP to 10.1.1.30 </li>
 	<li>Rename the NAT connection to enp0s8
 	<pre class="code">
 nmcli connection modify 'Wired connection 1' connection.id enp0s8
@@ -52,7 +52,7 @@ mv *.repo hide
 </pre>
 	</li>
 		<li>Visit <a href="https://developers.redhat.com">developers.redhat.com</a> sign up and get your username and password.</li>
-		<li>Register s01 with Red Hat
+		<li>Register s02 with Red Hat
 <pre class="code">
 subscription-manager register --username={YOUR_USER_NAME} --password={YOUR_PASSWD} --auto-attach
 </pre>
@@ -67,7 +67,7 @@ subscription-manager config --rhsm.manage_repos=1
 yum update
 </pre>
 	</li>
-	<li>Reboot <strong>s01</strong> 
+	<li>Reboot <strong>s02</strong> 
 				<a href="javascript:unhide('A9')">Why?</a>
 				<span id="A9" class="hidden">
 				<em>The update should have included a new kernel and we need to reboot in order to use it.</em> </span>

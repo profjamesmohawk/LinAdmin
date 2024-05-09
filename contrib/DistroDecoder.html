@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type">
+  	<link rel="stylesheet" href="../jbl_labs.css"> 
+  	<title> DistroDecoder </title>
+<script type="text/javascript">
+ 	function unhide(divID) {
+ 		var item = document.getElementById(divID);
+ 		if (item) {
+ 			item.className=(item.className=='hidden')?'unhidden':'hidden';
+ 		}
+	}
+ </script>
+  
+</head>
+
+<body>
+<h1>Linux Distribution Decoder </h1>
+<h2>Introduction</h2>
+<p class="description">All the major Linux distributions draw from the same FOSS wells.  They do not all draw the same things.  This guide is intended to help administrators translate between distros.
+
+
+<table>
+<tr>
+	<th> </th>
+	<th>rhel 6</th>
+	<th>rhel 7</th>
+	<th>rhel 8</th>
+	<th>ubuntu (20.4)</th>
+	<th>debian 12 (bookworm)</th>
+</tr>
+<tr>
+	<td><strong>Hostname</strong></td>
+	<td>edit /etc/sysconfig/network</td>
+	<td>edit /etc/sysconfig/network</td>
+	<td>Network Manager or /etc/hostname</td>
+	<td>Network Manager or /etc/hostname</td>
+	<td>/etc/hostname</td>
+</tr>
+<tr>
+	<td><strong>Networking</strong></td>
+	<td>files in /etc/sysconfig/network-scripts</td>
+	<td>files in /etc/sysconfig/network-scripts</td>
+	<td>Network Manager</td>
+	<td>Network Manager</td>
+	<td>/etc/network/interfaces, ifup/down (by default)</td>
+</tr>
+<tr>
+	<td><strong>Services</strong> </td>
+	<td>rc scripts</td>
+	<td>systemd</td>
+	<td>systemd</td>
+	<td>systemd</td>
+	<td>systemd</td>
+</tr>
+<tr>
+	<td><strong>Firewall</strong> </td>
+	<td>ip tables</td>
+	<td>firewalld</td>
+	<td>firewalld</td>
+	<td>ufw</td>
+	<td>none by default</td>
+</tr>
+<tr>
+	<td><strong>Package Management</strong> </td>
+	<td>yum</td>
+	<td>yum</td>
+	<td>yum</td>
+	<td>apt</td>
+	<td>apt</td>
+</tr>
+<tr>
+	<td><strong>Root Access</strong> </td>
+	<td>direct</td>
+	<td>direct</td>
+	<td>direct</td>
+	<td>sudo</td>
+	<td>direct, sudo available</td>
+</tr>
+<tr>
+	<td><strong>Ethernet Interface Naming</strong> </td>
+	<td>eth0</td>
+	<td>enp0s3</td>
+	<td>enp0s3</td>
+	<td>enp0s3</td>
+	<td>enp0s3</td>
+</tr>
+</table>
+
+<hr>
+<h2>Reference Material</h2>
+<ul>
+<li><a href="https://csunix.mohawkcollege.ca/~long/courses/LinAdmin/SystemIdentity/lab_system_identity.html">Network Manager (from UX/Admin)</a>
+</li>
+<li><a href="https://csunix.mohawkcollege.ca/~long/courses/LinAdmin/StartupAndServices/lab_startup_and_services.html">Systemd (from UX/Admin)</a>
+</li>
+<li> <a href="https://www.digitalocean.com/community/tutorials/package-management-basics-apt-yum-dnf-pkg">Package Management Basics (covers yum and apt)</a> </li>
+
+</ul>
+
+
+<hr>
+<h2>Bare Essentials</h2>
+<p class="description">
+For your convenience here are some of the essential commands you will need.
+</p>
+<ul>
+
+<h3>Managing Services with systemd</h3>
+<p class="description">
+A new system startup daemon, systemd, replaces the startup scripts that we have loved for decades. We will use 
+</p>
+<ul>
+<li>To set the docker service to start at boot:
+<pre class="code">
+systemctl enable docker
+</pre>
+</li>
+<li>To set the docker service to start at immediately:
+<pre class="code">
+systemctl start docker
+</pre>
+</li>
+</ul>
+
+<hr>
+<h3>Firewalld </h3>
+
+<ul>
+<li>To permanently open port 80/tcp:
+<pre class="code">
+firewall-cmd --permanent --add-port=80/tcp
+firewall-cmd --reload
+</pre>
+</li>
+<li>To list open ports:
+<pre class="code">
+firewall-cmd --list-all
+</pre>
+</li>
+</ul>
+
+<hr>
+<h3>UFW </h3>
+
+<ul>
+<li>To permanently open port 80/tcp:
+<pre class="code">
+ufw allow 80/tcp
+</pre>
+</li>
+<li>To list open ports:
+<pre class="code">
+ufw status
+</pre>
+</li>
+</ul>
+
+</ul>
+
+</body>
+</html>

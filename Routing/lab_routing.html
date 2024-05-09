@@ -202,9 +202,9 @@ It tells us: <br>packets destined for the 10.2.1.0/24 network will be sent out t
 </li>
 <li>Finally consider the output of <span class=cmd>ip route</span> on <strong>w01</strong> (remember <strong>w01</strong> is connected to the open Internet)
 <pre class="code">
-default via 10.0.2.2 dev enp0s3 proto dhcp metric 100 
-10.0.2.0/24 dev enp0s3 proto kernel scope link src 10.0.2.15 metric 100 
-10.1.1.0/24 dev enp0s8 proto kernel scope link src 10.1.1.10 metric 101 
+default via 10.0.2.2 dev enp0s3 
+10.0.2.0/24 dev enp0s3 proto kernel scope link src 10.0.2.15
+10.1.1.0/24 dev enp0s8 proto kernel scope link src 10.1.1.10
 </pre>
 You should be able to decipher the last two lines yourself.  The first line tells us that any packet other than those destined for 10.0.2.0/24 or 10.1.1.0/24 networks will be send to 10.0.2.2 via interface enp0s3.
 <br>This raises some interesting questions...
@@ -292,26 +292,42 @@ default via 10.2.1.20 dev enp0s3 proto static metric 100
 				</span>
 </ul>
 </li>
-<li>Tell <strong>w01</strong> where to send packets destined for the 10.2.1.0/24 network. We could use the GUI on w01, we can use the GUI to configure the route.  
-The big advantage of a graphical configuration tool is that you should be able to set what you need to without any additional documentation.  The tricky bit is knowing what you need to set.  If you like, you may try using the GUI, but it's a lot of clicking, and you don't get as good a record of what you changes - I will stick to the command line thanks ;)
+<li>Tell w01 where to send packets destined for the 10.2.1.0/24 network.  We do not have Network Manager on w01, we are using old school configuration methods.  We can not add a default route, because w01 is connected to the Internet and needs to have its default route point 'out'.
 <ol type="a">
-<h3>As root on w01</h3>
-<li>Tell NetworkManager to send packets destined for the yellow network to s01's blue adapter.  Note: This should be associated with enp0s8.
+<li><strong>As root on w01</strong>: Add a route from the command line
 <pre class="code">
-nmcli connection modify enp0s8 ipv4.routes '10.2.1.0/24 10.1.1.20'
-</pre>
-</li>
-<li>Apply our updated connection configuration
-<pre class="code">
-nmcli connection up enp0s8
+ip route add 10.2.1.0/24 via 10.1.1.20
 </pre>
 </li>
 <li>Check our work: <span class=cmd>ip r</span> should show something like..
 <pre class="code">
-default via 10.0.2.2 dev enp0s3 proto dhcp metric 100 
-10.0.2.0/24 dev enp0s3 proto kernel scope link src 10.0.2.15 metric 100 
-10.1.1.0/24 dev enp0s8 proto kernel scope link src 10.1.1.10 metric 101 
-10.2.1.0/24 via 10.1.1.20 dev enp0s8 proto static metric 101 
+default via 10.0.2.2 dev enp0s3 
+10.0.2.0/24 dev enp0s3 proto kernel scope link src 10.0.2.15 
+10.1.1.0/24 dev enp0s8 proto kernel scope link src 10.1.1.10 
+10.2.1.0/24 via 10.1.1.20 dev enp0s8 
+</pre>
+</li>
+<li>The route we added will not survive a reboot.  To configure the route every time we boot we need to modify the /etc/network/interfaces file.  
+<br>We will add <span class=cmd>up ip route add 10.2.1.0/24 via 10.1.1.20</span> to the configuration of enp0s8.  So that the file looks like this...
+<pre class="code">
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The NAT interface
+auto enp0s3
+iface enp0s3 inet dhcp
+
+# The blue interface
+auto enp0s8
+iface enp0s8 inet static
+	address 10.1.1.10/24
+	up ip route add 10.2.1.0/24 via 10.1.1.20
 </pre>
 </li>
 

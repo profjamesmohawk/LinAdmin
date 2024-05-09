@@ -88,8 +88,8 @@ systemctl list-unit-files nfs-server.service
 spit_end
 
 
-spit_start "NFS Connecton from w01 (1 point)"
-netstat -a | grep 'nfs.*w01'
+spit_start "NFS Connecton from s02 (1 point)"
+netstat -a | grep 'nfs.*s02'
 spit_end
 
 spit_start "Scratch in exports (1 point)"

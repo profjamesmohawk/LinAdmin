@@ -34,10 +34,12 @@ You will run the host_info_nfs script on <strong>s01</strong> and submit the out
 <hr>
 <h2>Part A: Setup the lab</h2>
 <ol>
-	<li>Import the appliance which contains w01 and s01.  </li>
-	<li>Install the NFS utilities on all systems </li>
+<p> <IMG src="./s01_s02.png" alt=""> </p>
+	<li>Clone s01 to create s02 </li>
+	<li>Update /etc/hosts on s01 and s02 </li>
+	<li>Install the NFS utilities on s01 and s02 </li>
 	<li>Make sure NFS is set to start automatically on s01 </li>
-	<li>Create users on <strong>w01 <em>and</em> s01</strong>  making sure they have consistent UID numbers.
+	<li>Create users on <strong>s02 <em>and</em> s01</strong>  making sure they have consistent UID numbers.
 		<table>
 <tr>
 	<td>Full Name</td>
@@ -60,7 +62,7 @@ You will run the host_info_nfs script on <strong>s01</strong> and submit the out
 </tr>
 
 </table>
-<strong>Note:</strong> Running <span class=cmd>useradd</span> on w01 will likely result in warnings from sss_cache.  You can safely ignore these warnings.  You can stop the warnings by running <span class=cmd>rm /var/lib/sss/db/*</span> on w01.
+<strong>Note:</strong> Running <span class=cmd>useradd</span> on s02 may result in warnings from sss_cache.  You can safely ignore these warnings.  You can stop the warnings by running <span class=cmd>rm /var/lib/sss/db/*</span> on s02.
 	</li>
 	<li>Create an group named <strong>research</strong> containing margaret and katherine on both systems.</li>
 </ol>
@@ -68,31 +70,31 @@ You will run the host_info_nfs script on <strong>s01</strong> and submit the out
 <hr>
 <h2>Part B: Create "scratch" share</h2>
 <p class="description">
-Create and export a directory named <strong>/nfs_shares/scratch</strong> for use as a temporary directory by any and all users on <strong>w01</strong>
+Create and export a directory named <strong>/nfs_shares/scratch</strong> for use as a temporary directory by any and all users on <strong>s02</strong>
 </p>
 <ul>
 <li>The share is exported from <strong>s01</strong> </li>
 <li>All users, including root should have read and write access </li>
-<li>root on w01 should have root level access to the share </li>
+<li>root on s02 should have root level access to the share </li>
 </ul>
 <p class="description">
-Test your work by mounting <strong>/nfs_shares/scratch</strong> on <strong>w01</strong> and having root, margaret, and katherine each create a file.
+Test your work by mounting <strong>/nfs_shares/scratch</strong> on <strong>s02</strong> and having root, margaret, and katherine each create a file.
 </p>
 
 <hr>
 <h2>Part C: Create a research share</h2>
 <p class="description">
-Create and export a directory named <strong>/nfs_shares/research</strong> that is accessible only to the members of the research group on w01.
+Create and export a directory named <strong>/nfs_shares/research</strong> that is accessible only to the members of the research group on s02.
 </p>
 <ul>
 <li>The share is exported from <strong>s01</strong> </li>
-<li>Neither root or alice on w01 should be able to access the share </li>
+<li>Neither root or alice on s02 should be able to access the share </li>
 <li>Both margaret and katherine must be able to create and delete files on the share </li>
 <li>When members of the research group create files on the share, the files group ownership must be set to <strong>research</strong> automatically. <em>hint: google "setgid bit on directory"</em>
 </li>
 </ul>
 <p class="description">
-Test your work by mounting <strong>/nfs_shares/research</strong> on <strong>w01</strong> and having margaret, and katherine each create a file.  Verify that neither alice or root can access the files from w01.
+Test your work by mounting <strong>/nfs_shares/research</strong> on <strong>s02</strong> and having margaret, and katherine each create a file.  Verify that neither alice or root can access the files from s02.
 </p>
 
 <hr>
@@ -101,8 +103,8 @@ Test your work by mounting <strong>/nfs_shares/research</strong> on <strong>w01<
 Create and export a directory named <strong>/nfs_shares/pub</strong> from <strong>s01</strong> as a public playground share.  This one is a little different than what you've seen so far, some research will be required.
 </p>
 <ul>
-<li>All users, including root, on w01 must have full access to the share </li>
-<li>All users must appear as the user <em>w01_guest</em> when performing operations on the share.  </li>
+<li>All users, including root, on s02 must have full access to the share </li>
+<li>All users must appear as the user <em>s02_guest</em> when performing operations on the share.  </li>
 </ul>
 
 <hr>

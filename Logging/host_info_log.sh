@@ -103,8 +103,8 @@ spit_start "Part B.1,  (2 point) <br> FM_T3 in cron, msg_err"
 grep -l FM_T3 $(find /var/log/ -type f)
 spit_end
 
-spit_start "Part C: (2 points) <br> authpriv messages from w01 in /var/log/secure"
-grep w01 /var/log/secure | tail -5
+spit_start "Part C: (2 points) <br> authpriv messages from s02 in /var/log/secure"
+grep s02 /var/log/secure 
 spit_end
 
 spit_start "Part D: (2 points) <br> http errors in /var/log/messages"
