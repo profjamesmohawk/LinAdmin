@@ -52,18 +52,19 @@ function e3 {
 function check_hash {
 	USER_NAME=$1
 	PW=$2
+
+	# check if user exists
+	if ! grep $USER_NAME /etc/shadow > /dev/null
+	then
+		echo $USER_NAME not found
+		return
+	fi
 	
 	OLD_IFS=$IFS
 	IFS=\$
 
 	# read the pw record into vars
 	read GARBAGE A S H <<< $( grep $USER_NAME /etc/shadow | cut -f 2 -d :  )
-	if [ "$GARBAGE" == "" ] 
-	then
-		echo user not found
-		IFS=$OLD_IFS
-		return
-	fi
 
 	# check the hash
 	#
@@ -113,7 +114,7 @@ date
 end
 
 start "Is this a fresh VM?(boot history)"
-journalctl --since="2024-01-01" | grep 'Command line:' | cut -c 1-12
+journalctl --since="2024-05-10 12:00:00" | grep 'Command line:' | cut -c 1-12
 end
 
 start "Where are we"

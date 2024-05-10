@@ -85,7 +85,7 @@ date
 end
 
 start "Is this a fresh VM? (boot history)"
-journalctl --since="2024-01-01" | grep 'Command line:' | cut -c 1-12
+journalctl --since="2024-05-10 12:00:00" | grep 'Command line:' | cut -c 1-12
 end
 
 start "Where are we"
@@ -110,16 +110,16 @@ end
 e3 "NFS (5 points)"
 
 
-start "NFS Connecton from w01 (1 point)"
-netstat -a | grep 'nfs.*w01'
+start "NFS Connecton from s02 (1 point)"
+netstat -a | grep 'nfs.*s01'
 end
 
-start "/nfs/w01 in exports (2 points)"
+start "/nfs/s02 in exports (2 points)"
 cat /etc/exports
 end
 
-start "Test files in /nfs/w01 (2 points)"
-ls -l /nfs/w01
+start "Test files in /nfs/s02 (2 points)"
+ls -l /nfs/s02
 end
 
 e3 "Logging (5 points)"
@@ -132,9 +132,9 @@ start "contents of /var/log/web.log (2 points)"
 tail -5 /var/log/web.log
 end
 
-start "authpriv from w01 in /var/log/secure (2 points)"
+start "authpriv from s02 in /var/log/secure (2 points)"
 # improve pattern to not match w01_guest user add message
-grep w01 /var/log/secure | tail -10
+grep s02 /var/log/secure | tail -10
 end
 
 echo "<!-- report_id=$(uuidgen) -->"
