@@ -44,8 +44,8 @@ function end {
 }
 
 function e3 {
-	echo "<hr>"
-	#echo "<h3>${1}</h3>"
+	#echo "<hr>"
+	echo "<h3>${1}</h3>"
 	#echo "<strong>${1}</strong><br>"
 	#echo "<br>"
 }
@@ -111,7 +111,7 @@ e3 "NFS (5 points)"
 
 
 start "NFS Connecton from s02 (1 point)"
-netstat -a | grep 'nfs.*s01'
+netstat -a | grep 'nfs.*s02'
 end
 
 start "/nfs/s02 in exports (2 points)"
@@ -134,7 +134,7 @@ end
 
 start "authpriv from s02 in /var/log/secure (2 points)"
 # improve pattern to not match w01_guest user add message
-grep s02 /var/log/secure | tail -10
+grep ' s02 ' /var/log/secure | tail -10
 end
 
 echo "<!-- report_id=$(uuidgen) -->"

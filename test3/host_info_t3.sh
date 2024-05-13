@@ -82,7 +82,7 @@ date
 spit_end
 
 spit_start "Is this a fresh VM?<br><em>boot history</em>"
-journalctl --since="2024-01-01" | grep 'Command line:' | cut -c 1-12
+journalctl --since="2024-05-11" | grep 'Command line:' | cut -c 1-12
 spit_end
 
 spit_start "Where are we"
