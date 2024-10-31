@@ -35,7 +35,7 @@ Much of an administrator's time is spent managing storage.  This means managing 
 
 <h2>Grading:</h2>
 <p class="description">
-You will demonstrate your understanding of this lab by completing an Canvas quiz.
+You will demonstrate your understanding of this lab by completing a Canvas quiz.
 </p>
 
 
@@ -43,8 +43,8 @@ You will demonstrate your understanding of this lab by completing an Canvas quiz
 <h2>Part A: Import The Appliance</h2>
 
 <ol>
-<li>Import clean copies of s01,w01, and y01</li>
-<li>Boot s01,w01, and y01</li>
+<li>Import clean copies of s01, w01, and y01</li>
+<li>Boot s01, w01, and y01</li>
 
 <li>Log on to <strong>s01</strong> as root.
 </li>
@@ -59,7 +59,7 @@ We will use both a 'physical' disk 'inserted' into the VM's DVD drive and a DVD 
 
 <h3>Physical Disk</h3>
 <ol>
-<li>Down load <a href="./tiny.iso">tiny ISO</a> file to your VM host (your Windows or Mac workstation)
+<li>Download <a href="./tiny.iso">tiny ISO</a> file to your VM host (your Windows or Mac workstation)
 </li>
 <li>Right click on the DVD image in the lower right window border of s01's VM and select <strong>Choose a disk file</strong> and select <strong>tiny.iso</strong> to 'insert' the DVD into s01's DVD drive.
 </li>
@@ -111,7 +111,7 @@ find /mnt/tiny
 				Why?
 				<a href="javascript:unhide('A5')">Answer</a>
 				<span id="A5" class="hidden">
-				<em>Because the 'mount point' directory must exist in the file system tree for mount work.
+				<em>Because the 'mount point' directory must exist in the file system tree for the mount to work.
 				</em>
 				</span>
 </li>
@@ -215,7 +215,7 @@ ll /dev/sdb*
 <pre class="code">
 mkfs -t ext4 /dev/sdb1
 </pre>
-<em>Out put should look something like...</em>
+<em>Output should look something like...</em>
 				<a href="javascript:unhide('A7')">Show/Hide</a>
 				<span id="A7" class="hidden">
 <pre class="code">
@@ -288,7 +288,7 @@ df
 <hr>
 <h2>Part D: Add A Disk - LVM</h2>
 <p class="description">
-Logical Volume Manage, LVM, is now the default way in which CentOS manages storage for everything but the <strong>/boot</strong> partition. (We'll learn more about /boot later)
+Logical Volume Manager, LVM, is now the default way in which CentOS manages storage for everything but the <strong>/boot</strong> partition. (We'll learn more about /boot later)
 </p>
 <p class="description">
 In the last section we added a disk to the system and formatted it for use by the engineering department, this time we will perform a similar task to add storage for the catering department, but now we will use LVM.

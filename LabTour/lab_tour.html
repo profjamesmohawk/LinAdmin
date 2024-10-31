@@ -132,7 +132,7 @@ Most of our administration work will be done on <strong>s01</strong>.  But s01 d
 ping  -c 3 10.1.1.10 </pre>
 			</li>
 			<li>Use the <span class=cmd>ping</span> utility to see if we can contact Google's free DNS server at <strong>8.8.8.8</strong>
-			<br><em>This is a good server to use for tests as it usually up, and answers pings.</em>
+			<br><em>This is a good server to use for tests as it is usually up, and answers pings.</em>
 			<pre class="code">
 ping  -c 3 8.8.8.8 </pre>
 			</li>
@@ -147,7 +147,7 @@ ping  -c 3 8.8.8.8 </pre>
 <hr>
 <h2>Part E: Remote Access </h2>
 <p class="description">
-Part D above should have shown us that the console on s01 is nowhere near as nice and the terminal window we can have on w01: it's small, we can't scroll back, we can't cut-and-paste.  Fear not, we can access s01 from w01, not only do we get a nicer terminal, but we can work from out virtual desk, rather than hiking into the load, cold, and uncomfortable virtual server room (where they do not allow coffee).
+Part D above should have shown us that the console on s01 is nowhere near as nice as the terminal window we can have on w01: it's small, we can't scroll back, we can't cut-and-paste.  Fear not, we can access s01 from w01, not only do we get a nicer terminal, but we can work from our virtual desk, rather than hiking into the loud, cold, and uncomfortable virtual server room (where they do not allow coffee).
 </p>
 
 <ol>
@@ -195,7 +195,7 @@ hostname
 <hr>
 <h2>Part F: Remote File Copy</h2>
 <p class="description">
-We can use <span class=cmd>scp</span>, the secure copy command, to copy files from one system to an other over the network.  This is a very useful tool in every administrator's kit.  The <span class=cmd>scp</span> command works very much like the <span class=cmd>cp</span> command you already know.  To extend the <span class=cmd>cp</span> command across the network we need to expand the format of the source and destination arguments to include user names and host names.  Don't worry if this a little confusing right now, we'll have plenty of practice before the course is over ;)  Some examples will help...
+We can use <span class=cmd>scp</span>, the secure copy command, to copy files from one system to another over the network.  This is a very useful tool in every administrator's kit.  The <span class=cmd>scp</span> command works very much like the <span class=cmd>cp</span> command you already know.  To extend the <span class=cmd>cp</span> command across the network we need to expand the format of the source and destination arguments to include user names and host names.  Don't worry if this a little confusing right now, we'll have plenty of practice before the course is over ;)  Some examples will help...
 </p>
 
 

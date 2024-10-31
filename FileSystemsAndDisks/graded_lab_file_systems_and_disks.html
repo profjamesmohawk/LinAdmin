@@ -36,8 +36,7 @@ You will run a host info script on s01 and submit the output to Canvas.
 <h2>Part A: Import The Appliance</h2>
 
 <ol>
-<li>Import clean copies of <strong>w01</strong> and <strong>s01</strong>
-from </li>
+<li>Import clean copies of <strong>w01</strong> and <strong>s01</strong></li>
 </li>
 <li>Do NOT boot <strong>s01</strong> just yet.
 </li>
@@ -193,7 +192,7 @@ Expected results (ID's will differ)</a>
 </span>
 </ul>
 </li>
-<li>Create 3 logical volumes in <strong>vg01</strong> ,build file systems on them, and make sure they mount at boot time.
+<li>Create 3 logical volumes in <strong>vg01</strong>, build file systems on them, and make sure they mount at boot time.
 <table>
 	<tr>
 		<td><strong>name</strong></td>
@@ -225,7 +224,7 @@ Expected results (ID's will differ)</a>
 <hr>
 <h2>Part E: Making Mounts Safer </h2>
 <p class="description">
-You man have noticed that we used the device file name for our partition based mounts (/dev/sdb1, /dev/sdb2) in /etc/fstab.  But, the /boot partition which resides on /dev/sda1 is referenced by UUID in /etc/fstab not device file.  It is much safer to specify partition based file systems by UIID.  If we move the disk to a different controller or if we remove a disk the device file name can change, but the UUID is designed to be globally unique.
+You man have noticed that we used the device file name for our partition based mounts (/dev/sdb1, /dev/sdb2) in /etc/fstab.  But, the /boot partition which resides on /dev/sda1 is referenced by UUID in /etc/fstab not device file.  It is much safer to specify partition-based file systems by UIID.  If we move the disk to a different controller or remove a disk altogether the device file name can change, but the UUID is designed to be globally unique.
 </p>
 <p class="description">
 Let's change <strong>/dev/sdb1</strong> to a UUID specification in <strong>/etc/fstab</strong> 
@@ -248,7 +247,7 @@ blkid /dev/sdb1
 UUID=c389c05b-9fc3-4d66-8ca6-952f179f4bf6		/departments/sales	ext3	defaults	0 2
 </pre>
 </li>
-<li>Check you work by remounting <strong>/departments/sales</strong>
+<li>Check your work by remounting <strong>/departments/sales</strong>
 </li>
 </ol>
 

@@ -59,7 +59,7 @@ The web server from the Apache Software Foundation is one of the most popular.  
 <hr>
 <h2>Part C: Building Software From Source</h2>
 <p class="description">
-Most software comes packaged and compiled, but not all.  They come with single script that builds and installs them, but most software you have have to build from source will use standard tools to configure, build, and install.
+Most software comes packaged and compiled, but not all.  They come with a single script that builds and installs them, but most software you have to build from source will use standard tools to configure, build, and install.
 </p>
 <p class="description">
 Today you will have a chance to use these standard tools, configure and make, to build and install the network benchmarking tool Netperf.
@@ -93,7 +93,7 @@ netperf -?
 You will use Netperf and scp to test the performance.
 </p>
 
-<h3>Test the network by coping a file</h3>
+<h3>Test the network by copying a file</h3>
 <p class=description>
 A simple way to test network performance is to copy a large file.  The scp command even reports speed for us.
 </p>
@@ -146,7 +146,7 @@ netperf -H s01 -p 9317 -f G
 </pre>
 </li>
 <li>Record the throughput </li>
-<li>On <strong>s01</strong>, re-start the fire wall.
+<li>On <strong>s01</strong>, re-start the firewall.
 <pre class="code">
 systemctl start firewalld.service 
 </pre>

@@ -27,7 +27,7 @@ Today we will investigate the Linux boot and startup process.  The launching of 
 <hr>
 <h2>Grading:</h2>
 <p class="description">
-You will demonstrate your understanding of this lab by completing an Canvas quiz.
+You will demonstrate your understanding of this lab by completing a Canvas quiz.
 </p>
 
 <hr>
@@ -53,7 +53,7 @@ GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
 GRUB_DEFAULT=saved
 GRUB_DISABLE_SUBMENU=true
 GRUB_TERMINAL_OUTPUT="console"
-GRUB_CMDLINE_LINUX="crashkernel=auto resume=/dev/mapper/rhel-swap rd.lvm.lv=rhel/root rd.lvm.lv=rhel/swap "
+GRUB_CMDLINE_LINUX="crashkernel=auto resume=/dev/mapper/rhel-swap rd.lvm.lv=rhel/root rd.lvm.lv=rhel/swap"
 GRUB_DISABLE_RECOVERY="true"
 GRUB_ENABLE_BLSCFG=true
 </pre>
@@ -105,7 +105,7 @@ systemctl list-dependencies $(systemctl get-default)
 systemctl list-unit-files --type=service
 </pre>
 </li>
-<li>Check if <strong>sshd</strong> running now?
+<li>Check if <strong>sshd</strong> is running now?
 <pre class="code">
 systemctl status sshd
 </pre>
@@ -149,7 +149,7 @@ systemctl disable sshd.service
 </pre>
 </li>
 <li>Reboot and verify that sshd does not start.  </li>
-<li>Remote access via ssh is very useful, so let's tell sshd to start it at boot time.
+<li>Remote access via ssh is very useful, so let's tell sshd to start at boot time.
 <pre class="code">
 systemctl enable sshd.service
 </pre>
@@ -167,7 +167,7 @@ journalctl -b -u sshd.service
 <hr>
 <h2>Part C: Apache web server</h2>
 <p class="description">
-One of the most commonly found daemons on Linux systems today is the Apache Web Server, a.k.a. <strong>httpd</strong>.  Today will will install the Apache web server and perform some very basic configuration.
+One of the most commonly found daemons on Linux systems today is the Apache Web Server, a.k.a. <strong>httpd</strong>.  Today we will install the Apache web server and perform some very basic configuration.
 </p>
 
 <ol>
@@ -188,7 +188,7 @@ curl http://localhost
 </pre>
 </li>
 
-<li>By default <strong>httpd</strong> listens for connects on TCP Port 80, since this is a test configuration, we want to listen on port 8080. The listening port is controlled by <strong>httpd</strong>'s configuration file <strong>httpd.conf</strong> - Let's modify it.
+<li>By default <strong>httpd</strong> listens for connections on TCP Port 80, since this is a test configuration, we want to listen on port 8080. The listening port is controlled by <strong>httpd</strong>'s configuration file <strong>httpd.conf</strong> - Let's modify it.
 <ol type="a">
 	<li>Change our working directory
 <pre class="code">
@@ -220,7 +220,7 @@ Listen 8080
 diff httpd.conf httpd.conf.back
 </pre>
 </li>
-<li>Tell Apache to reread it's configuration file... (we have three choices, pick one, or try them all)
+<li>Tell Apache to reread its configuration file... (we have three choices, pick one, or try them all)
 <ul>
 <li>Option A (stop and restart):
 <pre class="code">
@@ -278,7 +278,7 @@ We will create a cron job that will run the <span class=cmd>date</span> command 
 cd /etc/cron.d
 </pre>
 </li>
-<li>Copy an existing cron file so we don't have to start from stratch
+<li>Copy an existing cron file so we don't have to start from scratch
 <pre class="code">
 cp 0hourly every_min
 </pre>
